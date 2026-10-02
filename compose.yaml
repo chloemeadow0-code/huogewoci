@@ -1,5 +1,5 @@
 services:
-  hogwarts:
+  xiuxian:
     build: .
     ports:
       - "${BIND_ADDRESS:-127.0.0.1}:${HOST_PORT:-8080}:8080"
@@ -11,7 +11,7 @@ services:
       MCP_ALLOWED_ORIGINS: "${MCP_ALLOWED_ORIGINS:-}"
       REGISTRATION_OPEN: "${REGISTRATION_OPEN:-false}"
     volumes:
-      - hogwarts-data:/app/server/data
+      - xiuxian-data:/app/server/data
     restart: unless-stopped
 volumes:
-  hogwarts-data:
+  xiuxian-data:

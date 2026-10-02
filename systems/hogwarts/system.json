@@ -1,6 +1,0 @@
-{
-  "meta": {"name": "Hogwarts school life", "version": 1, "engine": "hogwarts.rules", "license": "Apache-2.0"},
-  "rules": {"curfew_hour": 22, "curfew_end_hour": 6, "movement_minutes": 10, "max_stamina": 100, "night_penalty": 5},
-  "world_rules": ["魔杖是施法媒介", "未学习的魔咒不能施放", "魔法防护不能被普通开锁咒绕过", "未获许可不能进入禁书区", "三年级以下不能进入霍格莫德", "宵禁期间巡查会记录违规"],
-  "note": "独立校园生活规则包，不声明兼容 cruncher 的 D20 system.json schema。"
-}

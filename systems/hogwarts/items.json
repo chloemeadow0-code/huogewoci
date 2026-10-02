@@ -1,8 +1,0 @@
-{
-  "wand":{"name":"魔杖","description":"榛木、独角兽毛，十一英寸。"},
-  "textbook":{"name":"一年级魔咒练习册","description":"含有入门咒语和经批准的练习章节。","spells":["lumos","nox","wingardium_leviosa","accio","alohomora","reparo","scourgify","aguamenti","protego","expelliarmus"]},
-  "apple":{"name":"苹果","description":"恢复十点体力。","restore":10},
-  "tonic":{"name":"恢复药剂","description":"恢复三十点体力。","restore":30},
-  "feather":{"name":"练习羽毛","description":"轻盈的普通羽毛。"},
-  "library_book":{"name":"校园植物笔记","description":"记载银叶草的照料方法。","fact":"silverleaf_care"}
-}

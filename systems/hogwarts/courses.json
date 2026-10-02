@@ -1,5 +1,0 @@
-{
-  "charms":{"name":"魔咒学","location":"library","teacher":"professor","hour":9,"duration":60,"spells":["lumos","nox","wingardium_leviosa"]},
-  "potions":{"name":"魔药学","location":"potions","teacher":"professor","hour":13,"duration":60,"spells":["scourgify","reparo"]},
-  "herbology":{"name":"草药学","location":"greenhouse","teacher":"professor","hour":15,"duration":60,"spells":["aguamenti"]}
-}

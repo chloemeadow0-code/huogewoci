@@ -10,6 +10,7 @@ server/data/
 .pytest_cache/
 .ruff_cache/
 credential.tmp
-hogwarts.mcp.json
-hogwarts-test-results.xml
-hogwarts-demo.json
+xiuxian.mcp.json
+xiuxian-test-results.xml
+xiuxian-demo.json
+work/

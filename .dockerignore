@@ -9,6 +9,6 @@ server/data
 *.db-wal
 *.db-shm
 .env
-hogwarts.mcp.json
-hogwarts-demo.json
-hogwarts-test-results.xml
+xiuxian.mcp.json
+xiuxian-demo.json
+xiuxian-test-results.xml
