@@ -29,15 +29,17 @@ async def test_real_stdio(tmp_path):
                 payload(await session.call_tool("get_self"))["result"]["realm"]
                 == "炼气"
             )
+            assert payload(await session.call_tool("rename", {"name": "新道号"}))["ok"]
+            assert (
+                payload(await session.call_tool("get_self"))["result"]["name"]
+                == "新道号"
+            )
             assert payload(
                 await session.call_tool("choose_route", {"route": "qingxiao"})
             )["ok"]
-            assert (
-                payload(await session.call_tool("cultivate", {"duration": 4}))[
-                    "result"
-                ]["gained"]
-                == 32
-            )
+            assert payload(await session.call_tool("cultivate", {"duration": 4}))[
+                "result"
+            ]["gained"] in range(20, 45, 4)
             assert not payload(
                 await session.call_tool("fight", {"target": "guardian"})
             )["ok"]
@@ -89,12 +91,13 @@ def test_real_http_mcp(tmp_path, monkeypatch):
         assert {t["name"] for t in rpc("tools/list")["tools"]} == set(TOOLS)
         rpc("tools/call", {"name": "choose_route", "arguments": {"route": "qingxiao"}})
         r = rpc("tools/call", {"name": "cultivate", "arguments": {"duration": 3}})
-        assert json.loads(r["content"][0]["text"])["result"]["gained"] == 24
+        gained = json.loads(r["content"][0]["text"])["result"]["gained"]
+        assert gained in range(15, 34, 3)
         view = c.get("/api/state", headers=headers)
         assert view.status_code == 200
         assert view.json()["readOnly"] is True
         assert view.json()["kind"] == "ai"
-        assert view.json()["self"]["result"]["cultivation"] == 24
+        assert view.json()["self"]["result"]["cultivation"] == gained
         assert view.json()["history"]["result"][-1]["action"] == "cultivate"
         clock_before = view.json()["world"]["result"]["time"]
         assert (
@@ -129,6 +132,17 @@ async def test_full_campaign_over_stdio(tmp_path):
 
     tape = []
     campaign(tmp_path / "expected.db", record=tape)
+    from xiuxian.engine import Game
+
+    born = next(
+        step["response"]["result"] for step in tape if step["tool"] == "get_self"
+    )
+    live = Game(tmp_path / "live.db")
+    live.player["root"] = born["root"]
+    live.player["rootElements"] = born["rootElements"]
+    live.player["aptitude"] = born["aptitude"]
+    live._store()
+    live.close()
     params = StdioServerParameters(
         command=sys.executable,
         args=["-m", "xiuxian.server", "--db", str(tmp_path / "live.db")],

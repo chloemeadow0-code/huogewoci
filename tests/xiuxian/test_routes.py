@@ -12,6 +12,9 @@ def make_game(tmp_path):
     def create(route, key=None):
         g = Game(tmp_path / ((key or route) + ".db"), player_key=key or route)
         assert g.call("choose_route", route=route)["ok"]
+        # Compare route modifiers with identical base aptitude.
+        g.player["aptitude"] = 2
+        g._store()
         opened.append(g)
         return g
 

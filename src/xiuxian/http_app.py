@@ -128,6 +128,17 @@ def create_http_app(data_dir=None):
 
         return JSONResponse(await run_in_threadpool(view))
 
+    async def rename_player(request):
+        try:
+            payload = await body(request)
+            require(set(payload) == {"name"}, "改名只接受name")
+            result = await run_in_threadpool(
+                action, "rename", {"name": payload["name"]}, identity()
+            )
+            return JSONResponse(result, status_code=200 if result["ok"] else 400)
+        except (RuleError, ValueError, TypeError):
+            return JSONResponse({"error": "无效道号，请使用2至24字。"}, status_code=400)
+
     async def perform(request):
         try:
             payload = await body(request)
@@ -186,6 +197,7 @@ def create_http_app(data_dir=None):
             Route("/api/register", register, methods=["POST"]),
             Route("/api/state", state),
             Route("/api/action", perform, methods=["POST"]),
+            Route("/api/rename", rename_player, methods=["POST"]),
             Mount("/static", StaticFiles(directory=STATIC)),
             Mount("/mcp", mcp_app),
         ],
@@ -213,7 +225,11 @@ def create_http_app(data_dir=None):
                     scope, receive, send
                 )
             who = None
-            if path.startswith("/mcp/") or path in ("/api/state", "/api/action"):
+            if path.startswith("/mcp/") or path in (
+                "/api/state",
+                "/api/action",
+                "/api/rename",
+            ):
                 auth = request.headers.get("authorization", "")
                 key = (
                     auth[7:].strip()

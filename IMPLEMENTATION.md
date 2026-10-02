@@ -19,11 +19,11 @@
 ## 新增文件
 
 - `src/xiuxian/__init__.py`：模块说明。
-- `src/xiuxian/engine.py`：22个动作、状态持久化、时间事件、战斗、关系、任务、突破、秘境防刷。
+- `src/xiuxian/engine.py`：23个动作、状态持久化、时间事件、战斗、关系、任务、突破、秘境防刷。
 - `src/xiuxian/rules.py`：校验、伤害、命中、逃跑公式。
 - `src/xiuxian/models.py`：Player/StatusEffect/Technique/Skill/NPC/Quest类型。
 - `src/xiuxian/auth.py`：复用原凭证机制，修仙凭证前缀xx_sk_。
-- `src/xiuxian/server.py`：22工具、xiuxian://rules资源、begin_journey prompt。
+- `src/xiuxian/server.py`：23工具、xiuxian://rules资源、begin_journey prompt。
 - `src/xiuxian/http_app.py`：复用HTTP入口和身份边界，改为修仙状态。
 - `src/xiuxian/container.py`：复用容器数据卷权限处理和降权。
 - `src/xiuxian/operator.py`：复用LoreKit本地手动存档，不暴露给AI。
@@ -43,7 +43,7 @@
 
 详细ID和调用示例见README。世界为按身份映射的宗门驻地、青石镇、落霞山野和灵溪秘境；4名NPC、6种敌人、9门功法、13个固定类型招式、31种物品、9个配方、13个任务。炼气、筑基、金丹、元婴各初中后期与圆满。
 
-MCP工具：get_self / get_world / cultivate / travel / explore / talk / fight / use_skill / use_item / craft / trade / accept_quest / submit_quest / breakthrough / retreat / inspect_history / choose_route / inspect_route / learn_technique / prepare_formation / manage_beast / track。
+MCP工具：get_self / get_world / cultivate / travel / explore / talk / fight / use_skill / use_item / craft / trade / accept_quest / submit_quest / breakthrough / retreat / inspect_history / choose_route / inspect_route / learn_technique / prepare_formation / manage_beast / track / rename。
 
 可以真实完成：入宗→修炼→采药任务→下山探索→妖兽逐回合战斗→掉落→回宗交任务→学功法/买装备→炼气圆满→筑基丹→筑基→进入周期秘境→击败石卫→交试炼任务。Demo不会写角色数值或赠送测试物品。
 
@@ -60,17 +60,19 @@ AI只传招式ID和行动参数。命中、伤害、控制、先后手、冷却�
 
 本机未安装Docker，未实际验证Docker构建、Linux工作流或公网部署。工作流已经更新，不能把旧仓库的CI成功结果当作本次改造验证。
 
-第一版仍简化：单进程共享行动时钟；固定初始木火双灵根和资质；区域内节点没有逐建筑专属规则；NPC使用固定选项与记忆；部分世界事件只修改规则参数，拍卖会没有竞价；高境界缺少专属地图；暂无跨玩家交易、多人战斗、宗门竞争、实时后台时钟、真正死亡和转世。旧校园存档与hw_sk_凭证不自动迁移，部署建议新数据目录。
+第一版仍简化：单进程共享行动时钟；出生随机生成并持久化五行灵根组合与1至5资质；区域内节点没有逐建筑专属规则；NPC使用固定选项与记忆；部分世界事件只修改规则参数，拍卖会没有竞价；高境界缺少专属地图；暂无跨玩家交易、多人战斗、宗门竞争、实时后台时钟、真正死亡和转世。旧校园存档与hw_sk_凭证不自动迁移，部署建议新数据目录。
 
 本次 Windows / Python 3.12 验证：82项测试全部通过，含真实stdio完整循环重放和Streamable HTTP认证；独立Demo完成筑基、秘境石卫与任务提交。Docker和公网部署未验证。
 
 ## 五路线增量改造
 
 新增 src/xiuxian/routes.py（路线配置与规则助手）、routes_demo.py（五种玩法试玩）、tests/xiuxian/test_routes.py、ROUTES.md。
-修改 engine.py 将原规则计算接入路线修正、预阵、剑势、丹品、灵兽、信誉与方向成长；server.py增加choose_route/inspect_route/learn_technique/prepare_formation/manage_beast/track，总计22工具。
+修改 engine.py 将原规则计算接入路线修正、预阵、剑势、丹品、灵兽、信誉与方向成长；server.py增加choose_route/inspect_route/learn_technique/prepare_formation/manage_beast/track，总计23工具。
 修改 content.json 保存完整五条路线设定与资源、专属传承/技能/任务、预阵、丹品、灵兽和价格参数；models.py新增路线与灵兽类型；http_app.py及注册页支持可选route，未选择时AI自主择道；demo.py改为剑宗路线，并根据状态主动补给。
 旧版修仙存档不清空，第一次选择路线后不能再切换。新角色必须择道才能开始行动。四区域结构保留，宗门驻地按身份显示，散修以小镇为基地。
 
 固定加成负面与四种宗门机制、散修杂学已由程序实现。功法等级与熟练度数值成长已经实现。组队门规、宗门政治、科研审批和真正死亡仍未实现，详见ROUTES.md；不存在AI临场裁定。
 
 本次最终验证：82项测试全部通过；原筑基/秘境Demo与五路线独立试玩均完成。包含真实stdio完整成长重放、HTTP MCP、旧存档择道、路线特殊机制与价格一致性。
+
+新增birth.py：灵根与资质出生抽样使用系统随机源，与战斗随机序列隔离；旧存档不重抽。rename动作保留人物ID、凭证、全部进度与关系，只记录改名历史，不推进时间。网页人类与AI凭证均可通过/api/rename修改自己的道号。

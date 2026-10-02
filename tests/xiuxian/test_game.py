@@ -43,13 +43,13 @@ def test_invalid_atomic(game, tool, args):
 
 
 def test_persistence_and_isolation(game):
-    assert game.call("cultivate", duration=3)["ok"]
+    gain = game.call("cultivate", duration=3)["result"]["gained"]
     other = Game(game.path, player_key="other", player_name="其他修士")
     assert other.call("get_self")["result"]["cultivation"] == 0
     assert other.call("inspect_history")["result"] == []
     other.close()
     reopened = Game(game.path, player_key="test")
-    assert reopened.call("get_self")["result"]["cultivation"] == 24
+    assert reopened.call("get_self")["result"]["cultivation"] == gain
     reopened.close()
 
 
@@ -201,9 +201,9 @@ def test_http_identity(tmp_path, monkeypatch):
         )
         assert token not in (tmp_path / "accounts.db").read_bytes().decode("latin1")
     with TestClient(create_http_app(tmp_path), base_url="http://localhost") as c:
-        assert (
-            c.get("/api/state", headers=h).json()["self"]["result"]["cultivation"] == 16
-        )
+        assert c.get("/api/state", headers=h).json()["self"]["result"][
+            "cultivation"
+        ] in range(10, 23, 2)
 
 
 @pytest.mark.parametrize("roll,success", [(1, True), (100, False)])
@@ -295,7 +295,7 @@ def test_snapshot_recovery(game):
     manual_save(game.db, game.sid, "before")
     game.call("cultivate", duration=2)
     save_load(game.db, game.sid, "before")
-    assert game.call("get_self")["result"]["cultivation"] == 16
+    assert game.call("get_self")["result"]["cultivation"] in range(10, 23, 2)
 
 
 def test_control_and_heal_block(game):

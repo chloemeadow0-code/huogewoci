@@ -2,3 +2,5 @@
 #shop{max-height:390px;overflow-y:auto;padding-right:8px;scrollbar-color:#a7b7aa transparent;scrollbar-width:thin}button:focus-visible,a:focus-visible{outline:2px solid #739886;outline-offset:3px}
 
 .watch-note{padding:12px 18px;background:#e1e9db;border-left:3px solid #769983;font-size:13px;margin:24px 0 0}
+
+@media(min-width:761px){.metrics{grid-template-columns:repeat(6,1fr)}}

@@ -1815,5 +1815,28 @@
   ],
   "protected_enemies": [
     "protected_deer"
-  ]
+  ],
+  "birth": {
+    "elements": [
+      "金",
+      "木",
+      "水",
+      "火",
+      "土"
+    ],
+    "countWeights": [
+      10,
+      25,
+      35,
+      20,
+      10
+    ],
+    "aptitudeWeights": [
+      10,
+      25,
+      35,
+      20,
+      10
+    ]
+  }
 }

@@ -12,11 +12,11 @@ def create_server(db_path, identity_provider=None, **settings):
         instructions="你是一名修士。先 get_self/get_world；新角色先choose_route选择五条路线之一，再自主选择行动。只有工具结果是事实；只传技能ID，禁止编造数值。fight 开战，use_skill/use_item/retreat 逐回合行动。"
     )
 
-    def invoke(name, **kwargs):
+    def invoke(tool_name, **kwargs):
         with LOCK:
             game = Game(db_path, **(identity_provider() if identity_provider else {}))
             try:
-                return game.call(name, **kwargs)
+                return game.call(tool_name, **kwargs)
             finally:
                 game.close()
 
@@ -126,6 +126,11 @@ def create_server(db_path, identity_provider=None, **settings):
     ) -> dict:
         """灵兽contract/feed/heal/stance/release/abuse；重伤强制出战会失忠，release需登记。"""
         return invoke("manage_beast", action=action, beast=beast, stance=stance)
+
+    @app.tool()
+    def rename(name: str) -> dict:
+        """修改自己的道号为2至24字；保留凭证与全部进度，不消耗游戏时间。"""
+        return invoke("rename", name=name)
 
     @app.tool()
     def track(target: str) -> dict:

@@ -9,6 +9,7 @@ from .rules import require, bounded_int, RuleError
 from datetime import datetime, timezone
 from .models import Player, StatusEffect
 from .routes import RouteRules
+from .birth import generate_root, generate_aptitude
 
 LOCK = threading.RLock()
 CONTENT = json.loads(
@@ -40,6 +41,7 @@ TOOLS = (
     "prepare_formation",
     "manage_beast",
     "track",
+    "rename",
 )
 READ_ONLY = {"get_self", "get_world", "inspect_history", "inspect_route"}
 LOCATIONS = CONTENT["locations"]
@@ -93,8 +95,8 @@ class Game(RouteRules):
                     sect="青云宗",
                     realm="炼气",
                     level=1,
-                    root="木火双灵根",
-                    aptitude=2,
+                    **generate_root(CONTENT["birth"]),
+                    aptitude=generate_aptitude(CONTENT["birth"]),
                     method="青云吐纳诀",
                     cultivation=0,
                     hp=100,
@@ -143,7 +145,7 @@ class Game(RouteRules):
                 require(
                     self.player.get("route") is not None
                     or not self.player.get("route_required", False)
-                    or tool in READ_ONLY | {"choose_route"},
+                    or tool in READ_ONLY | {"choose_route", "rename"},
                     "请先choose_route选择修行路线",
                 )
                 bound = inspect.signature(getattr(self, tool)).bind(**kwargs)
@@ -151,7 +153,8 @@ class Game(RouteRules):
                 kwargs = dict(bound.arguments)
                 require(
                     not self.player["battle"]
-                    or tool in READ_ONLY | {"use_skill", "use_item", "retreat"},
+                    or tool
+                    in READ_ONLY | {"use_skill", "use_item", "retreat", "rename"},
                     "战斗中只能使用招式、物品或撤退",
                 )
                 start = self.state["minutes"]
@@ -159,8 +162,9 @@ class Game(RouteRules):
                 in_battle = self.player["battle"] is not None
                 result = getattr(self, tool)(**kwargs)
                 if tool not in READ_ONLY:
-                    self.state["tick"] += 1
-                    self._advance(tool, kwargs, in_battle)
+                    if tool != "rename":
+                        self.state["tick"] += 1
+                        self._advance(tool, kwargs, in_battle)
                     old_player = before["players"][self.key]
                     delta = {
                         k: self.player["inventory"].get(k, 0)
@@ -201,6 +205,17 @@ class Game(RouteRules):
                 self.db.rollback()
                 self.state = before
                 raise
+
+    def rename(self, name: str):
+        require(isinstance(name, str), "道号须为2至24字")
+        name = name.strip()
+        require(
+            2 <= len(name) <= 24 and all(ord(c) >= 32 for c in name),
+            "道号须为2至24字，不得包含控制字符",
+        )
+        previous = self.player["name"]
+        self.player["name"] = name
+        return {"previousName": previous, "name": name}
 
     def inspect_history(self, limit: int = 20):
         return self.player["history"][-bounded_int(limit, 1, 100) :]
@@ -316,6 +331,7 @@ class Game(RouteRules):
                 "get_self",
                 "get_world",
                 "inspect_history",
+                "rename",
                 "inspect_route",
                 "choose_route",
             ]
@@ -324,6 +340,7 @@ class Game(RouteRules):
                 "get_self",
                 "get_world",
                 "inspect_history",
+                "rename",
                 "use_skill",
                 "use_item",
                 "retreat",
@@ -332,6 +349,7 @@ class Game(RouteRules):
             "get_self",
             "get_world",
             "inspect_history",
+            "rename",
             "travel",
             "talk",
             "use_item",
