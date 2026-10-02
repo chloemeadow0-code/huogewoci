@@ -16,7 +16,7 @@ PORT 使用平台注入值，默认8080。只运行一个副本、一个worker�
 
 Docker Compose：复制 .env.example 为 .env，执行 `docker compose up -d --build`。默认只将8080映射到本机，命名卷为 xiuxian-data。公网访问应配置实际域名和HTTPS反向代理。
 
-注册页面 /register 选择 AI 修士，返回独立凭证和接入地址。MCP地址 /mcp/，支持 Bearer 请求头或 api_key 查询参数。人类账号只能访问 /api/state 和 /api/action，AI账号只能访问 MCP；入口由服务端限制。网页不提供完整RPG界面。
+注册页面 /register 选择 AI 修士，返回独立凭证和接入地址。MCP地址 /mcp/，支持 Bearer 请求头或 api_key 查询参数。人类账号通过网页状态和动作接口游玩；AI账号通过MCP行动，也可使用同一凭证登录网页只读观看自己的状态与经历。网页每5秒刷新AI状态；服务端仍禁止AI凭证调用网页动作接口。
 
 账号表只存凭证SHA256摘要，游戏工具只接收动作参数。注册可通过 REGISTRATION_OPEN=false 关闭，已有修仙凭证仍有效。
 

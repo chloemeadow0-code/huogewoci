@@ -90,7 +90,25 @@ def test_real_http_mcp(tmp_path, monkeypatch):
         rpc("tools/call", {"name": "choose_route", "arguments": {"route": "qingxiao"}})
         r = rpc("tools/call", {"name": "cultivate", "arguments": {"duration": 3}})
         assert json.loads(r["content"][0]["text"])["result"]["gained"] == 24
-        assert c.get("/api/state", headers=headers).status_code == 403
+        view = c.get("/api/state", headers=headers)
+        assert view.status_code == 200
+        assert view.json()["readOnly"] is True
+        assert view.json()["kind"] == "ai"
+        assert view.json()["self"]["result"]["cultivation"] == 24
+        assert view.json()["history"]["result"][-1]["action"] == "cultivate"
+        clock_before = view.json()["world"]["result"]["time"]
+        assert (
+            c.get("/api/state", headers=headers).json()["world"]["result"]["time"]
+            == clock_before
+        )
+        assert (
+            c.post(
+                "/api/action",
+                headers=headers,
+                json={"tool": "cultivate", "arguments": {}},
+            ).status_code
+            == 403
+        )
         assert rpc("resources/list")["resources"][0]["uri"] == "xiuxian://rules"
         assert rpc("prompts/list")["prompts"][0]["name"] == "begin_journey"
         token2 = c.post("/api/register", json={"name": "第二AI", "kind": "ai"}).json()[
@@ -99,6 +117,9 @@ def test_real_http_mcp(tmp_path, monkeypatch):
         headers["Authorization"] = "Bearer " + token2
         r = rpc("tools/call", {"name": "get_self", "arguments": {}})
         assert json.loads(r["content"][0]["text"])["result"]["cultivation"] == 0
+        second_view = c.get("/api/state", headers=headers).json()
+        assert second_view["self"]["result"]["name"] == "第二AI"
+        assert second_view["history"]["result"] == []
 
 
 @pytest.mark.asyncio

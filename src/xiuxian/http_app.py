@@ -111,13 +111,20 @@ def create_http_app(data_dir=None):
             return JSONResponse({"error": "请使用 2～24 字的名字。"}, status_code=400)
 
     async def state(request):
-        who = identity()
+        who = current_identity.get()
 
         def view():
             with LOCK:
                 status = action("get_self", {}, who)
                 world = action("get_world", {}, who)
-                return {"self": status, "world": world}
+                history = action("inspect_history", {"limit": 30}, who)
+                return {
+                    "self": status,
+                    "world": world,
+                    "history": history,
+                    "kind": who["kind"],
+                    "readOnly": who["kind"] == "ai",
+                }
 
         return JSONResponse(await run_in_threadpool(view))
 
@@ -218,8 +225,12 @@ def create_http_app(data_dir=None):
                     return await JSONResponse(
                         {"error": "缺少或无效的 修仙 凭证。"}, status_code=401
                     )(scope, receive, send)
-                required_kind = "ai" if path.startswith("/mcp/") else "human"
-                if who["kind"] != required_kind:
+                required_kind = (
+                    "ai"
+                    if path.startswith("/mcp/")
+                    else "human" if path == "/api/action" else None
+                )
+                if required_kind is not None and who["kind"] != required_kind:
                     error = (
                         "MCP 只允许 AI 账号，请单独创建 AI 修士。"
                         if required_kind == "ai"
