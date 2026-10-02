@@ -23,6 +23,7 @@ TOOLS = ('look', 'move', 'inspect', 'talk', 'ask', 'give', 'check_status',
          'check_schedule', 'check_inventory', 'attend_class', 'study',
          'practice_spell', 'cast_spell', 'use_item', 'read', 'search', 'sleep', 'wait')
 READ_ONLY = {'look', 'inspect', 'check_status', 'check_schedule', 'check_inventory'}
+HOUSES = {'Gryffindor': '格兰芬多', 'Hufflepuff': '赫夫帕夫', 'Ravenclaw': '拉文克劳', 'Slytherin': '斯莱特林'}
 LOCK = threading.RLock()
 
 
@@ -333,6 +334,8 @@ class Game:
 
     def check_status(self):
         result = copy.deepcopy(self.player)
+        result['house_name'] = HOUSES[result['house']]
+        result['admission_hint'] = None if result.get('house_confirmed') else '用 use_item(item="admission:Hufflepuff") 确认赫夫帕夫；也可选择其他学院。'
         result['known_facts'] = [self.pack['world']['facts'][f] for f in result['known_facts']]
         result['effects'] = copy.deepcopy(self.progress['effects'])
         return result
@@ -423,6 +426,14 @@ class Game:
                 'effect': spec['effect'] if success else '熟练度不足，魔咒没有生效。'}
 
     def use_item(self, item: str):
+        if isinstance(item, str) and item.startswith('admission:'):
+            house = item.split(':', 1)[1]
+            house = next((key for key, name in HOUSES.items() if house == name), house)
+            require(house in HOUSES, '请选择四大学院之一。')
+            require(not self.player.get('house_confirmed', False), '学院已经确认，不能重复分院。')
+            self.player['house'] = house
+            self.player['house_confirmed'] = True
+            return {'house': house, 'house_name': HOUSES[house], 'reply': '入学登记完成，原有进度保留。'}
         self._awake()
         key = self._resolve('items', item)
         require(self.player['inventory'].get(key, 0) > 0, '没有这个物品。')

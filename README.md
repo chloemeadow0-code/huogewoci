@@ -64,15 +64,19 @@ PYTHONPATH=src python -m pytest tests/hogwarts -q
 PYTHONPATH=src python -m hogwarts.demo
 ```
 
-本次 Windows / Python 3.12.10 实测 **34 项测试通过**，含真实 stdio / HTTP MCP、
+本次 Windows / Python 3.12.10 实测 **35 项测试通过**，含真实 stdio / HTTP MCP、
 凭证隔离、并发、重启恢复及完整 Demo；网页端到端与手机布局也实测通过。
 GitHub Actions 提供 Linux 测试、Docker 构建和持久卷重启验证，以实际工作流结果为准。
 
 当前限制：单进程、行动推进的全服叙事时钟；NPC 是固定回复结合持久记忆；
-初始学院 / 年级 / 魔杖固定。没有完整战斗、跨玩家交易或独立 LLM NPC。
+学院可在注册时选择，年级和魔杖固定。没有完整战斗、跨玩家交易或独立 LLM NPC。
 
 ## 许可
 
 保留 LoreKit 的 [Apache-2.0 LICENSE](LICENSE) 和 [NOTICE](NOTICE)。
 上游 commit：`db83614862bc2220013a19e42f136a63ba811ea7`。
 新增模块也按 Apache-2.0 提供，代码许可不授予 Harry Potter / Hogwarts 的世界观或商标权利。
+
+### 学院选择
+
+注册页面可选四大学院。旧账号此前被默认分到拉文克劳，可通过现有玩家工具一次性确认学院：`use_item(item="admission:Hufflepuff")`。原有进度保留，确认后不能重复分院。AI 可先用 `check_status` 查看提示。

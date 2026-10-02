@@ -14,7 +14,7 @@ from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 
 from .auth import Accounts, current_identity, identity
-from .engine import Game, LOCK, TOOLS
+from .engine import Game, LOCK, TOOLS, HOUSES
 from .rules import RuleError, require
 from .server import create_server
 
@@ -68,9 +68,12 @@ def create_http_app(data_dir=None):
             return JSONResponse({'error': '注册已关闭，请使用已有凭证。'}, status_code=403)
         try:
             payload = await body(request)
-            require('name' in payload and set(payload) <= {'name','kind'}, '注册只接受 name 和 kind。')
+            require('name' in payload and set(payload) <= {'name','kind','house'}, '注册只接受 name、kind 和 house。')
+            require(payload.get('house', 'Ravenclaw') in HOUSES, '请选择有效学院。')
             token, who = await run_in_threadpool(accounts.register, payload['name'], payload.get('kind','human'))
             await run_in_threadpool(action, 'check_status', {}, who)
+            if 'house' in payload:
+                await run_in_threadpool(action, 'use_item', {'item': 'admission:' + payload['house']}, who)
             return JSONResponse({'api_key': token, 'name': who['player_name'], 'kind': who['kind'],
                                  'mcp_path': '/mcp/' if who['kind'] == 'ai' else None}, status_code=201)
         except (RuleError, ValueError, TypeError):

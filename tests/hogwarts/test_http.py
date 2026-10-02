@@ -231,3 +231,30 @@ def test_legacy_accounts_migrate_to_human(tmp_path):
     assert registry.lookup(key)['kind']=='human'
     assert registry.lookup(key)['player_key']=='legacy'
     assert registry.lookup(key)['player_name']=='旧学生'
+
+def test_house_selection_and_legacy_progress(client, tmp_path):
+    response=client.post('/api/register',json={'name':'獾院AI','kind':'ai','house':'Hufflepuff'})
+    assert response.status_code==201
+    who=Accounts(tmp_path/'data').lookup(response.json()['api_key'])
+    game=Game(tmp_path/'data'/'hogwarts.db',player_key=who['player_key'],player_name=who['player_name'])
+    try:
+        assert game.call('check_status')['result']['house']=='Hufflepuff'
+        assert not game.call('use_item',item='admission:Ravenclaw')['ok']
+    finally:
+        game.close()
+    key=enroll(client,'已有AI学生','ai')
+    who=Accounts(tmp_path/'data').lookup(key)
+    game=Game(tmp_path/'data'/'hogwarts.db',player_key=who['player_key'],player_name=who['player_name'])
+    try:
+        game.call('sleep',hours=0)
+        game.call('use_item',item='apple')
+        before=game.call('check_status')['result']
+        assert not game.call('use_item',item='admission:invalid')['ok']
+        assert game.call('use_item',item='admission:赫夫帕夫')['ok']
+        after=game.call('check_status')['result']
+        for field in ('inventory','learned_spells','coins','house_points','stamina','location'):
+            assert after[field]==before[field]
+        assert after['house']=='Hufflepuff'
+    finally:
+        game.close()
+    assert client.post('/api/register',json={'name':'无效学院','house':'invalid'}).status_code==400

@@ -144,7 +144,7 @@ check_inventory、attend_class、study、practice_spell、cast_spell、use_item�
 进度、分支存档。**两份都要持久化和备份**。一致性备份可停止服务后备份整个持久卷；
 不要在服务运行时只复制一个 SQLite 主文件而忽略 WAL。
 
-本次在 Windows / Python 3.12.10 实测 **34 项测试全部通过**，包含真实 stdio 和 HTTP MCP
+本次在 Windows / Python 3.12.10 实测 **35 项测试全部通过**，包含真实 stdio 和 HTTP MCP
 完整 Demo、查询参数和 Bearer 两种认证、两个账号并发隔离、共享物体、个人知识、
 关闭注册后旧账号续玩、重启恢复，以及共享时钟下对非当前玩家的宵禁巡查。
 本机测试有两个提示：上游 D20 test_config 检测提示、Starlette 的 httpx 测试适配器弃用提示。
@@ -162,3 +162,7 @@ check_inventory、attend_class、study、practice_spell、cast_spell、use_item�
 
 部署包包含上游 Apache-2.0 LICENSE / NOTICE 与所需 LoreKit 源码，不包含本机 `.venv`、
 任何玩家数据库、账号凭证或本机绝对路径 MCP 配置。详细玩法见 `HOGWARTS.md` 和 `/manual`。
+
+### 学院选择
+
+注册页面可选四大学院。旧账号此前被默认分到拉文克劳，可通过现有玩家工具一次性确认学院：`use_item(item="admission:Hufflepuff")`。原有进度保留，确认后不能重复分院。AI 可先用 `check_status` 查看提示。
