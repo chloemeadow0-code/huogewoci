@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+data/
+server/data/
+*.db
+*.db-wal
+*.db-shm
+.pytest_cache/
+.ruff_cache/
+credential.tmp
+hogwarts.mcp.json
+hogwarts-test-results.xml
+hogwarts-demo.json

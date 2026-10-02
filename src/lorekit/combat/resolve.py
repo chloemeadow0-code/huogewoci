@@ -1,0 +1,806 @@
+"""Action resolution — contested rolls, threshold, degree, and the main entry point."""
+
+from __future__ import annotations
+
+import json
+import math
+import random
+
+from cruncher.dice import roll_expr
+from cruncher.system_pack import SystemPack, load_system_pack
+from cruncher.types import CharacterData
+from lorekit.combat.conditions import (
+    _check_condition_action_limit,
+    _increment_turn_actions,
+    is_incapacitated,
+)
+from lorekit.combat.effects import PendingReactionSignal, _apply_on_hit, _check_contagious, _fire_damage_triggers
+from lorekit.combat.helpers import (
+    _ensure_current_hp,
+    _get_action_def,
+    _get_defender_resolution_effects,
+    _get_derived,
+    _get_gm_hints,
+    _is_crit,
+    _sync_and_recalc,
+    _write_attr,
+)
+from lorekit.combat.options import (
+    _apply_team_bonus,
+    _apply_trade_modifiers,
+    _check_pre_resolution,
+    _expand_combat_options,
+)
+from lorekit.combat.reactions import _check_reactions
+from lorekit.db import LoreKitError
+from lorekit.rules import load_character_data
+
+
+def _contested_roll(
+    pack: SystemPack,
+    attacker: CharacterData,
+    defender: CharacterData,
+    action_def: dict,
+) -> tuple[int, int, int, int | None, int, int | None]:
+    """Roll a contested check. Returns (atk_roll, atk_total, def_total, def_roll, def_bonus, atk_natural).
+
+    def_roll is None when the defender uses a static DC.
+    atk_natural is the raw die face (for crit detection), None for multi-die.
+    """
+    attack_stat = action_def["attack_stat"]
+    defense_stat = action_def["defense_stat"]
+
+    atk_bonus = _get_derived(attacker, attack_stat)
+    def_bonus = _get_derived(defender, defense_stat)
+
+    atk_result = roll_expr(pack.dice)
+    atk_roll = atk_result["total"]
+    atk_natural = atk_result["natural"]
+
+    # Apply die floor (e.g. Skill Mastery: take 10)
+    try:
+        floor_val = _get_derived(attacker, f"floor_{attack_stat}")
+        if floor_val and atk_roll < floor_val:
+            atk_roll = floor_val
+    except LoreKitError:
+        pass
+
+    atk_total = atk_roll + atk_bonus
+
+    if action_def.get("contested"):
+        def_result = roll_expr(pack.dice)
+        def_roll = def_result["total"]
+        def_total = def_roll + def_bonus
+    else:
+        def_roll = None
+        def_total = def_bonus
+
+    return atk_roll, atk_total, def_total, def_roll, def_bonus, atk_natural
+
+
+def _apply_threshold_outcome(
+    db,
+    pack: SystemPack,
+    attacker: CharacterData,
+    defender: CharacterData,
+    action_def: dict,
+    lines: list[str],
+    is_crit: bool,
+    margin: int,
+    options: dict,
+) -> None:
+    """Apply effects for a threshold (hit/miss) resolution on hit."""
+    on_hit = action_def.get("on_hit", {})
+    _apply_on_hit(db, pack, attacker, defender, on_hit, lines, is_crit=is_crit, margin=margin, options=options)
+
+
+def _apply_degree_outcome(
+    db,
+    pack: SystemPack,
+    attacker: CharacterData,
+    defender: CharacterData,
+    action_def: dict,
+    lines: list[str],
+    is_crit: bool,
+    margin: int,
+    options: dict,
+    trade_adj: dict[str, int],
+    team_dc_bonus: int,
+) -> None:
+    """Apply effects for a degree-of-failure resolution on hit.
+
+    Runs resistance check, calculates degree, applies outcome table effects.
+    Falls back to _apply_on_hit if no damage_rank_stat/effect_rank.
+    """
+    resolution = pack.resolution
+    crit_cfg = resolution.get("critical")
+
+    damage_rank_stat = action_def.get("damage_rank_stat")
+    effect_rank_direct = action_def.get("effect_rank")
+
+    if damage_rank_stat or effect_rank_direct is not None:
+        resistance_stat = action_def.get("resistance_stat", resolution.get("resistance_stat"))
+        dc_base = resolution.get("dc_base", 15)
+
+        if effect_rank_direct is not None:
+            damage_rank = int(effect_rank_direct)
+        else:
+            damage_rank = _get_derived(attacker, damage_rank_stat)
+
+        # Data-driven cap check
+        cap = action_def.get("cap")
+        if cap:
+            attack_stat = action_def["attack_stat"]
+            cap_stats = cap["sum"]
+            cap_max_stat = cap["max_stat"]
+            cap_values = []
+            for cs in cap_stats:
+                if cs == "effect_rank" and effect_rank_direct is not None:
+                    cap_values.append(damage_rank)
+                elif cs == "attack_stat":
+                    cap_values.append(_get_derived(attacker, attack_stat))
+                else:
+                    cap_values.append(_get_derived(attacker, cs))
+            cap_total = sum(cap_values)
+            cap_max = _get_derived(attacker, cap_max_stat)
+            if cap_total > cap_max:
+                parts = " + ".join(str(v) for v in cap_values)
+                lines.append(f"WARNING: cap exceeded — {parts} = {cap_total} > {cap_max}")
+
+        # Apply trade to damage rank
+        if damage_rank_stat and damage_rank_stat in trade_adj:
+            damage_rank += trade_adj[damage_rank_stat]
+
+        # Multiattack DC bonus
+        multiattack_cfg = action_def.get("multiattack")
+        if multiattack_cfg and isinstance(multiattack_cfg, dict):
+            thresholds = multiattack_cfg.get("dc_bonus_thresholds", [])
+            ma_bonus = 0
+            for t in sorted(thresholds, key=lambda x: x["margin"], reverse=True):
+                if margin >= t["margin"]:
+                    ma_bonus = t["bonus"]
+                    break
+            if ma_bonus:
+                damage_rank += ma_bonus
+                lines.append(f"MULTIATTACK: hit margin {margin} → +{ma_bonus} effect rank (now {damage_rank})")
+
+        # Team DC bonus
+        if team_dc_bonus:
+            damage_rank += team_dc_bonus
+            lines.append(f"TEAM DC BONUS: +{team_dc_bonus} effect rank (now {damage_rank})")
+
+        # Critical effect_rank_bonus
+        if is_crit:
+            effect_rank_bonus = crit_cfg.get("effect_rank_bonus", 0) if crit_cfg else 0
+            if effect_rank_bonus:
+                damage_rank += effect_rank_bonus
+                lines.append(f"CRITICAL! Effect rank +{effect_rank_bonus} (rank {damage_rank})")
+
+        # Pre-resolution: impervious check
+        pre_res_result = _check_pre_resolution(
+            pack,
+            defender,
+            action_def,
+            damage_rank=damage_rank,
+            lines=lines,
+        )
+        if pre_res_result == "impervious":
+            lines.append("RESULT: No effect (impervious)")
+            return
+
+        resistance_bonus = _get_derived(defender, resistance_stat)
+        resist_result = roll_expr(pack.dice)
+        resist_roll = resist_result["total"]
+        resistance_total = resist_roll + resistance_bonus
+        resist_dc = dc_base + damage_rank
+
+        lines.append(
+            f"RESISTANCE: {pack.dice}({resist_roll}) + {resistance_bonus} = {resistance_total} vs DC {resist_dc}"
+        )
+
+        if resistance_total >= resist_dc:
+            lines.append("RESULT: No effect")
+        else:
+            margin_fail = resist_dc - resistance_total
+            degree_step = resolution.get("degree_step", 5)
+            degree = 1 + math.floor(margin_fail / degree_step)
+            degree = max(1, min(degree, 4))
+
+            # Character resolution tags
+            char_tags_cfg = resolution.get("character_tags", {})
+            for tag_name, tag_rules in char_tags_cfg.items():
+                tag_key = tag_name if tag_name.startswith("is_") else f"is_{tag_name}"
+                for cat_attrs in defender.attributes.values():
+                    if tag_key in cat_attrs and int(cat_attrs[tag_key]) > 0:
+                        min_deg = tag_rules.get("min_failure_degree")
+                        if min_deg is not None and degree < min_deg:
+                            lines.append(f"TAG [{tag_name}]: degree escalated {degree} → {min_deg}")
+                            degree = min_deg
+                        break
+
+            # Cumulative degree tracking
+            if action_def.get("cumulative"):
+                action_name = action_def.get("_action_name", "affliction")
+                track_key = f"_cumulative_degree_{action_name}"
+                try:
+                    current_degree = _get_derived(defender, track_key)
+                except LoreKitError:
+                    current_degree = 0
+                max_degree = action_def.get("max_degree", 4)
+                new_degree = min(current_degree + degree, max_degree)
+                if current_degree > 0:
+                    lines.append(f"CUMULATIVE: previous degree {current_degree} + {degree} = {new_degree}")
+                degree = new_degree
+                _write_attr(db, defender.character_id, track_key, degree)
+
+            # Outcome table lookup
+            outcome_table_name = action_def.get("outcome_table")
+            if outcome_table_name and outcome_table_name in pack.outcome_tables:
+                outcome_table = pack.outcome_tables[outcome_table_name]
+            else:
+                outcome_table = resolution.get("on_failure", {})
+
+            effect = dict(outcome_table.get(str(degree), {}))
+
+            # Resolve template variables
+            degrees_map = action_def.get("degrees", {})
+            if degrees_map:
+                for key, val in list(effect.items()):
+                    if isinstance(val, str) and "{" in val:
+                        for deg_key, choice in degrees_map.items():
+                            placeholder = f"{{degree_{deg_key}_condition}}"
+                            if placeholder in val:
+                                resolved = choice if isinstance(choice, str) else choice[0]
+                                val = val.replace(placeholder, resolved)
+                        effect[key] = val
+
+            lines.append(f"DEGREE OF FAILURE: {degree}")
+
+            from lorekit.combat.effects import _apply_degree_effect
+
+            _apply_degree_effect(db, defender, effect, lines)
+
+            # Sync conditions and fire damage triggers
+            _sync_and_recalc(db, defender.character_id, pack, lines)
+            _fire_damage_triggers(db, pack, defender.character_id, damage_rank, lines)
+    else:
+        # No resistance check — apply on_hit directly
+        on_hit = action_def.get("on_hit", {})
+        _apply_on_hit(db, pack, attacker, defender, on_hit, lines, margin=margin, options=options)
+
+
+def _resolve(
+    db,
+    pack: SystemPack,
+    attacker: CharacterData,
+    defender: CharacterData,
+    action_def: dict,
+    options: dict,
+) -> str:
+    """Resolve an action using the unified pipeline.
+
+    Handles the shared phases (trades, attack roll, hit determination,
+    reactions, homing, contagious) and dispatches to resolution-type-specific
+    outcome functions for effect application.
+    """
+    resolution = pack.resolution
+    resolution_type = resolution.get("type", "threshold")
+    attack_stat = action_def["attack_stat"]
+    defense_stat = action_def["defense_stat"]
+    crit_cfg = resolution.get("critical")
+
+    # --- Pre-resolution: immunity check (before any rolls) ---
+    pre_res = resolution.get("pre_resolution")
+    if pre_res:
+        pre_res_result = _check_pre_resolution(pack, defender, action_def, damage_rank=None, lines=[])
+        if pre_res_result == "immune":
+            return (
+                f"ACTION: {attacker.name} → {defender.name}\n"
+                f"IMMUNE: {defender.name} is immune to {action_def.get('descriptor', 'this effect')}"
+            )
+
+    # --- Trade adjustments ---
+    trade_adj: dict[str, int] = {}
+    trade_mod_lines: list[str] = []
+    for trade in options.get("trade", []):
+        trade_val = trade["value"]
+        from_stat = trade.get("from")
+        if from_stat:
+            trade_adj[from_stat] = trade_adj.get(from_stat, 0) - trade_val
+        trade_adj[trade["to"]] = trade_adj.get(trade["to"], 0) + trade_val
+
+    # --- Persistent trade cost modifiers (e.g. All-out Attack penalties) ---
+    _apply_trade_modifiers(db, attacker, options, trade_mod_lines)
+
+    # --- Team/combined attack bonus ---
+    team_atk_bonus, team_dc_bonus = _apply_team_bonus(db, pack, attacker, options, trade_mod_lines)
+
+    # --- Reaction: before_attack (e.g. Interpose — substitute defender) ---
+    reaction_mods = _check_reactions(
+        db, pack, "before_attack", attacker, defender, action_def, trade_mod_lines, options
+    )
+    if reaction_mods.get("new_defender_id"):
+        defender = load_character_data(db, reaction_mods["new_defender_id"])
+
+    # --- Gather resolution effects from defender's active conditions ---
+    res_effects = _get_defender_resolution_effects(db, defender.character_id, pack)
+    use_routine = res_effects.get("attacker_routine_check", False)
+    routine_value = resolution.get("routine_value", 10)
+
+    # Determine range-based attack bonus from defender conditions
+    range_type = action_def.get("range")
+    atk_bonus_map = res_effects.get("attacker_bonus", {})
+    cond_atk_bonus = atk_bonus_map.get(range_type, 0) if range_type else 0
+
+    # --- Reaction: replace_defense (e.g. Deflect) ---
+    defense_mods = _check_reactions(
+        db, pack, "replace_defense", attacker, defender, action_def, trade_mod_lines, options
+    )
+
+    # --- DC offset for defense comparison ---
+    dc_offset = resolution.get("defense_dc_offset", 10 if resolution_type == "degree" else 0)
+
+    # --- Attack roll ---
+    if action_def.get("contested"):
+        atk_roll, atk_total, def_total, def_roll, def_bonus, atk_natural = _contested_roll(
+            pack,
+            attacker,
+            defender,
+            action_def,
+        )
+        atk_bonus = _get_derived(attacker, attack_stat)
+        if attack_stat in trade_adj:
+            atk_total += trade_adj[attack_stat]
+            atk_bonus += trade_adj[attack_stat]
+        if cond_atk_bonus:
+            atk_total += cond_atk_bonus
+            atk_bonus += cond_atk_bonus
+        if team_atk_bonus:
+            atk_total += team_atk_bonus
+            atk_bonus += team_atk_bonus
+
+        lines = [f"ACTION: {attacker.name} → {defender.name}"]
+        lines.append(f"ATTACKER: {pack.dice}({atk_roll}) + {atk_bonus} ({attack_stat}) = {atk_total}")
+        lines.append(f"DEFENDER: {pack.dice}({def_roll}) + {def_bonus} ({defense_stat}) = {def_total}")
+
+        hit = atk_total >= def_total
+        is_natural_crit = _is_crit(crit_cfg, atk_natural, attacker)
+    elif action_def.get("_auto_hit"):
+        lines = [
+            f"ACTION: {attacker.name} → {defender.name}",
+            "ATTACK: auto-hit (area effect)",
+        ]
+        attack_total = 0
+        defense_dc = 0
+        hit = True
+        is_natural_crit = False
+    else:
+        attack_bonus = _get_derived(attacker, attack_stat)
+        defense_value = defense_mods.get("defense_override", _get_derived(defender, defense_stat))
+
+        if attack_stat in trade_adj:
+            attack_bonus += trade_adj[attack_stat]
+        if cond_atk_bonus:
+            attack_bonus += cond_atk_bonus
+        if team_atk_bonus:
+            attack_bonus += team_atk_bonus
+
+        # Routine check: use routine_value instead of rolling (e.g. defenseless target)
+        if use_routine:
+            roll_val = routine_value
+            natural = routine_value
+        else:
+            roll_result = roll_expr(pack.dice)
+            roll_val = roll_result["total"]
+            natural = roll_result["natural"]
+
+        attack_total = roll_val + attack_bonus
+        defense_dc = dc_offset + defense_value
+
+        if use_routine:
+            lines = [
+                f"ACTION: {attacker.name} → {defender.name}",
+                f"ATTACK: routine({routine_value}) + {attack_bonus} = {attack_total} vs DC {defense_dc}",
+            ]
+        elif dc_offset:
+            lines = [
+                f"ACTION: {attacker.name} → {defender.name}",
+                f"ATTACK: {pack.dice}({roll_val}) + {attack_bonus} = {attack_total} vs DC {defense_dc}",
+            ]
+        else:
+            lines = [
+                f"ACTION: {attacker.name} → {defender.name}",
+                f"ATTACK: {pack.dice}({roll_val}) + {attack_bonus} = {attack_total} vs {defense_stat} {defense_value}",
+            ]
+
+        hit = attack_total >= defense_dc
+        is_natural_crit = _is_crit(crit_cfg, natural, attacker)
+
+    # --- Hit determination: crit / degree shift ---
+    was_already_hit = hit
+    has_degree_shift = bool(crit_cfg and crit_cfg.get("degree_shift", 0) > 0)
+
+    if is_natural_crit and has_degree_shift and not hit:
+        hit = True  # miss upgraded to hit
+
+    # hits_are_critical: treat as natural crit (affects both effect_rank_bonus and damage_multiplier)
+    if hit and res_effects.get("hits_are_critical"):
+        is_natural_crit = True
+
+    # is_crit: nat crit + was already hit + system has degree_shift, OR hits_are_critical
+    # Used by threshold for damage_multiplier — miss→hit upgrade does NOT get damage multiplier
+    # Gated on has_degree_shift so systems without crit config don't get false crits
+    is_crit = (is_natural_crit and was_already_hit and has_degree_shift) or (
+        hit and res_effects.get("hits_are_critical", False)
+    )
+
+    # --- Miss chance (e.g. concealment) ---
+    miss_chance = res_effects.get("miss_chance", 0.0)
+    if hit and miss_chance > 0.0:
+        miss_roll = random.random()
+        if miss_roll < miss_chance:
+            hit = False
+            is_crit = False
+            is_natural_crit = False
+            lines.append(f"MISS CHANCE: {miss_chance * 100:.0f}% — roll {miss_roll * 100:.1f}% — miss!")
+
+    # --- Compute margins ---
+    if action_def.get("contested"):
+        hit_margin = atk_total - def_total if hit else 0
+        miss_margin = def_total - atk_total if not hit else 0
+    elif action_def.get("_auto_hit"):
+        hit_margin = 0
+        miss_margin = 0
+    else:
+        hit_margin = attack_total - defense_dc if hit else 0
+        miss_margin = defense_dc - attack_total if not hit else 0
+
+    # --- Effect application (divergence point) ---
+    if hit:
+        # Hit message (format varies by resolution type)
+        try:
+            if resolution_type == "threshold":
+                if action_def.get("contested"):
+                    if is_crit:
+                        lines.append(f"CRITICAL HIT! (wins by {hit_margin})")
+                    else:
+                        lines.append(f"HIT! (wins by {hit_margin})")
+                else:
+                    if is_crit:
+                        lines.append("CRITICAL HIT!")
+                    else:
+                        lines.append("HIT!")
+                _apply_threshold_outcome(
+                    db,
+                    pack,
+                    attacker,
+                    defender,
+                    action_def,
+                    lines,
+                    is_crit=is_crit,
+                    margin=hit_margin,
+                    options=options,
+                )
+            elif resolution_type == "degree":
+                lines.append("HIT!")
+                _apply_degree_outcome(
+                    db,
+                    pack,
+                    attacker,
+                    defender,
+                    action_def,
+                    lines,
+                    is_crit=is_natural_crit,
+                    margin=hit_margin,
+                    options=options,
+                    trade_adj=trade_adj,
+                    team_dc_bonus=team_dc_bonus,
+                )
+            else:
+                raise LoreKitError(f"Unknown resolution type: {resolution_type}")
+        except PendingReactionSignal as sig:
+            from lorekit.combat.pending import store_pending
+
+            reaction_descs = []
+            for rxn in sig.pending_reactions:
+                desc = {
+                    "source": rxn["source"],
+                    "reaction_key": rxn["reaction_key"],
+                    "reactor_name": rxn["reactor_name"],
+                    "reactor_id": rxn["reactor_id"],
+                    "effects": rxn["effects"],
+                    "row_id": rxn["row_id"],
+                    "dur_type": rxn["dur_type"],
+                }
+                for eff in rxn["effects"]:
+                    if eff.get("type") == "reduce_damage" and eff.get("stat"):
+                        try:
+                            reduction = _get_derived(defender, eff["stat"])
+                            desc["reduction"] = reduction
+                            desc["net_damage"] = max(0, sig.total_damage - reduction)
+                        except LoreKitError:
+                            pass
+                reaction_descs.append(desc)
+
+            pending_id = store_pending(
+                db,
+                session_id=attacker.session_id,
+                attacker_id=attacker.character_id,
+                defender_id=defender.character_id,
+                action_name=action_def.get("_action_name", "unknown"),
+                pack_dir=pack.pack_dir,
+                calculated_state={
+                    "total_damage": sig.total_damage,
+                    "lines": sig.lines,
+                    "is_crit": is_crit if resolution_type == "threshold" else is_natural_crit,
+                    "hit_margin": hit_margin,
+                    "resolution_type": resolution_type,
+                },
+                available_reactions=reaction_descs,
+                options=options,
+            )
+
+            lines = list(sig.lines)
+            lines.append("")
+            lines.append(f"⚠ PENDING REACTION (id: {pending_id}):")
+            for desc in reaction_descs:
+                reduction = desc.get("reduction", 0)
+                net = desc.get("net_damage", sig.total_damage)
+                lines.append(
+                    f"  {desc['reactor_name']} can use {desc['source']} "
+                    f"(reduce damage by {reduction}, net damage {net})"
+                )
+            lines.append(f"  → Without reaction: damage {sig.total_damage}")
+            lines.append("")
+            lines.append("Awaiting confirm_resolution.")
+
+            lines.extend(trade_mod_lines)
+            return "\n".join(lines)
+
+        # --- Reaction: after_hit ---
+        after_hit_mods = _check_reactions(db, pack, "after_hit", attacker, defender, action_def, lines, options)
+        if after_hit_mods.get("free_attack"):
+            fa = after_hit_mods["free_attack"]
+            try:
+                counter_result = resolve_action(
+                    db,
+                    fa["reactor_id"],
+                    fa["target_id"],
+                    fa["action"],
+                    pack.pack_dir,
+                    options={"free_action": True},
+                )
+                lines.append(counter_result)
+            except LoreKitError as e:
+                lines.append(f"COUNTER FAILED: {e}")
+    else:
+        # Miss message (format varies by resolution type for contested)
+        if resolution_type == "threshold" and action_def.get("contested"):
+            lines.append(f"MISS! ({defender.name} resists by {miss_margin})")
+        else:
+            lines.append("MISS!")
+            if action_def.get("contested"):
+                lines.append(f"{defender.name} resists by {miss_margin}")
+            else:
+                lines.append(f"Missed by {miss_margin}")
+
+        # --- Reaction: after_miss ---
+        after_miss_mods = _check_reactions(db, pack, "after_miss", attacker, defender, action_def, lines, options)
+        if after_miss_mods.get("free_attack"):
+            fa = after_miss_mods["free_attack"]
+            try:
+                counter_result = resolve_action(
+                    db,
+                    fa["reactor_id"],
+                    fa["target_id"],
+                    fa["action"],
+                    pack.pack_dir,
+                    options={"free_action": True},
+                )
+                lines.append(counter_result)
+            except LoreKitError as e:
+                lines.append(f"COUNTER FAILED: {e}")
+
+    # --- Homing: on miss, defer re-attack to attacker's next turn ---
+    if not hit and action_def.get("homing"):
+        homing_ranks = action_def.get("homing")
+        retries = homing_ranks if isinstance(homing_ranks, int) else 1
+        action_name = action_def.get("_action_name", "unknown")
+        metadata = json.dumps(
+            {
+                "action": action_name,
+                "target_id": defender.character_id,
+                "retries_left": retries,
+            }
+        )
+        db.execute(
+            "INSERT INTO combat_state "
+            "(character_id, source, target_stat, modifier_type, value, "
+            "duration_type, applied_by, metadata) "
+            "VALUES (?, ?, '_deferred', 'deferred', 0, 'deferred_homing', ?, ?) "
+            "ON CONFLICT(character_id, source, target_stat) DO UPDATE SET metadata = excluded.metadata",
+            (attacker.character_id, f"homing:{action_name}", defender.character_id, metadata),
+        )
+        db.commit()
+        lines.append(f"HOMING: attack will retry on {attacker.name}'s next turn ({retries} attempt(s) left)")
+
+    # --- Contagious spreading ---
+    if hit:
+        _check_contagious(db, pack, attacker, defender, action_def, lines)
+
+    lines.extend(trade_mod_lines)
+    return "\n".join(lines)
+
+
+def resolve_action(
+    db,
+    attacker_id: int,
+    defender_id: int,
+    action: str,
+    pack_dir: str,
+    options: dict | None = None,
+) -> str:
+    """Resolve a combat action between two characters."""
+    pack = load_system_pack(pack_dir)
+    attacker = load_character_data(db, attacker_id)
+    defender = load_character_data(db, defender_id)
+
+    is_free = (options or {}).get("free_action", False)
+
+    # Condition-based action limit (dazed, stunned, incapacitated, etc.)
+    if not is_free:
+        _check_condition_action_limit(db, attacker_id, pack)
+
+    # Check if action is a gm_assisted effect before looking up action defs
+    try:
+        action_def = _get_action_def(pack, attacker, action)
+        action_def.setdefault("_action_name", action)
+    except LoreKitError:
+        # Fall back to effects.json for gm_assisted resolution
+        hints = _get_gm_hints(pack, action)
+        if hints:
+            return hints
+        raise  # re-raise original error if no hints found
+
+    opts = _expand_combat_options(pack, options or {})
+
+    # Validate defender is in the active encounter
+    from lorekit.encounter import _get_active_encounter
+
+    enc = _get_active_encounter(db, attacker.session_id)
+    if enc is not None:
+        enc_id_check = enc[0]
+        in_encounter = db.execute(
+            "SELECT 1 FROM character_zone WHERE encounter_id = ? AND character_id = ?",
+            (enc_id_check, defender_id),
+        ).fetchone()
+        if not in_encounter:
+            raise LoreKitError(
+                f"{defender.name} (id {defender_id}) is not in the active encounter. "
+                f"Check the character ID — use names instead of numeric IDs to avoid mistakes."
+            )
+
+    # Collect warnings
+    warnings: list[str] = opts.pop("_option_warnings", [])
+
+    # Warn if defender is incapacitated
+    incap, cond_name = is_incapacitated(db, defender_id, pack)
+    if incap:
+        warnings.append(f"⚠ WARNING: {defender.name} is {cond_name} — attacking an incapacitated target")
+
+    # Snapshot next_attack_received modifier IDs on defender BEFORE resolution.
+    # These will be consumed after resolution (new ones added during this action survive).
+    pre_existing_nar = {
+        row[0]
+        for row in db.execute(
+            "SELECT id FROM combat_state WHERE character_id = ? AND duration_type = 'next_attack_received'",
+            (defender_id,),
+        ).fetchall()
+    }
+
+    # Range validation when an encounter is active
+    range_type = action_def.get("range")
+    if range_type and pack.combat:
+        from lorekit.encounter import check_range
+
+        enc = _get_active_encounter(db, attacker.session_id)
+        if enc is not None:
+            enc_id = enc[0]
+            weapon_range = None
+            if range_type == "ranged":
+                range_stat = action_def.get("range_stat")
+                if range_stat:
+                    try:
+                        weapon_range = _get_derived(attacker, range_stat)
+                    except LoreKitError:
+                        pass
+            err = check_range(
+                db,
+                enc_id,
+                attacker_id,
+                defender_id,
+                range_type,
+                weapon_range,
+                pack.combat,
+            )
+            if err:
+                raise LoreKitError(err)
+
+    # --- on_use effects (fire unconditionally before any roll) ---
+    on_use = action_def.get("on_use")
+    if on_use:
+        use_lines = [f"ACTION: {attacker.name} uses {action} → {defender.name}"]
+        _apply_on_hit(db, pack, attacker, defender, on_use, use_lines, options=opts)
+        on_use_result = "\n".join(use_lines)
+    else:
+        on_use_result = None
+
+    # --- Utility action (no attack_stat) — on_use only, no roll ---
+    if "attack_stat" not in action_def:
+        return on_use_result or f"ACTION: {attacker.name} uses {action} → {defender.name} (no effect)"
+
+    result = _resolve(db, pack, attacker, defender, action_def, opts)
+
+    # Prepend on_use result if both on_use and roll happened
+    if on_use_result:
+        result = on_use_result + "\n" + result
+
+    # Consume next_attack modifiers on the attacker (e.g. Setup bonus)
+    consumed = db.execute(
+        "DELETE FROM combat_state WHERE character_id = ? AND duration_type = 'next_attack'",
+        (attacker_id,),
+    )
+    if consumed.rowcount > 0:
+        db.commit()
+        from lorekit.rules import try_rules_calc
+
+        recalc = try_rules_calc(db, attacker_id)
+        if recalc:
+            result += f"\n{recalc}"
+
+    # Consume pre-existing next_attack_received modifiers on the defender
+    # (new ones added during this resolution survive for future attacks)
+    if pre_existing_nar:
+        placeholders = ",".join("?" for _ in pre_existing_nar)
+        db.execute(f"DELETE FROM combat_state WHERE id IN ({placeholders})", tuple(pre_existing_nar))
+        db.commit()
+        _sync_and_recalc(db, defender_id, pack, None)
+        from lorekit.rules import try_rules_calc
+
+        recalc = try_rules_calc(db, defender_id)
+        if recalc:
+            result += f"\n{recalc}"
+
+    # Process on_hit_actions (follow-up free actions on hit, e.g. Fast Grab)
+    on_hit_actions = action_def.get("on_hit_actions")
+    if on_hit_actions and "HIT" in result:
+        for oha in on_hit_actions:
+            req_ability = oha.get("requires_ability")
+            if req_ability:
+                has_ability = any(a["name"] == req_ability for a in attacker.abilities)
+                if not has_ability:
+                    continue
+            follow_action = oha["action"]
+            follow_opts = {"free_action": True} if oha.get("free") else {}
+            try:
+                follow_result = resolve_action(
+                    db,
+                    attacker_id,
+                    defender_id,
+                    follow_action,
+                    pack_dir,
+                    options=follow_opts,
+                )
+                result += f"\nFREE ACTION ({follow_action}):\n{follow_result}"
+            except LoreKitError as e:
+                result += f"\nFREE ACTION FAILED ({follow_action}): {e}"
+
+    # Track action count for condition-based limits (dazed max_total: 1, etc.)
+    if not is_free:
+        _increment_turn_actions(db, attacker_id)
+
+    # Prepend warnings if applicable
+    if warnings:
+        result = "\n".join(warnings) + "\n" + result
+
+    return result

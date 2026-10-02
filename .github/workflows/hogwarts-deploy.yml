@@ -1,0 +1,58 @@
+name: Hogwarts deploy checks
+on:
+  workflow_dispatch:
+  push:
+    paths: ['src/hogwarts/**', 'systems/hogwarts/**', 'tests/hogwarts/**', 'Dockerfile', '.github/workflows/hogwarts-deploy.yml']
+  pull_request:
+    paths: ['src/hogwarts/**', 'systems/hogwarts/**', 'tests/hogwarts/**', 'Dockerfile', '.github/workflows/hogwarts-deploy.yml']
+permissions:
+  contents: read
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r systems/hogwarts/requirements-deploy.txt pytest pytest-asyncio
+      - run: python -m pytest tests/hogwarts -o addopts='' -q
+        env:
+          PYTHONPATH: src
+      - run: docker build -t hogwarts:test .
+      - name: Container health and mounted-volume persistence
+        run: |
+          docker volume create hogwarts-check-data
+          docker run -d --name hogwarts-check -p 127.0.0.1:8080:8080 -e HOST=0.0.0.0 -e MCP_ALLOWED_HOSTS=localhost:8080 -e REGISTRATION_OPEN=true -v hogwarts-check-data:/app/server/data hogwarts:test
+          python - <<'PY'
+          import json,time,urllib.request
+          for _ in range(60):
+              try:
+                  urllib.request.urlopen('http://localhost:8080/health',timeout=2)
+                  break
+              except OSError:
+                  time.sleep(1)
+          else:
+              raise RuntimeError('Container failed health check')
+          req=urllib.request.Request('http://localhost:8080/api/register',data=json.dumps({'name':'容器学生'}).encode(),headers={'Content-Type':'application/json'})
+          result=json.load(urllib.request.urlopen(req))
+          with open('credential.tmp','w') as f:
+              f.write(result['api_key'])
+          PY
+          docker restart hogwarts-check
+          python - <<'PY'
+          import json,time,urllib.request
+          key=open('credential.tmp').read()
+          for _ in range(60):
+              try:
+                  req=urllib.request.Request('http://localhost:8080/api/state',headers={'Authorization':'Bearer '+key})
+                  state=json.load(urllib.request.urlopen(req,timeout=2))
+                  assert state['status']['result']['name']=='容器学生'
+                  break
+              except OSError:
+                  time.sleep(1)
+          else:
+              raise RuntimeError('Mounted volume failed restart check')
+          PY
+      - if: always()
+        run: docker logs hogwarts-check || true

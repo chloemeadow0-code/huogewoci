@@ -1,0 +1,31 @@
+{
+  "start_time":"2026-09-07T06:00",
+  "locations": {
+    "hall":{"name":"礼堂","description":"长桌上备着早餐，门旁贴着课表。", "exits":["library","potions","greenhouse","lake","hospital"],"objects":[]},
+    "library":{"name":"图书馆","description":"东侧桌边举行小班魔咒课，书架旁有练习羽毛。","exits":["hall","restricted"],"objects":["feather","chest","cup"]},
+    "restricted":{"name":"禁书区","description":"获得书面许可后才可阅读这里的资料。","exits":["library"],"objects":[]},
+    "potions":{"name":"魔药教室","description":"地下教室摆着待清洗的坩埚。","exits":["hall"],"objects":["cauldron"]},
+    "greenhouse":{"name":"温室","description":"银叶草沿着玻璃窗生长。","exits":["hall","lake"],"objects":["plant"]},
+    "lake":{"name":"黑湖","description":"湖岸小径通向球场、森林边缘与村庄方向。","exits":["hall","greenhouse","pitch","forest","hogsmeade"],"objects":[]},
+    "pitch":{"name":"魁地奇球场","description":"看台下设置了安全的魔咒练习假人。","exits":["lake"],"objects":["dummy"]},
+    "forest":{"name":"禁林入口","description":"木牌禁止学生独自深入，巡查在此停留。","exits":["lake"],"objects":[]},
+    "hospital":{"name":"校医院","description":"校医值班，安静的休息床位可以睡觉。","exits":["hall"],"objects":[]},
+    "hogsmeade":{"name":"霍格莫德入口","description":"校界内的流动摊位；村庄闸门要求年级与许可。","exits":["lake"],"objects":[]}
+  },
+  "npcs": {
+    "professor":{"name":"艾琳·雾梣","role":"教授","location":"library","personality":"严谨，鼓励先验证再描述。","public_reply":"先用课本学会咒语，再在指定目标上练习。","facts":["school_safety"],"private":"她正在追查温室里失踪的银色标签。"},
+    "healer":{"name":"赛芙·苔溪","role":"校医","location":"hospital","personality":"温和但不纵容逞强。","public_reply":"累了就来这里休息，恢复药剂也能帮助你。","facts":["rest_place"],"private":"她知道旧柜里封存了一种实验药剂。"},
+    "student":{"name":"米洛·星棱","role":"学生","location":"hall","personality":"好奇，喜欢交换校园见闻。","public_reply":"我想练习漂浮咒。管理员每天夜里都会巡查。","facts":["curfew"],"private":"他见过有人将银色标签藏进图书馆练习箱。"},
+    "merchant":{"name":"塔文·铜枝","role":"商人","location":"hogsmeade","personality":"健谈，账目清楚。","public_reply":"问我购买药剂，用五枚金币换一瓶；摊位在校界里面。","facts":["merchant_price"],"private":"他的采购账本记录着温室标签的旧主人。"},
+    "caretaker":{"name":"奥伦·石栎","role":"管理员","location":"forest","personality":"守时，严格记录每次违规。","public_reply":"二十二点宵禁。禁书区需要教授许可。","facts":["curfew","restricted_rule"],"private":"他知道一条不对学生开放的地下检修通道。"}
+  },
+  "facts": {
+    "school_safety":"学校只允许在安全目标上练习魔咒。",
+    "rest_place":"校医院的休息床位可用于睡眠恢复。",
+    "curfew":"宵禁为二十二点至次日六点，巡查会扣学院分并留记录。",
+    "restricted_rule":"禁书区需要教授的许可，开锁咒不能绕过门上的魔法防护。",
+    "merchant_price":"铜枝的恢复药剂售价为五枚金币。",
+    "silverleaf_care":"银叶草需要清水，过量灌溉会损伤根系。",
+    "hidden_label":"图书馆练习箱里藏着温室丢失的银色标签。"
+  }
+}
