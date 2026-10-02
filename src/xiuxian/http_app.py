@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from mcp.server.transport_security import TransportSecuritySettings
-from starlette.applications import Starlette
+from fastapi import FastAPI
 from starlette.concurrency import run_in_threadpool
 from starlette.requests import Request
 from starlette.responses import FileResponse, JSONResponse
@@ -15,7 +15,10 @@ from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 
 from .auth import Accounts, current_identity, identity
-from .engine import Game, LOCK, TOOLS, CONTENT
+from .engine import LOCK, CONTENT
+from .island import IslandGame as Game
+from .mcp_dispatch import MCP_TOOLS, dispatch, _call_ops
+import xiuxian.engine as engine
 from .rules import RuleError, require
 from .server import create_server
 
@@ -29,13 +32,17 @@ def create_http_app(data_dir=None):
     game = Game(db_path)
     game.close()
 
-    def action(name, args, who):
+    def action(name, args, who, request_id=None):
         with LOCK:
             game = Game(
                 db_path, player_key=who["player_key"], player_name=who["player_name"]
             )
             try:
-                return game.call(name, **args)
+                return (
+                    dispatch(game, name, args.get("command", ""), request_id)
+                    if name in MCP_TOOLS
+                    else game.call(name, request_id=request_id, **args)
+                )
             finally:
                 game.close()
 
@@ -44,7 +51,7 @@ def create_http_app(data_dir=None):
 
             def check():
                 with accounts.connect() as db:
-                    db.execute("SELECT 1 FROM accounts LIMIT 1").fetchone()
+                    db.execute("SELECT 1 FROM api_keys LIMIT 1").fetchone()
                 with LOCK:
                     game = Game(db_path)
                     try:
@@ -54,7 +61,12 @@ def create_http_app(data_dir=None):
 
             await run_in_threadpool(check)
             return JSONResponse(
-                {"status": "ok", "service": "xiuxian", "tools": len(TOOLS)}
+                {
+                    "status": "ok",
+                    "service": "xiuxian",
+                    "tools": len(MCP_TOOLS),
+                    "version": "lingxi-v1",
+                }
             )
         except Exception:
             return JSONResponse({"status": "unavailable"}, status_code=503)
@@ -103,7 +115,7 @@ def create_http_app(data_dir=None):
                     "api_key": token,
                     "name": who["player_name"],
                     "kind": who["kind"],
-                    "mcp_path": "/mcp/" if who["kind"] == "ai" else None,
+                    "mcp_path": "/mcp/",
                 },
                 status_code=201,
             )
@@ -123,7 +135,7 @@ def create_http_app(data_dir=None):
                     "world": world,
                     "history": history,
                     "kind": who["kind"],
-                    "readOnly": who["kind"] == "ai",
+                    "readOnly": False,
                 }
 
         return JSONResponse(await run_in_threadpool(view))
@@ -143,11 +155,25 @@ def create_http_app(data_dir=None):
         try:
             payload = await body(request)
             require(
-                set(payload) <= {"tool", "arguments"}, "动作只接受 tool 和 arguments。"
+                set(payload) <= {"tool", "arguments", "command", "request_id"},
+                "动作只接受 tool 和 arguments。",
             )
             tool, args = payload.get("tool"), payload.get("arguments", {})
-            require(tool in TOOLS and isinstance(args, dict), "不支持的玩家动作。")
-            result = await run_in_threadpool(action, tool, args, identity())
+            require(
+                tool in (*engine.TOOLS, *MCP_TOOLS) and isinstance(args, dict),
+                "不支持的玩家动作。",
+            )
+            result = await _call_ops(
+                action,
+                tool,
+                (
+                    {"command": payload.get("command", args.get("command", ""))}
+                    if tool in MCP_TOOLS
+                    else args
+                ),
+                identity(),
+                payload.get("request_id") or request.headers.get("idempotency-key"),
+            )
             return JSONResponse(result, status_code=200 if result["ok"] else 400)
         except (RuleError, ValueError, TypeError):
             return JSONResponse(
@@ -186,8 +212,21 @@ def create_http_app(data_dir=None):
         async with mcp.session_manager.run():
             yield
 
-    app = Starlette(
-        routes=[
+    app = FastAPI(
+        title="灵汐岛",
+        version="1.0",
+        lifespan=lifespan,
+        docs_url=None,
+        redoc_url=None,
+        openapi_url=None,
+    )
+    app.router.routes.extend(
+        [
+            Route("/api/v1/state", state),
+            Route("/api/v1/me", state),
+            Route("/api/v1/command", perform, methods=["POST"]),
+            Route("/api/v1/rename", rename_player, methods=["POST"]),
+            Route("/island", document),
             Route("/health", health),
             Route("/healthz", health),
             Route("/", document),
@@ -200,8 +239,7 @@ def create_http_app(data_dir=None):
             Route("/api/rename", rename_player, methods=["POST"]),
             Mount("/static", StaticFiles(directory=STATIC)),
             Mount("/mcp", mcp_app),
-        ],
-        lifespan=lifespan,
+        ]
     )
 
     class PlayerBoundary:
@@ -225,7 +263,7 @@ def create_http_app(data_dir=None):
                     scope, receive, send
                 )
             who = None
-            if path.startswith("/mcp/") or path in (
+            if path.startswith(("/mcp/", "/api/v1/")) or path in (
                 "/api/state",
                 "/api/action",
                 "/api/rename",
@@ -241,20 +279,6 @@ def create_http_app(data_dir=None):
                     return await JSONResponse(
                         {"error": "缺少或无效的 修仙 凭证。"}, status_code=401
                     )(scope, receive, send)
-                required_kind = (
-                    "ai"
-                    if path.startswith("/mcp/")
-                    else "human" if path == "/api/action" else None
-                )
-                if required_kind is not None and who["kind"] != required_kind:
-                    error = (
-                        "MCP 只允许 AI 账号，请单独创建 AI 修士。"
-                        if required_kind == "ai"
-                        else "网页操作只允许人类账号，请使用人类修士凭证。"
-                    )
-                    return await JSONResponse({"error": error}, status_code=403)(
-                        scope, receive, send
-                    )
             origin = request.headers.get("origin")
             host = request.headers.get("host", "")
             if origin and origin not in (f"http://{host}", f"https://{host}", *origins):

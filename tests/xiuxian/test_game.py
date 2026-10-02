@@ -159,10 +159,12 @@ async def test_mcp_registry(tmp_path):
 
     app = create_server(tmp_path / "mcp.db")
     ts = await app.list_tools()
-    assert {t.name for t in ts} == set(TOOLS)
+    from xiuxian.mcp_dispatch import MCP_TOOLS
+
+    assert {t.name for t in ts} == set(MCP_TOOLS)
     assert len(await app.list_resources()) == 1
     assert len(await app.list_prompts()) == 1
-    result = await app.call_tool("get_self", {})
+    result = await app.call_tool("cultivator_ops", {"command": "sheet"})
     assert result
 
 
@@ -172,7 +174,7 @@ def test_http_identity(tmp_path, monkeypatch):
 
     monkeypatch.setenv("REGISTRATION_OPEN", "true")
     with TestClient(create_http_app(tmp_path), base_url="http://localhost") as c:
-        assert c.get("/health").json()["tools"] == len(TOOLS)
+        assert c.get("/health").json()["tools"] == 13
         assert c.get("/api/state").status_code == 401
         r = c.post(
             "/api/register",

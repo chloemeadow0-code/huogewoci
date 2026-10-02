@@ -1,0 +1,28 @@
+import {el,row,button} from "../ui/dom.js";import {items,recipes,techniques} from "../catalog.js";import {modal} from "../ui/modal.js";
+const categories={attack:"攻击",defense:"防御",heal:"回复",buff:"增益",debuff:"减益",control:"控制",movement:"身法",escape:"脱身"};
+export function scene(data,act){
+ const p=data.self.result,w=data.world.result;
+ const b=(label,tool,command,disabled=false)=>button(label,()=>act(tool,command),disabled);
+ for(const id of["actions","exits","npcs","quests","enemies","skills","inventory","shop","incidents","world-events","crafting","relations"])el(id).replaceChildren();
+ el("location-name").textContent=w.location.name;el("description").textContent=w.location.description;
+ if(!p.route)for(const[id,name]of Object.entries({qingxiao:"青霄剑宗",xuanheng:"玄衡阵门",danxia:"丹霞谷",fuyao:"伏妖门",rogue:"散修"}))el("actions").append(b(name,"sect_ops","join "+id));
+ const avail=w.nearbyActions||[];
+ for(const[action,label,tool,command]of[["cultivate","修炼四时","cultivate_ops","meditate 4"],["explore","探索周围","travel_ops","explore"],["retreat","闭关休养","cultivate_ops","retreat 8"],["breakthrough","尝试突破","realm_ops","breakthrough"]])if(avail.includes(action))el("actions").append(b(label,tool,command));
+ for(const destination of w.location.exits)el("exits").append(b(w.map[destination].name,"travel_ops","go "+destination,!!p.battle));
+ for(const[id,n]of Object.entries(w.npcs)){row(el("npcs"),n.name,n.identity+" · "+n.personality,[button("交谈",()=>modal(n.name,n.background,[["问候",()=>act("npc_ops","talk "+id)],["听传闻",()=>act("npc_ops","talk "+id+" rumor")],...n.functions.includes("teach")?[["请教",()=>act("npc_ops","talk "+id+" teach")]]:[],["赠灵草",()=>act("npc_ops","gift "+id+" herb")]]))]);const r=p.relationships[id]||n.initialRelationship;row(el("relations"),n.name,"好感 "+r.friendliness+" · 信任 "+r.trust+" · 敌意 "+r.hostility)}
+ for(const[id,q]of Object.entries(w.quests)){const progress=p.questStages?.[id],status=p.quests[id];const buttons=status==="completed"?[]:status==="active"&&q.legacy?[b("交付","quest_ops","submit "+id)]:status==="active"?[b("推进","quest_ops","step "+id),b("如实报告","quest_ops","step "+id+" report"),b("保护善后","quest_ops","step "+id+" protect"),b("交付","quest_ops","submit "+id)]:[b("接取","quest_ops","accept "+id)];row(el("quests"),q.name,status==="completed"?"已完成":progress?"阶段 "+progress.stage+" / "+q.stages.length+" · "+(q.stages[progress.stage]?.label||"等待交付"):q.kind,buttons)}
+ for(const[id,e]of Object.entries(w.enemies))row(el("enemies"),e.name,"境界 "+e.realm+" · 气血 "+e.hp,[b("挑战","battle_ops","fight "+id,!!p.battle)]);
+ if(p.battle)row(el("enemies"),"斗法进行中 · "+p.battle.enemy.name,"第 "+p.battle.round+" 回合 · 对手气血 "+p.battle.enemy.hp,[b("尝试撤离","battle_ops","retreat")]);
+ for(const[id,s]of Object.entries(w.skills))row(el("skills"),s.name,"灵力 "+s.cost+" · "+categories[s.type]+" · 冷却 "+s.cooldown,[b("施展","battle_ops","skill "+id,!p.battle)]);
+ const rank=["炼气","筑基","金丹","元婴"].indexOf(p.realm);
+ for(const id of p.techniques){const t=techniques[id];if(t)row(el("skills"),t.name,"长期功法 · "+t.type+" · "+(p.techniqueLevels[id]||1)+" 级",[b("修炼四时","cultivate_ops","method "+id+" 4",!avail.includes("cultivate"))]);}
+ if(avail.includes("learn_technique"))for(const[id,t]of Object.entries(techniques))if(!p.techniques.includes(id)&&id!=="forbidden_sword"&&rank>=t.requiredRealm)row(el("skills"),t.name,"可学功法 · "+t.type+" · 学费由传承规则核算",[b("学习","cultivate_ops","learn "+id)]);
+ for(const[id,n]of Object.entries(p.inventory))row(el("inventory"),items[id]?.name||id,"数量 "+n,[b("使用","bag_ops","use "+id),...!p.battle?[b("出售","market_ops","sell "+id+" 1")]:[]]);
+ for(const[id,price]of Object.entries(w.shop||{}))row(el("shop"),items[id]?.name||id,price+" 灵石",[b("购买","market_ops","buy "+id+" 1")]);
+ if(avail.includes("craft"))for(const[id,material]of Object.entries(recipes))row(el("crafting"),items[id]?.name||id,Object.entries(material).map(([k,n])=>(items[k]?.name||k)+"×"+n).join(" · "),[b("炼制","refine_ops","craft "+id+" 1")]);
+ for(const listing of w.auctions||[]){const input=document.createElement("input");input.type="number";input.value=listing.price+1;input.min=listing.price+1;input.setAttribute("aria-label","拍卖出价");input.className="bid-input";row(el("shop"),"拍卖："+(items[listing.item]?.name||listing.item),listing.price+" 灵石 · 到期托管结算",[input,button("出价",()=>act("market_ops","bid "+listing.id+" "+input.value))]);}
+ for(const e of w.incidents||[])row(el("incidents"),e.name,e.status==="closed"?"已结案":"待处理 · 限制相关行动",e.status==="closed"?[]:Object.entries(e.options).map(([id,o])=>b(o.name+(o.stones?" · "+o.stones+"灵石":o.item?" · 灵草×"+o.quantity:" · 灵力"+o.qi),"world_ops","resolve "+e.id+" "+id)));
+ for(const e of w.events||[])row(el("world-events"),e.name,"灵汐历第 "+e.day+" 日");
+ const pet=w.beast;if(pet)row(el("world-events"),pet.name,"灵兽 "+pet.level+" 级 · 忠诚 "+pet.loyalty+" · "+pet.status,[b("喂养","npc_ops","beast feed"),b("训练","npc_ops","beast train"),b("疗伤","npc_ops","beast heal"),b("休养","npc_ops","beast stance rest"),b("助战","npc_ops","beast stance assist")]);
+ if(p.route==="fuyao"&&!pet)el("actions").append(b("契约云狐","npc_ops","beast contract cloud_fox"));
+}

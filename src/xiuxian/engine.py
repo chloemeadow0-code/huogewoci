@@ -89,33 +89,37 @@ class Game(RouteRules):
                     "realm": {"cycle": 0},
                 }
             if self.key not in self.state["players"]:
-                self.state["players"][self.key] = dict(
-                    route_required=True,
-                    name=player_name,
-                    sect="青云宗",
-                    realm="炼气",
-                    level=1,
-                    **generate_root(CONTENT["birth"]),
-                    aptitude=generate_aptitude(CONTENT["birth"]),
-                    method="青云吐纳诀",
-                    cultivation=0,
-                    hp=100,
-                    mp=50,
-                    max_hp=100,
-                    max_mp=50,
-                    stones=30,
-                    reputation=0,
-                    location="sect",
-                    inventory={"herb": 2, "potion": 2},
-                    skills=["strike", "guard"],
-                    relationships={},
-                    quests={},
-                    kills={},
-                    battle=None,
-                    history=[],
-                )
+                self.state["players"][self.key] = self.new_player(player_name)
             self._upgrade()
             self._store()
+
+    @staticmethod
+    def new_player(player_name):
+        return dict(
+            route_required=True,
+            name=player_name,
+            sect="青云宗",
+            realm="炼气",
+            level=1,
+            **generate_root(CONTENT["birth"]),
+            aptitude=generate_aptitude(CONTENT["birth"]),
+            method="青云吐纳诀",
+            cultivation=0,
+            hp=100,
+            mp=50,
+            max_hp=100,
+            max_mp=50,
+            stones=30,
+            reputation=0,
+            location="sect",
+            inventory={"herb": 2, "potion": 2},
+            skills=["strike", "guard"],
+            relationships={},
+            quests={},
+            kills={},
+            battle=None,
+            history=[],
+        )
 
     @property
     def player(self):
@@ -131,13 +135,16 @@ class Game(RouteRules):
         )
         self.db.commit()
 
+    def _load_state(self):
+        row = self.db.execute(
+            "SELECT value FROM session_meta WHERE session_id=? AND key='xiuxian_state'",
+            (self.sid,),
+        ).fetchone()
+        return json.loads(row[0])
+
     def call(self, tool, **kwargs):
         with LOCK:
-            row = self.db.execute(
-                "SELECT value FROM session_meta WHERE session_id=? AND key='xiuxian_state'",
-                (self.sid,),
-            ).fetchone()
-            self.state = json.loads(row[0])
+            self.state = self._load_state()
             before = copy.deepcopy(self.state)
             self._rolls = []
             try:

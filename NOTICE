@@ -8,3 +8,8 @@ subdirectory for details.
 This project is not affiliated with, endorsed by, or associated with
 Paizo Inc., Green Ronin Publishing, or any other game publisher.
 System names are used for identification purposes only.
+
+Lingxi Island includes retry/dispatch and client request design adapted from
+allotment-relay (Copyright (c) 2026 潮汐岛 contributors), under the MIT license.
+Source: https://github.com/sue1231511/allotment-relay
+The complete license is in third_party/allotment-relay/LICENSE.

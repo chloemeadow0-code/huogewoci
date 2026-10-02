@@ -1,78 +1,55 @@
-# 改造报告
+# 灵汐岛架构与改造记录
 
-本地基于 https://github.com/chloemeadow0-code/huogewoci 的 main 分支克隆直接修改，保留仓库Git历史；没有另建独立项目。尚未部署公网。
+## 底座和调用关系
 
-## 原架构分析
+主项目是 `chloemeadow0-code/huogewoci` 中已实现的青云问道，名称统一为灵汐岛，继续保留 Git 历史、凭证和修行进度。没有将主项目换成另一个仓库。
 
-- `src/lorekit` 是通用基础：SQLite schema、sessions/session_meta、角色/区域表、叙事时间、NPC记忆、快照和分支存档。
-- `src/hogwarts/engine.py` 原来加载 `systems/hogwarts` 的 world/spells/courses/items JSON，校园扩展状态以 `hogwarts_state` JSON 放在 session_meta，players按凭证派生的player_key隔离。
-- `server.py` 用 FastMCP 暴露18个白名单工具，stdio入口和HTTP入口共用Game.call。原玩家MCP没有resources/prompts，管理员LoreKit工具不暴露给玩家。
-- `auth.py` 只持久化凭证SHA256摘要，ContextVar隔离请求身份。
-- `http_app.py` 复用单进程RLock、线程池、每请求SQLite连接，提供注册、状态、动作、健康检查、静态网页、Streamable HTTP。保留域名/来源校验、凭证类型隔离、POST大小限制和安全响应头。
-- 原版没有完整战斗，也没有玩家端AI裁判入口；其魔咒、课程和物品结果原本已用规则计算。改造增加程序战斗，不是将AI判定代码换一个提示词。
+检查 allotment-relay 的 MCP 入口/dispatch、FastAPI、SQLite、v1 auth/idempotency、world/events/progress/npc/tale/story 和模块前端的调用关系；本地源码索引扫描 350 个 Python/JS/CSS/HTML 文件，重点阅读相关框架和玩法闭环。借鉴并适配聚合工具、SQLite 重试、请求幂等及前端请求结构，保留 MIT 许可在 `third_party/allotment-relay/LICENSE`。没有声称逐行审读 13 万行源代码。
 
-## 保留与替换
+潮汐岛的农田、捕鱼、婚姻、剧场等业务没有导入本仓库，因此此次不存在“先复制再删除”这些模块。主项目之前的 Hogwarts 专属代码已在早先修仙改造中替换；本次复用现有修仙规则，避免重新实现战斗和五路线。
 
-保留整个 `src/lorekit`、LICENSE/NOTICE、数据库schema和快照工具。复用原账号摘要认证、请求身份隔离、MCP调用封装、HTTP权限边界、静态资源布局、Docker持久卷与容器降权机制。
-将校园规则、课表、学院、魔杖、魔咒、宵禁、校园网页及测试替换为修仙模型、固定技能配置、四区域、四境界和回合战斗。玩家游戏模块改名为xiuxian，原hogwarts专属文件删除。新的成长和战斗规则集中在引擎，接口只传行动参数。
+```text
+HTTP 凭证 / MCP 请求
+  → auth 身份边界
+  → 13 个聚合工具 / v1 command
+  → mcp_dispatch 解析固定子命令、SQLite 锁重试
+  → IslandGame.call BEGIN IMMEDIATE
+  → 幂等查验、灾档限制、现有 Game/RouteMechanics 规则
+  → 世界/任务/履历增量及缓存一起写入独立表
+  → commit → result/changes/new_events/available_actions
+```
 
-## 新增文件
+前端 `api/store → app → map/hud/scenes/place/ui/modal` 使用同一个 v1 路由；5 秒刷新。真实 MCP 支持 stdio 和 Streamable HTTP，资源保留 `xiuxian://rules`、提示 `begin_journey`。玩家工具不会注册快照/加载/管理员功能。
 
-- `src/xiuxian/__init__.py`：模块说明。
-- `src/xiuxian/engine.py`：23个动作、状态持久化、时间事件、战斗、关系、任务、突破、秘境防刷。
-- `src/xiuxian/rules.py`：校验、伤害、命中、逃跑公式。
-- `src/xiuxian/models.py`：Player/StatusEffect/Technique/Skill/NPC/Quest类型。
-- `src/xiuxian/auth.py`：复用原凭证机制，修仙凭证前缀xx_sk_。
-- `src/xiuxian/server.py`：23工具、xiuxian://rules资源、begin_journey prompt。
-- `src/xiuxian/http_app.py`：复用HTTP入口和身份边界，改为修仙状态。
-- `src/xiuxian/container.py`：复用容器数据卷权限处理和降权。
-- `src/xiuxian/operator.py`：复用LoreKit本地手动存档，不暴露给AI。
-- `src/xiuxian/demo.py`：仅调用玩家动作的完整成长Demo。
-- `src/xiuxian/web/index.html`、`app.js`、`style.css`、`manual.html`：注册、凭证与说明页。
-- `systems/xiuxian/content.json`：境界、地图节点、功法、招式、NPC、敌人、掉落、物品、价格、配方、任务、事件和状态类型。
-- `systems/xiuxian/requirements-deploy.txt`：沿用原部署锁定依赖。
-- `tests/xiuxian/test_game.py`：规则、循环、随机重放、并发、恢复、状态、突破和防刷。
-- `tests/xiuxian/test_protocol.py`：真实stdio和HTTP MCP、资源、prompt、角色隔离和完整循环重放。
-- `run-xiuxian.py`、`start-xiuxian.ps1`：沿用原启动方式。
-- `.github/workflows/xiuxian-deploy.yml`：沿用原Linux测试、Docker构建与卷恢复检查，切换模块和接口。
-- `IMPLEMENTATION.md`：本报告。
+## 文件变更
 
-修改：README.md、DEPLOY.md、Dockerfile、compose.yaml、.dockerignore、.gitignore。删除：src/hogwarts、systems/hogwarts、tests/hogwarts、HOGWARTS.md、run-hogwarts.py、start-hogwarts.ps1及旧工作流。
+| 文件 | 作用 |
+|---|---|
+| src/xiuxian/engine.py | 抽取 new_player 与可覆盖的读取接口，保留固定战斗/成长规则 |
+| src/xiuxian/db.py | 独立表、WAL、旧 JSON 导入及表行装载保存 |
+| src/xiuxian/island.py | 12 地点、NPC、阶段任务、灾档、物品履历、拍卖、幂等事务 |
+| src/xiuxian/mcp_dispatch.py | 13 聚合工具、严格参数解析、help、命令提示与锁重试 |
+| src/xiuxian/server.py | MCP 注册、共享 dispatcher、资源及 prompt |
+| src/xiuxian/auth.py | api_keys 表迁移及原凭证兼容 |
+| src/xiuxian/http_app.py | FastAPI 入口、v1 API、两端共享权限与角色 |
+| src/xiuxian/operator.py | 新独立表快照恢复，涵盖拍卖和幂等缓存 |
+| src/xiuxian/island_demo.py | 仅玩家命令的完整循环演示 |
+| web/index.html/style.css/app.js/manual.html | 灵汐岛页面、交互和新版人类手册 |
+| web/api.js/store.js/map.js/hud.js | 请求重试、同号状态、地图、角色面板 |
+| web/scenes/place.js、web/ui/*、web/catalog.js | 地点功能、人物、任务、斗法、物品、炼制和弹窗 |
+| systems/xiuxian/island.json | 12 地点、18 NPC、6 敌对人物、30 阶段任务、13 事件、10 灾档 |
+| systems/xiuxian/content.json | 复用宗门、境界、配方、技能，补全八类技能和功法类型 |
+| systems/xiuxian/requirements-deploy.txt | FastAPI 与现有 MCP 依赖锁定 |
+| tests/xiuxian/test_island.py、test_protocol.py、test_game.py | 新模型和完整协议/循环测试，适配工具注册 |
+| Dockerfile、NOTICE、third_party/*、.github/workflows/xiuxian-deploy.yml | 容器许可证及持续检查 |
+| README.md、DEPLOY.md、ROUTES.md、LINGXI.md | 当前接入、规则与部署文档 |
 
-## 可玩内容与循环
+## 数据状态
 
-详细ID和调用示例见README。世界为按身份映射的宗门驻地、青石镇、落霞山野和灵溪秘境；4名NPC、6种敌人、9门功法、13个固定类型招式、31种物品、9个配方、13个任务。炼气、筑基、金丹、元婴各初中后期与圆满。
+在线入口使用 `IslandGame + Store`，核心字段、背包、装备、技能、关系、任务和事件分表。旧 `Game` 的 LoreKit JSON 保存接口仍供既有规则测试与旧版兼容使用，**在线入口不使用它存储全世界**。少量灵活元数据、战斗结构、任务配置和历史结果保留 JSON 列，备份快照也用 JSON；没有把整个在线状态塞回一个 JSON 字段。
 
-MCP工具：get_self / get_world / cultivate / travel / explore / talk / fight / use_skill / use_item / craft / trade / accept_quest / submit_quest / breakthrough / retreat / inspect_history / choose_route / inspect_route / learn_technique / prepare_formation / manage_beast / track / rename。
+迁移仅首次执行，旧 JSON 保持原样作为恢复参考。灵根和资质不重新抽取；改名不重置信誉、关系或进度。身份不接受用户参数覆写。事务将奖励、资源扣除、随机序列与幂等响应共同提交。
 
-可以真实完成：入宗→修炼→采药任务→下山探索→妖兽逐回合战斗→掉落→回宗交任务→学功法/买装备→炼气圆满→筑基丹→筑基→进入周期秘境→击败石卫→交试炼任务。Demo不会写角色数值或赠送测试物品。
+当前保存方式每次装载和保存共享世界的玩家集合，适合单副本小规模第一版。大量玩家和长历史需要增量 SQL 更新、历史分页及缓存清理，不应宣称已达到大规模在线性能。
 
-## 权威规则与存储
-
-AI只传招式ID和行动参数。命中、伤害、控制、先后手、冷却、灵力、掉落和突破由程序计算；不存在描述解析、LLM裁判或任意效果/数值参数。
-攻击公式：max(1, 威力×有效攻击/100 + 3×境界差 − 有效防御)，之后护盾吸收。敏捷影响先手、命中与逃跑。可重放PRNG存入世界，随机用途与结果写历史。失败动作回滚所有资源、时间和随机状态。
-
-`accounts.db`仅凭证摘要及身份；`xiuxian.db`沿用LoreKit SQLite，sessions/system_type=xiuxian，session_meta/key=xiuxian_state保存版本化世界与独立玩家JSON。世界分钟、事件、PRNG、秘境周期和个人完整历史持久化；失败不会立即死亡，重伤和物品掉落需疗养。
-
-## 验证与限制
-
-测试报告和Demo结果作为交付附件提供。测试覆盖真实MCP、完整筑基与秘境循环、四境界突破、失败代价、秘境周期、防重复奖励、装备、非法参数、账号隔离、并发不丢动作、重启恢复和原LoreKit快照恢复。
-
-本机未安装Docker，未实际验证Docker构建、Linux工作流或公网部署。工作流已经更新，不能把旧仓库的CI成功结果当作本次改造验证。
-
-第一版仍简化：单进程共享行动时钟；出生随机生成并持久化五行灵根组合与1至5资质；区域内节点没有逐建筑专属规则；NPC使用固定选项与记忆；部分世界事件只修改规则参数，拍卖会没有竞价；高境界缺少专属地图；暂无跨玩家交易、多人战斗、宗门竞争、实时后台时钟、真正死亡和转世。旧校园存档与hw_sk_凭证不自动迁移，部署建议新数据目录。
-
-本次 Windows / Python 3.12 验证：82项测试全部通过，含真实stdio完整循环重放和Streamable HTTP认证；独立Demo完成筑基、秘境石卫与任务提交。Docker和公网部署未验证。
-
-## 五路线增量改造
-
-新增 src/xiuxian/routes.py（路线配置与规则助手）、routes_demo.py（五种玩法试玩）、tests/xiuxian/test_routes.py、ROUTES.md。
-修改 engine.py 将原规则计算接入路线修正、预阵、剑势、丹品、灵兽、信誉与方向成长；server.py增加choose_route/inspect_route/learn_technique/prepare_formation/manage_beast/track，总计23工具。
-修改 content.json 保存完整五条路线设定与资源、专属传承/技能/任务、预阵、丹品、灵兽和价格参数；models.py新增路线与灵兽类型；http_app.py及注册页支持可选route，未选择时AI自主择道；demo.py改为剑宗路线，并根据状态主动补给。
-旧版修仙存档不清空，第一次选择路线后不能再切换。新角色必须择道才能开始行动。四区域结构保留，宗门驻地按身份显示，散修以小镇为基地。
-
-固定加成负面与四种宗门机制、散修杂学已由程序实现。功法等级与熟练度数值成长已经实现。组队门规、宗门政治、科研审批和真正死亡仍未实现，详见ROUTES.md；不存在AI临场裁定。
-
-本次最终验证：82项测试全部通过；原筑基/秘境Demo与五路线独立试玩均完成。包含真实stdio完整成长重放、HTTP MCP、旧存档择道、路线特殊机制与价格一致性。
-
-新增birth.py：灵根与资质出生抽样使用系统随机源，与战斗随机序列隔离；旧存档不重抽。rename动作保留人物ID、凭证、全部进度与关系，只记录改名历史，不推进时间。网页人类与AI凭证均可通过/api/rename修改自己的道号。
+完整表、命令、内容、公式、验证及缺项见 [LINGXI.md](LINGXI.md)。

@@ -272,6 +272,52 @@
       "type": "attack",
       "name": "伏妖拳",
       "school": "body"
+    },
+    "calm": {
+      "name": "清心诀",
+      "type": "buff",
+      "cost": 4,
+      "power": 4,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 80,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
+    },
+    "weaken": {
+      "name": "落叶诀",
+      "type": "debuff",
+      "cost": 5,
+      "power": 2,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "enemy",
+      "effectChance": 80,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general",
+      "effect": "weakness"
+    },
+    "escape_step": {
+      "name": "归风步",
+      "type": "escape",
+      "cost": 4,
+      "power": 15,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 80,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
     }
   },
   "npcs": {
@@ -764,7 +810,7 @@
     },
     "qingxiao_sword": {
       "name": "断云剑心诀",
-      "type": "剑修",
+      "type": "剑诀",
       "school": "sword",
       "route": "qingxiao",
       "requiredRealm": 0,
@@ -780,7 +826,7 @@
     },
     "xuanheng_array": {
       "name": "玄衡阵解",
-      "type": "阵道",
+      "type": "阵诀",
       "school": "formation",
       "route": "xuanheng",
       "requiredRealm": 0,
@@ -858,6 +904,40 @@
       },
       "maxLevel": 5,
       "tuition": 0
+    },
+    "talisman_manual": {
+      "name": "听雨符经",
+      "type": "符道",
+      "school": "formation",
+      "route": null,
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "水",
+        "木"
+      ],
+      "cultivationBonus": 1,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 25
+    },
+    "forge_manual": {
+      "name": "温炉器录",
+      "type": "器道",
+      "school": "craft",
+      "route": null,
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "火",
+        "金"
+      ],
+      "cultivationBonus": 1,
+      "qiBonus": 5,
+      "passiveEffects": {
+        "defense": 1
+      },
+      "maxLevel": 10,
+      "tuition": 25
     }
   },
   "items": {

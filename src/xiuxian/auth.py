@@ -23,15 +23,24 @@ class Accounts:
         Path(data_dir).mkdir(parents=True, exist_ok=True)
         self.path = Path(data_dir) / "accounts.db"
         with self.connect() as db:
+            if (
+                db.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type='table' AND name='accounts'"
+                ).fetchone()
+                and not db.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type='table' AND name='api_keys'"
+                ).fetchone()
+            ):
+                db.execute("ALTER TABLE accounts RENAME TO api_keys")
             db.execute(
-                "CREATE TABLE IF NOT EXISTS accounts ("
+                "CREATE TABLE IF NOT EXISTS api_keys ("
                 "key_hash TEXT PRIMARY KEY, player_key TEXT UNIQUE NOT NULL, "
                 "name TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP)"
             )
-            columns = {row[1] for row in db.execute("PRAGMA table_info(accounts)")}
+            columns = {row[1] for row in db.execute("PRAGMA table_info(api_keys)")}
             if "kind" not in columns:
                 db.execute(
-                    "ALTER TABLE accounts ADD COLUMN kind TEXT NOT NULL DEFAULT 'human'"
+                    "ALTER TABLE api_keys ADD COLUMN kind TEXT NOT NULL DEFAULT 'human'"
                 )
 
     def connect(self):
@@ -53,7 +62,7 @@ class Accounts:
         player_key = secrets.token_hex(16)
         with LOCK, self.connect() as db:
             db.execute(
-                "INSERT INTO accounts(key_hash,player_key,name,kind) VALUES (?,?,?,?)",
+                "INSERT INTO api_keys(key_hash,player_key,name,kind) VALUES (?,?,?,?)",
                 (self.digest(token), player_key, name, kind),
             )
         return token, {"player_key": player_key, "player_name": name, "kind": kind}
@@ -67,7 +76,7 @@ class Accounts:
             return None
         with self.connect() as db:
             row = db.execute(
-                "SELECT player_key,name,kind FROM accounts WHERE key_hash=?",
+                "SELECT player_key,name,kind FROM api_keys WHERE key_hash=?",
                 (self.digest(token),),
             ).fetchone()
         return (

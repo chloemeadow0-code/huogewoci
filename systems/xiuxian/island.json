@@ -1,0 +1,2393 @@
+{
+  "name": "灵汐岛",
+  "locations": {
+    "qingxiao": {
+      "id": "qingxiao",
+      "name": "青霄剑宗",
+      "area": "sect",
+      "x": 0.31,
+      "y": 0.22,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "bamboo"
+      ],
+      "description": "断云山上，剑声穿过清晨的薄雾。"
+    },
+    "xuanheng": {
+      "id": "xuanheng",
+      "name": "玄衡阵门",
+      "area": "sect",
+      "x": 0.72,
+      "y": 0.25,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "ruins"
+      ],
+      "description": "古阵节点在浅青石阶间安静流转。"
+    },
+    "danxia": {
+      "id": "danxia",
+      "name": "丹霞谷",
+      "area": "sect",
+      "x": 0.24,
+      "y": 0.61,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "mist"
+      ],
+      "description": "药香随山风散入花谷，丹炉旁有温热的灯。"
+    },
+    "fuyao": {
+      "id": "fuyao",
+      "name": "伏妖门",
+      "area": "sect",
+      "x": 0.77,
+      "y": 0.64,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "ridge"
+      ],
+      "description": "荒岭山门外，灵兽留下深浅不一的脚印。"
+    },
+    "market": {
+      "id": "market",
+      "name": "灵汐坊市",
+      "area": "town",
+      "x": 0.51,
+      "y": 0.49,
+      "requiredRealm": 0,
+      "exits": [
+        "qingxiao",
+        "xuanheng",
+        "danxia",
+        "fuyao",
+        "blackmarket",
+        "bamboo",
+        "lake"
+      ],
+      "description": "山与海相遇的集市，四宗修士和散修在此交换见闻。"
+    },
+    "blackmarket": {
+      "id": "blackmarket",
+      "name": "黑市巷",
+      "area": "town",
+      "x": 0.59,
+      "y": 0.61,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "ruins"
+      ],
+      "description": "窄巷挂着一盏淡红纸灯，残卷与消息都有代价。"
+    },
+    "bamboo": {
+      "id": "bamboo",
+      "name": "青竹林",
+      "area": "wild",
+      "x": 0.31,
+      "y": 0.4,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "qingxiao",
+        "mist"
+      ],
+      "description": "竹叶轻轻相碰，林中可采灵药，也藏着巡山妖兽。"
+    },
+    "mist": {
+      "id": "mist",
+      "name": "雾隐山谷",
+      "area": "wild",
+      "x": 0.15,
+      "y": 0.48,
+      "requiredRealm": 0,
+      "exits": [
+        "bamboo",
+        "danxia",
+        "lake"
+      ],
+      "description": "云雾浮在山溪上，岔路深处有尚未辨认的灵植。"
+    },
+    "ridge": {
+      "id": "ridge",
+      "name": "荒岭深处",
+      "area": "wild",
+      "x": 0.85,
+      "y": 0.79,
+      "requiredRealm": 1,
+      "exits": [
+        "fuyao",
+        "lake"
+      ],
+      "description": "越过边境石标，追踪与避险比莽撞更有用。"
+    },
+    "lake": {
+      "id": "lake",
+      "name": "月汐湖",
+      "area": "wild",
+      "x": 0.51,
+      "y": 0.78,
+      "requiredRealm": 1,
+      "exits": [
+        "market",
+        "mist",
+        "ridge",
+        "secret"
+      ],
+      "description": "月色被湖水收下，潮汐时灵脉会缓慢回应。"
+    },
+    "ruins": {
+      "id": "ruins",
+      "name": "旧宗遗址",
+      "area": "wild",
+      "x": 0.79,
+      "y": 0.41,
+      "requiredRealm": 1,
+      "exits": [
+        "blackmarket",
+        "xuanheng",
+        "secret"
+      ],
+      "description": "倾倒的旧山门仍有禁制，残缺石刻记着另一种选择。"
+    },
+    "secret": {
+      "id": "secret",
+      "name": "潮生秘境",
+      "area": "realm",
+      "x": 0.72,
+      "y": 0.91,
+      "requiredRealm": 1,
+      "exits": [
+        "lake",
+        "ruins"
+      ],
+      "description": "潮生潮落之间，古阵只在一周的前两日打开。"
+    }
+  },
+  "npcs": {
+    "qingxiao_leader": {
+      "name": "闻照川",
+      "identity": "掌门",
+      "duty": "调停与传承",
+      "background": "守过七日山道，把幸存者的名字记在旧剑鞘上。",
+      "personality": "沉稳克制",
+      "positive": "守信",
+      "negative": "不善表达",
+      "location": "qingxiao",
+      "functions": [
+        "talk",
+        "story"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_qingxiao_leader",
+      "specialEvent": "旧事重访",
+      "technique": "qingxiao_sword"
+    },
+    "qingxiao_mentor": {
+      "name": "林青枝",
+      "identity": "核心导师",
+      "duty": "功法指导",
+      "background": "从外门一路成长，愿意陪弟子复盘每次失误。",
+      "personality": "爽朗耐心",
+      "positive": "善于教学",
+      "negative": "好胜",
+      "location": "qingxiao",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_qingxiao_mentor",
+      "specialEvent": "旧事重访",
+      "technique": "qingxiao_sword"
+    },
+    "qingxiao_steward": {
+      "name": "许听风",
+      "identity": "事务负责人",
+      "duty": "任务与资源",
+      "background": "护送山下药队多年，熟悉每条返程山道。",
+      "personality": "严谨可靠",
+      "positive": "记性很好",
+      "negative": "过分担忧",
+      "location": "qingxiao",
+      "functions": [
+        "talk",
+        "quest",
+        "shop"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_qingxiao_steward",
+      "specialEvent": "旧事重访",
+      "technique": "qingxiao_sword"
+    },
+    "xuanheng_leader": {
+      "name": "顾衡",
+      "identity": "掌门",
+      "duty": "调停与传承",
+      "background": "维护过一次险些崩塌的护山阵，不再轻视小误差。",
+      "personality": "安静理性",
+      "positive": "公平",
+      "negative": "固执",
+      "location": "xuanheng",
+      "functions": [
+        "talk",
+        "story"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_xuanheng_leader",
+      "specialEvent": "旧事重访",
+      "technique": "xuanheng_array"
+    },
+    "xuanheng_mentor": {
+      "name": "沈知序",
+      "identity": "核心导师",
+      "duty": "功法指导",
+      "background": "研究古阵，喜欢把难懂的禁制画成简图。",
+      "personality": "好奇细致",
+      "positive": "善于拆解",
+      "negative": "容易忘时",
+      "location": "xuanheng",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_xuanheng_mentor",
+      "specialEvent": "旧事重访",
+      "technique": "xuanheng_array"
+    },
+    "xuanheng_steward": {
+      "name": "柳未央",
+      "identity": "事务负责人",
+      "duty": "任务与资源",
+      "background": "管理阵材仓，曾被伪造账册欺骗。",
+      "personality": "谨慎认真",
+      "positive": "负责",
+      "negative": "不轻信人",
+      "location": "xuanheng",
+      "functions": [
+        "talk",
+        "quest",
+        "shop"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_xuanheng_steward",
+      "specialEvent": "旧事重访",
+      "technique": "xuanheng_array"
+    },
+    "danxia_leader": {
+      "name": "苏映霞",
+      "identity": "掌门",
+      "duty": "调停与传承",
+      "background": "大疫时走遍岛上村落，仍保存着行医旧册。",
+      "personality": "温和坚定",
+      "positive": "仁心",
+      "negative": "不肯休息",
+      "location": "danxia",
+      "functions": [
+        "talk",
+        "story"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_danxia_leader",
+      "specialEvent": "旧事重访",
+      "technique": "danxia_herbal"
+    },
+    "danxia_mentor": {
+      "name": "温芷",
+      "identity": "核心导师",
+      "duty": "功法指导",
+      "background": "研究毒理，是为了认出那些隐藏的副作用。",
+      "personality": "细腻坦率",
+      "positive": "诚实",
+      "negative": "说话直接",
+      "location": "danxia",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_danxia_mentor",
+      "specialEvent": "旧事重访",
+      "technique": "danxia_herbal"
+    },
+    "danxia_steward": {
+      "name": "叶小满",
+      "identity": "事务负责人",
+      "duty": "任务与资源",
+      "background": "负责药材调配，常为稀有药材的来源发愁。",
+      "personality": "开朗忙碌",
+      "positive": "慷慨",
+      "negative": "急性子",
+      "location": "danxia",
+      "functions": [
+        "talk",
+        "quest",
+        "shop"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_danxia_steward",
+      "specialEvent": "旧事重访",
+      "technique": "danxia_herbal"
+    },
+    "fuyao_leader": {
+      "name": "陆山眠",
+      "identity": "掌门",
+      "duty": "调停与传承",
+      "background": "出身猎妖队，后来收养了一只失去族群的灵兽。",
+      "personality": "宽厚寡言",
+      "positive": "保护弱者",
+      "negative": "犹豫",
+      "location": "fuyao",
+      "functions": [
+        "talk",
+        "story"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_fuyao_leader",
+      "specialEvent": "旧事重访",
+      "technique": "fuyao_body"
+    },
+    "fuyao_mentor": {
+      "name": "白若岚",
+      "identity": "核心导师",
+      "duty": "功法指导",
+      "background": "坚持契约双方都有退路，常被猎杀派质疑。",
+      "personality": "清醒耐心",
+      "positive": "尊重灵兽",
+      "negative": "理想化",
+      "location": "fuyao",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_fuyao_mentor",
+      "specialEvent": "旧事重访",
+      "technique": "fuyao_body"
+    },
+    "fuyao_steward": {
+      "name": "石望",
+      "identity": "事务负责人",
+      "duty": "任务与资源",
+      "background": "负责兽苑，曾因一次错误追踪失去同伴。",
+      "personality": "认真警惕",
+      "positive": "勇敢",
+      "negative": "多疑",
+      "location": "fuyao",
+      "functions": [
+        "talk",
+        "quest",
+        "shop"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_fuyao_steward",
+      "specialEvent": "旧事重访",
+      "technique": "fuyao_body"
+    },
+    "merchant": {
+      "name": "岑小舟",
+      "identity": "坊市商人",
+      "duty": "辨认法器真伪",
+      "background": "曾吃过假器的亏，如今每件货都写明来历。",
+      "personality": "健谈",
+      "positive": "诚实",
+      "negative": "爱讨价",
+      "location": "market",
+      "functions": [
+        "talk",
+        "shop"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_merchant",
+      "specialEvent": "旧事重访",
+      "technique": "verdant"
+    },
+    "innkeeper": {
+      "name": "桑晚",
+      "identity": "客栈老板",
+      "duty": "疗伤与落脚",
+      "background": "收留过迷路的修士，欠房费也会记账。",
+      "personality": "温和",
+      "positive": "照顾人",
+      "negative": "心软",
+      "location": "market",
+      "functions": [
+        "talk",
+        "heal"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_innkeeper",
+      "specialEvent": "旧事重访",
+      "technique": "verdant"
+    },
+    "alliance": {
+      "name": "赵行远",
+      "identity": "散修盟管事",
+      "duty": "私人传承与委托",
+      "background": "走过四宗都未入门，后来搭起散修互助网。",
+      "personality": "务实",
+      "positive": "公正",
+      "negative": "谨慎",
+      "location": "market",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_alliance",
+      "specialEvent": "旧事重访",
+      "technique": "beast_lore"
+    },
+    "intel": {
+      "name": "云栖",
+      "identity": "情报贩子",
+      "duty": "辨别危险线索",
+      "background": "曾为一条假消息失去朋友，只卖能够验证的线索。",
+      "personality": "敏锐",
+      "positive": "守约",
+      "negative": "多疑",
+      "location": "blackmarket",
+      "functions": [
+        "talk",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_intel",
+      "specialEvent": "旧事重访",
+      "technique": "verdant"
+    },
+    "blackmerchant": {
+      "name": "阿朔",
+      "identity": "黑市商人",
+      "duty": "特殊货物与拍卖",
+      "background": "愿意收残卷，也害怕幕后东家的旧债。",
+      "personality": "机灵",
+      "positive": "识货",
+      "negative": "隐瞒过去",
+      "location": "blackmarket",
+      "functions": [
+        "talk",
+        "shop",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_blackmerchant",
+      "specialEvent": "旧事重访",
+      "technique": "verdant"
+    },
+    "guide": {
+      "name": "程见山",
+      "identity": "遗迹向导",
+      "duty": "探路与禁制指引",
+      "background": "父亲被旧宗禁制所困，反复寻找更安全的路。",
+      "personality": "耐心",
+      "positive": "细心",
+      "negative": "执拗",
+      "location": "ruins",
+      "functions": [
+        "talk",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_guide",
+      "specialEvent": "旧事重访",
+      "technique": "verdant"
+    }
+  },
+  "villains": {
+    "bloodmaster": {
+      "name": "殷迟",
+      "identity": "血炼堂堂主",
+      "faction": "血炼堂",
+      "purpose": "夺取灵脉，换取病中弟子的寿命",
+      "locations": [
+        "mist"
+      ],
+      "story": "villain_bloodmaster",
+      "stages": [
+        "调查",
+        "追踪",
+        "交锋",
+        "处置"
+      ],
+      "stageEffects": [
+        "异常消息出现",
+        "相关区域风险上升",
+        "争夺资源",
+        "世界旗标记录处置"
+      ],
+      "enemy": {
+        "name": "殷迟",
+        "location": "wild",
+        "hp": 65,
+        "strength": 13,
+        "defense": 4,
+        "reward": 30,
+        "agility": 11,
+        "qi": 40,
+        "maxQi": 40,
+        "realm": 0,
+        "type": "敌对修士",
+        "skills": [
+          "strike",
+          "heal"
+        ],
+        "drops": {
+          "iron": 2,
+          "herb": 2
+        },
+        "species": "human"
+      }
+    },
+    "exile": {
+      "name": "周落星",
+      "identity": "青霄剑宗弃徒",
+      "faction": "离宗剑修",
+      "purpose": "证明被否定的禁剑，却不愿伤害当年的同门",
+      "locations": [
+        "bamboo"
+      ],
+      "story": "villain_exile",
+      "stages": [
+        "调查",
+        "追踪",
+        "交锋",
+        "处置"
+      ],
+      "stageEffects": [
+        "异常消息出现",
+        "相关区域风险上升",
+        "争夺资源",
+        "世界旗标记录处置"
+      ],
+      "enemy": {
+        "name": "周落星",
+        "location": "wild",
+        "hp": 65,
+        "strength": 13,
+        "defense": 4,
+        "reward": 30,
+        "agility": 11,
+        "qi": 40,
+        "maxQi": 40,
+        "realm": 0,
+        "type": "敌对修士",
+        "skills": [
+          "strike",
+          "heal"
+        ],
+        "drops": {
+          "iron": 2,
+          "herb": 2
+        },
+        "species": "human"
+      }
+    },
+    "owner": {
+      "name": "闻既白",
+      "identity": "黑市幕后东家",
+      "faction": "黑市债契",
+      "purpose": "垄断残卷来历，以旧债控制商人",
+      "locations": [
+        "blackmarket"
+      ],
+      "story": "villain_owner",
+      "stages": [
+        "调查",
+        "追踪",
+        "交锋",
+        "处置"
+      ],
+      "stageEffects": [
+        "异常消息出现",
+        "相关区域风险上升",
+        "争夺资源",
+        "世界旗标记录处置"
+      ],
+      "enemy": {
+        "name": "闻既白",
+        "location": "wild",
+        "hp": 65,
+        "strength": 13,
+        "defense": 4,
+        "reward": 30,
+        "agility": 11,
+        "qi": 40,
+        "maxQi": 40,
+        "realm": 0,
+        "type": "敌对修士",
+        "skills": [
+          "strike",
+          "heal"
+        ],
+        "drops": {
+          "iron": 2,
+          "herb": 2
+        },
+        "species": "human"
+      }
+    },
+    "oldhunter": {
+      "name": "秦逐",
+      "identity": "伏妖门前猎妖统领",
+      "faction": "猎杀派旧部",
+      "purpose": "消灭曾毁掉边寨的妖群，拒绝区分契约兽",
+      "locations": [
+        "ridge"
+      ],
+      "story": "villain_oldhunter",
+      "stages": [
+        "调查",
+        "追踪",
+        "交锋",
+        "处置"
+      ],
+      "stageEffects": [
+        "异常消息出现",
+        "相关区域风险上升",
+        "争夺资源",
+        "世界旗标记录处置"
+      ],
+      "enemy": {
+        "name": "秦逐",
+        "location": "wild",
+        "hp": 115,
+        "defense": 7,
+        "reward": 50,
+        "agility": 12,
+        "qi": 30,
+        "maxQi": 30,
+        "strength": 20,
+        "realm": 1,
+        "type": "Boss",
+        "skills": [
+          "strike",
+          "guard"
+        ],
+        "drops": {
+          "iron": 2,
+          "herb": 2
+        },
+        "species": "mechanism"
+      }
+    },
+    "poisoner": {
+      "name": "祝眠",
+      "identity": "丹霞谷禁药师",
+      "faction": "离谷药师",
+      "purpose": "证明禁药能够救人，隐瞒失败者的代价",
+      "locations": [
+        "mist"
+      ],
+      "story": "villain_poisoner",
+      "stages": [
+        "调查",
+        "追踪",
+        "交锋",
+        "处置"
+      ],
+      "stageEffects": [
+        "异常消息出现",
+        "相关区域风险上升",
+        "争夺资源",
+        "世界旗标记录处置"
+      ],
+      "enemy": {
+        "name": "祝眠",
+        "location": "wild",
+        "hp": 115,
+        "defense": 7,
+        "reward": 50,
+        "agility": 12,
+        "qi": 30,
+        "maxQi": 30,
+        "strength": 20,
+        "realm": 1,
+        "type": "Boss",
+        "skills": [
+          "strike",
+          "guard"
+        ],
+        "drops": {
+          "iron": 2,
+          "herb": 2
+        },
+        "species": "mechanism"
+      }
+    },
+    "remnant": {
+      "name": "沈潮生",
+      "identity": "古秘境残魂宗主",
+      "faction": "旧宗残魂",
+      "purpose": "保住旧宗弟子的残念，让开阵者承担代价",
+      "locations": [
+        "secret"
+      ],
+      "story": "villain_remnant",
+      "stages": [
+        "调查",
+        "追踪",
+        "交锋",
+        "处置"
+      ],
+      "stageEffects": [
+        "异常消息出现",
+        "相关区域风险上升",
+        "争夺资源",
+        "世界旗标记录处置"
+      ],
+      "enemy": {
+        "name": "沈潮生",
+        "location": "realm",
+        "hp": 115,
+        "defense": 7,
+        "reward": 50,
+        "agility": 12,
+        "qi": 30,
+        "maxQi": 30,
+        "strength": 20,
+        "realm": 1,
+        "type": "Boss",
+        "skills": [
+          "strike",
+          "guard"
+        ],
+        "drops": {
+          "iron": 2,
+          "herb": 2
+        },
+        "species": "mechanism"
+      }
+    }
+  },
+  "quests": {
+    "trial_qingxiao": {
+      "name": "山门初历",
+      "location": "qingxiao",
+      "npc": "qingxiao_steward",
+      "kind": "宗门任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "qingxiao_mentor",
+          "label": "向导师请教"
+        },
+        {
+          "type": "kill",
+          "target": "wolf",
+          "location": "bamboo",
+          "label": "巡守青竹林，击退一只妖狼"
+        },
+        {
+          "type": "return",
+          "location": "qingxiao",
+          "label": "回山门报告"
+        }
+      ],
+      "reward": 65,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "trial_xuanheng": {
+      "name": "山门初历",
+      "location": "xuanheng",
+      "npc": "xuanheng_steward",
+      "kind": "宗门任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "xuanheng_mentor",
+          "label": "向导师请教"
+        },
+        {
+          "type": "kill",
+          "target": "wolf",
+          "location": "bamboo",
+          "label": "巡守青竹林，击退一只妖狼"
+        },
+        {
+          "type": "return",
+          "location": "xuanheng",
+          "label": "回山门报告"
+        }
+      ],
+      "reward": 65,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "trial_danxia": {
+      "name": "山门初历",
+      "location": "danxia",
+      "npc": "danxia_steward",
+      "kind": "宗门任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "danxia_mentor",
+          "label": "向导师请教"
+        },
+        {
+          "type": "kill",
+          "target": "wolf",
+          "location": "bamboo",
+          "label": "巡守青竹林，击退一只妖狼"
+        },
+        {
+          "type": "return",
+          "location": "danxia",
+          "label": "回山门报告"
+        }
+      ],
+      "reward": 65,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "trial_fuyao": {
+      "name": "山门初历",
+      "location": "fuyao",
+      "npc": "fuyao_steward",
+      "kind": "宗门任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "fuyao_mentor",
+          "label": "向导师请教"
+        },
+        {
+          "type": "kill",
+          "target": "wolf",
+          "location": "bamboo",
+          "label": "巡守青竹林，击退一只妖狼"
+        },
+        {
+          "type": "return",
+          "location": "fuyao",
+          "label": "回山门报告"
+        }
+      ],
+      "reward": 65,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "rogue_trial": {
+      "name": "一位散修的第一步",
+      "location": "market",
+      "npc": "alliance",
+      "kind": "探索任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "alliance",
+          "label": "拜访散修盟"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 1,
+          "label": "探索青竹林"
+        },
+        {
+          "type": "return",
+          "location": "market",
+          "label": "报告新发现"
+        }
+      ],
+      "reward": 65,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_qingxiao_leader": {
+      "name": "闻照川的旧事",
+      "location": "qingxiao",
+      "npc": "qingxiao_leader",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "qingxiao_leader",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "qingxiao",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_qingxiao_mentor": {
+      "name": "林青枝的旧事",
+      "location": "qingxiao",
+      "npc": "qingxiao_mentor",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "qingxiao_mentor",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "qingxiao",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_qingxiao_steward": {
+      "name": "许听风的旧事",
+      "location": "qingxiao",
+      "npc": "qingxiao_steward",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "qingxiao_steward",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "qingxiao",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_xuanheng_leader": {
+      "name": "顾衡的旧事",
+      "location": "xuanheng",
+      "npc": "xuanheng_leader",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "xuanheng_leader",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "ruins",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "xuanheng",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_xuanheng_mentor": {
+      "name": "沈知序的旧事",
+      "location": "xuanheng",
+      "npc": "xuanheng_mentor",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "xuanheng_mentor",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "ruins",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "xuanheng",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_xuanheng_steward": {
+      "name": "柳未央的旧事",
+      "location": "xuanheng",
+      "npc": "xuanheng_steward",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "xuanheng_steward",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "ruins",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "xuanheng",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_danxia_leader": {
+      "name": "苏映霞的旧事",
+      "location": "danxia",
+      "npc": "danxia_leader",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "danxia_leader",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "mist",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "danxia",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_danxia_mentor": {
+      "name": "温芷的旧事",
+      "location": "danxia",
+      "npc": "danxia_mentor",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "danxia_mentor",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "mist",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "danxia",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_danxia_steward": {
+      "name": "叶小满的旧事",
+      "location": "danxia",
+      "npc": "danxia_steward",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "danxia_steward",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "mist",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "danxia",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_fuyao_leader": {
+      "name": "陆山眠的旧事",
+      "location": "fuyao",
+      "npc": "fuyao_leader",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "fuyao_leader",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "ridge",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "fuyao",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_fuyao_mentor": {
+      "name": "白若岚的旧事",
+      "location": "fuyao",
+      "npc": "fuyao_mentor",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "fuyao_mentor",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "ridge",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "fuyao",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_fuyao_steward": {
+      "name": "石望的旧事",
+      "location": "fuyao",
+      "npc": "fuyao_steward",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "fuyao_steward",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "ridge",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "fuyao",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_merchant": {
+      "name": "岑小舟的旧事",
+      "location": "market",
+      "npc": "merchant",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "merchant",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "market",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_innkeeper": {
+      "name": "桑晚的旧事",
+      "location": "market",
+      "npc": "innkeeper",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "innkeeper",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "market",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_alliance": {
+      "name": "赵行远的旧事",
+      "location": "market",
+      "npc": "alliance",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "alliance",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "market",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_intel": {
+      "name": "云栖的旧事",
+      "location": "blackmarket",
+      "npc": "intel",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "intel",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "ruins",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "blackmarket",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_blackmerchant": {
+      "name": "阿朔的旧事",
+      "location": "blackmarket",
+      "npc": "blackmerchant",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "blackmerchant",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "ruins",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "blackmarket",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_guide": {
+      "name": "程见山的旧事",
+      "location": "ruins",
+      "npc": "guide",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "guide",
+          "label": "听一段旧事"
+        },
+        {
+          "type": "explore",
+          "location": "ruins",
+          "count": 1,
+          "label": "亲自查看线索"
+        },
+        {
+          "type": "return",
+          "location": "ruins",
+          "label": "回去商议"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "villain_bloodmaster": {
+      "name": "追寻：殷迟",
+      "location": "blackmarket",
+      "npc": "intel",
+      "kind": "反派剧情",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "intel",
+          "label": "核实传闻"
+        },
+        {
+          "type": "explore",
+          "location": "mist",
+          "count": 1,
+          "label": "搜集现场证据"
+        },
+        {
+          "type": "kill",
+          "target": "bloodmaster",
+          "location": "mist",
+          "label": "阻止正在发生的危害"
+        },
+        {
+          "type": "return",
+          "location": "blackmarket",
+          "label": "决定如何处置"
+        }
+      ],
+      "reward": 80,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "villain_exile": {
+      "name": "追寻：周落星",
+      "location": "blackmarket",
+      "npc": "intel",
+      "kind": "反派剧情",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "intel",
+          "label": "核实传闻"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 1,
+          "label": "搜集现场证据"
+        },
+        {
+          "type": "kill",
+          "target": "exile",
+          "location": "bamboo",
+          "label": "阻止正在发生的危害"
+        },
+        {
+          "type": "return",
+          "location": "blackmarket",
+          "label": "决定如何处置"
+        }
+      ],
+      "reward": 80,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "villain_owner": {
+      "name": "追寻：闻既白",
+      "location": "blackmarket",
+      "npc": "intel",
+      "kind": "反派剧情",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "intel",
+          "label": "核实传闻"
+        },
+        {
+          "type": "explore",
+          "location": "blackmarket",
+          "count": 1,
+          "label": "搜集现场证据"
+        },
+        {
+          "type": "kill",
+          "target": "owner",
+          "location": "blackmarket",
+          "label": "阻止正在发生的危害"
+        },
+        {
+          "type": "return",
+          "location": "blackmarket",
+          "label": "决定如何处置"
+        }
+      ],
+      "reward": 80,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "villain_oldhunter": {
+      "name": "追寻：秦逐",
+      "location": "blackmarket",
+      "npc": "intel",
+      "kind": "反派剧情",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "intel",
+          "label": "核实传闻"
+        },
+        {
+          "type": "explore",
+          "location": "ridge",
+          "count": 1,
+          "label": "搜集现场证据"
+        },
+        {
+          "type": "kill",
+          "target": "oldhunter",
+          "location": "ridge",
+          "label": "阻止正在发生的危害"
+        },
+        {
+          "type": "return",
+          "location": "blackmarket",
+          "label": "决定如何处置"
+        }
+      ],
+      "reward": 80,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "villain_poisoner": {
+      "name": "追寻：祝眠",
+      "location": "blackmarket",
+      "npc": "intel",
+      "kind": "反派剧情",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "intel",
+          "label": "核实传闻"
+        },
+        {
+          "type": "explore",
+          "location": "mist",
+          "count": 1,
+          "label": "搜集现场证据"
+        },
+        {
+          "type": "kill",
+          "target": "poisoner",
+          "location": "mist",
+          "label": "阻止正在发生的危害"
+        },
+        {
+          "type": "return",
+          "location": "blackmarket",
+          "label": "决定如何处置"
+        }
+      ],
+      "reward": 80,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "villain_remnant": {
+      "name": "追寻：沈潮生",
+      "location": "blackmarket",
+      "npc": "intel",
+      "kind": "反派剧情",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "intel",
+          "label": "核实传闻"
+        },
+        {
+          "type": "explore",
+          "location": "secret",
+          "count": 1,
+          "label": "搜集现场证据"
+        },
+        {
+          "type": "kill",
+          "target": "remnant",
+          "location": "secret",
+          "label": "阻止正在发生的危害"
+        },
+        {
+          "type": "return",
+          "location": "blackmarket",
+          "label": "决定如何处置"
+        }
+      ],
+      "reward": 80,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "realm_journey": {
+      "name": "潮生门前",
+      "location": "market",
+      "npc": "alliance",
+      "kind": "秘境任务",
+      "stages": [
+        {
+          "type": "realm",
+          "realm": "筑基",
+          "label": "筑基"
+        },
+        {
+          "type": "explore",
+          "location": "secret",
+          "count": 1,
+          "label": "进入潮生秘境并探索"
+        },
+        {
+          "type": "kill",
+          "target": "remnant",
+          "location": "secret",
+          "label": "面对古宗残魂"
+        },
+        {
+          "type": "return",
+          "location": "market",
+          "label": "将见闻带回岛上"
+        }
+      ],
+      "reward": 120,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "保护涉事者并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    }
+  },
+  "incidents": {
+    "deviation": {
+      "name": "走火入魔",
+      "blocks": [
+        "cultivate",
+        "breakthrough"
+      ],
+      "options": {
+        "care": {
+          "name": "请专业修士处置",
+          "stones": 8,
+          "hours": 2,
+          "success": 100
+        },
+        "materials": {
+          "name": "以灵药和材料修复",
+          "item": "herb",
+          "quantity": 2,
+          "hours": 1,
+          "success": 100
+        },
+        "self": {
+          "name": "谨慎自行处理",
+          "qi": 10,
+          "hours": 4,
+          "success": 80
+        }
+      }
+    },
+    "meridians": {
+      "name": "经脉受损",
+      "blocks": [
+        "breakthrough"
+      ],
+      "options": {
+        "care": {
+          "name": "请专业修士处置",
+          "stones": 8,
+          "hours": 2,
+          "success": 100
+        },
+        "materials": {
+          "name": "以灵药和材料修复",
+          "item": "herb",
+          "quantity": 2,
+          "hours": 1,
+          "success": 100
+        },
+        "self": {
+          "name": "谨慎自行处理",
+          "qi": 10,
+          "hours": 4,
+          "success": 80
+        }
+      }
+    },
+    "furnace": {
+      "name": "丹炉炸裂",
+      "blocks": [
+        "craft"
+      ],
+      "options": {
+        "care": {
+          "name": "请专业修士处置",
+          "stones": 8,
+          "hours": 2,
+          "success": 100
+        },
+        "materials": {
+          "name": "以灵药和材料修复",
+          "item": "herb",
+          "quantity": 2,
+          "hours": 1,
+          "success": 100
+        },
+        "self": {
+          "name": "谨慎自行处理",
+          "qi": 10,
+          "hours": 4,
+          "success": 80
+        }
+      }
+    },
+    "formation": {
+      "name": "阵法反噬",
+      "blocks": [
+        "prepare_formation"
+      ],
+      "options": {
+        "care": {
+          "name": "请专业修士处置",
+          "stones": 8,
+          "hours": 2,
+          "success": 100
+        },
+        "materials": {
+          "name": "以灵药和材料修复",
+          "item": "herb",
+          "quantity": 2,
+          "hours": 1,
+          "success": 100
+        },
+        "self": {
+          "name": "谨慎自行处理",
+          "qi": 10,
+          "hours": 4,
+          "success": 80
+        }
+      }
+    },
+    "beast_injury": {
+      "name": "灵兽受伤",
+      "blocks": [
+        "manage_beast"
+      ],
+      "options": {
+        "care": {
+          "name": "请专业修士处置",
+          "stones": 8,
+          "hours": 2,
+          "success": 100
+        },
+        "materials": {
+          "name": "以灵药和材料修复",
+          "item": "herb",
+          "quantity": 2,
+          "hours": 1,
+          "success": 100
+        },
+        "self": {
+          "name": "谨慎自行处理",
+          "qi": 10,
+          "hours": 4,
+          "success": 80
+        }
+      }
+    },
+    "artifact": {
+      "name": "法器损坏",
+      "blocks": [
+        "fight"
+      ],
+      "options": {
+        "care": {
+          "name": "请专业修士处置",
+          "stones": 8,
+          "hours": 2,
+          "success": 100
+        },
+        "materials": {
+          "name": "以灵药和材料修复",
+          "item": "herb",
+          "quantity": 2,
+          "hours": 1,
+          "success": 100
+        },
+        "self": {
+          "name": "谨慎自行处理",
+          "qi": 10,
+          "hours": 4,
+          "success": 80
+        }
+      }
+    },
+    "poison": {
+      "name": "中毒",
+      "blocks": [
+        "cultivate"
+      ],
+      "options": {
+        "care": {
+          "name": "请专业修士处置",
+          "stones": 8,
+          "hours": 2,
+          "success": 100
+        },
+        "materials": {
+          "name": "以灵药和材料修复",
+          "item": "herb",
+          "quantity": 2,
+          "hours": 1,
+          "success": 100
+        },
+        "self": {
+          "name": "谨慎自行处理",
+          "qi": 10,
+          "hours": 4,
+          "success": 80
+        }
+      }
+    },
+    "trapped": {
+      "name": "秘境受困",
+      "blocks": [
+        "travel"
+      ],
+      "options": {
+        "care": {
+          "name": "请专业修士处置",
+          "stones": 8,
+          "hours": 2,
+          "success": 100
+        },
+        "materials": {
+          "name": "以灵药和材料修复",
+          "item": "herb",
+          "quantity": 2,
+          "hours": 1,
+          "success": 100
+        },
+        "self": {
+          "name": "谨慎自行处理",
+          "qi": 10,
+          "hours": 4,
+          "success": 80
+        }
+      }
+    },
+    "ambush": {
+      "name": "妖兽袭击",
+      "blocks": [
+        "explore"
+      ],
+      "options": {
+        "care": {
+          "name": "请专业修士处置",
+          "stones": 8,
+          "hours": 2,
+          "success": 100
+        },
+        "materials": {
+          "name": "以灵药和材料修复",
+          "item": "herb",
+          "quantity": 2,
+          "hours": 1,
+          "success": 100
+        },
+        "self": {
+          "name": "谨慎自行处理",
+          "qi": 10,
+          "hours": 4,
+          "success": 80
+        }
+      }
+    },
+    "sect_accident": {
+      "name": "宗门事故",
+      "blocks": [
+        "craft"
+      ],
+      "options": {
+        "care": {
+          "name": "请专业修士处置",
+          "stones": 8,
+          "hours": 2,
+          "success": 100
+        },
+        "materials": {
+          "name": "以灵药和材料修复",
+          "item": "herb",
+          "quantity": 2,
+          "hours": 1,
+          "success": 100
+        },
+        "self": {
+          "name": "谨慎自行处理",
+          "qi": 10,
+          "hours": 4,
+          "success": 80
+        }
+      }
+    }
+  },
+  "events": [
+    {
+      "id": "beast_tide",
+      "name": "妖兽潮",
+      "exploreDamage": 2
+    },
+    {
+      "id": "realm_open",
+      "name": "秘境开放"
+    },
+    {
+      "id": "herbs",
+      "name": "灵药成熟",
+      "extraHerb": 1
+    },
+    {
+      "id": "tournament",
+      "name": "宗门试炼"
+    },
+    {
+      "id": "auction",
+      "name": "坊市拍卖"
+    },
+    {
+      "id": "black_trade",
+      "name": "黑市交易"
+    },
+    {
+      "id": "rain",
+      "name": "暴雨",
+      "cultivationBonus": 1
+    },
+    {
+      "id": "landslide",
+      "name": "山崩",
+      "exploreDamage": 2
+    },
+    {
+      "id": "array_fault",
+      "name": "阵法异常"
+    },
+    {
+      "id": "pulse",
+      "name": "灵脉波动",
+      "cultivationBonus": 2
+    },
+    {
+      "id": "missing",
+      "name": "NPC失踪",
+      "missingNpc": "guide"
+    },
+    {
+      "id": "evil",
+      "name": "邪修活动",
+      "exploreDamage": 1
+    },
+    {
+      "id": "sect_conflict",
+      "name": "宗门冲突"
+    }
+  ]
+}

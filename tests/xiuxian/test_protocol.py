@@ -1,54 +1,48 @@
-import os, sys, json
+import os, sys, json, copy
 from pathlib import Path
 import pytest
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
-from xiuxian.engine import TOOLS
+from xiuxian.mcp_dispatch import MCP_TOOLS
+from xiuxian.island import IslandGame
 
 
-@pytest.mark.asyncio
-async def test_real_stdio(tmp_path):
-    params = StdioServerParameters(
+def params(db):
+    return StdioServerParameters(
         command=sys.executable,
-        args=["-m", "xiuxian.server", "--db", str(tmp_path / "stdio.db")],
+        args=["-m", "xiuxian.server", "--db", str(db)],
         env=dict(
             os.environ,
             PYTHONPATH=str(Path(__file__).resolve().parents[2] / "src"),
             PYTHONIOENCODING="utf-8",
         ),
     )
-    async with stdio_client(params) as (reader, writer):
+
+
+@pytest.mark.asyncio
+async def test_real_stdio(tmp_path):
+    async with stdio_client(params(tmp_path / "stdio.db")) as (reader, writer):
         async with ClientSession(reader, writer) as session:
             await session.initialize()
-            assert {t.name for t in (await session.list_tools()).tools} == set(TOOLS)
-
-            def payload(result):
-                return json.loads(result.content[0].text)
-
-            assert (
-                payload(await session.call_tool("get_self"))["result"]["realm"]
-                == "炼气"
+            assert {t.name for t in (await session.list_tools()).tools} == set(
+                MCP_TOOLS
             )
-            assert payload(await session.call_tool("rename", {"name": "新道号"}))["ok"]
-            assert (
-                payload(await session.call_tool("get_self"))["result"]["name"]
-                == "新道号"
-            )
-            assert payload(
-                await session.call_tool("choose_route", {"route": "qingxiao"})
-            )["ok"]
-            assert payload(await session.call_tool("cultivate", {"duration": 4}))[
-                "result"
-            ]["gained"] in range(20, 45, 4)
-            assert not payload(
-                await session.call_tool("fight", {"target": "guardian"})
-            )["ok"]
-            assert (
-                await session.call_tool("time_set", {"datetime": "2040-01-01"})
-            ).isError
+
+            async def call(group, command=""):
+                r = await session.call_tool(
+                    group, {"command": command} if group != "relay_manual" else {}
+                )
+                return json.loads(r.content[0].text)
+
+            assert (await call("relay_manual"))["result"]["world"] == "灵汐岛"
+            assert (await call("cultivator_ops", "rename 新道号"))["ok"]
+            assert (await call("sect_ops", "join qingxiao"))["ok"]
+            assert (await call("cultivate_ops", "meditate 4"))["result"][
+                "gained"
+            ] in range(20, 45, 4)
+            assert not (await call("battle_ops", "skill strike 99999"))["ok"]
             assert len((await session.list_resources()).resources) == 1
             assert len((await session.list_prompts()).prompts) == 1
-            assert (await session.read_resource("xiuxian://rules")).contents
 
 
 def test_real_http_mcp(tmp_path, monkeypatch):
@@ -57,17 +51,18 @@ def test_real_http_mcp(tmp_path, monkeypatch):
 
     monkeypatch.setenv("REGISTRATION_OPEN", "true")
     with TestClient(create_http_app(tmp_path), base_url="http://localhost") as c:
-        token = c.post("/api/register", json={"name": "独立AI", "kind": "ai"}).json()[
-            "api_key"
-        ]
+        # A human-issued credential can be used by AI; both operate this exact player.
+        key = c.post(
+            "/api/register", json={"name": "共号修士", "kind": "human"}
+        ).json()["api_key"]
         headers = {
-            "Authorization": "Bearer " + token,
+            "Authorization": "Bearer " + key,
             "Accept": "application/json, text/event-stream",
             "Content-Type": "application/json",
         }
 
         def rpc(method, params=None):
-            r = c.post(
+            response = c.post(
                 "/mcp/",
                 headers=headers,
                 json={
@@ -77,93 +72,88 @@ def test_real_http_mcp(tmp_path, monkeypatch):
                     "params": params or {},
                 },
             )
-            assert r.status_code == 200, r.text
-            return r.json()["result"]
+            assert response.status_code == 200, response.text
+            return response.json()["result"]
 
-        assert rpc(
+        rpc(
             "initialize",
             {
                 "protocolVersion": "2025-03-26",
                 "capabilities": {},
                 "clientInfo": {"name": "test", "version": "1"},
             },
-        )["serverInfo"]
-        assert {t["name"] for t in rpc("tools/list")["tools"]} == set(TOOLS)
-        rpc("tools/call", {"name": "choose_route", "arguments": {"route": "qingxiao"}})
-        r = rpc("tools/call", {"name": "cultivate", "arguments": {"duration": 3}})
+        )
+        assert {t["name"] for t in rpc("tools/list")["tools"]} == set(MCP_TOOLS)
+        rpc(
+            "tools/call",
+            {"name": "sect_ops", "arguments": {"command": "join qingxiao"}},
+        )
+        args = {"command": "meditate 3", "request_id": "mcp-once"}
+        r = rpc("tools/call", {"name": "cultivate_ops", "arguments": args})
         gained = json.loads(r["content"][0]["text"])["result"]["gained"]
-        assert gained in range(15, 34, 3)
-        view = c.get("/api/state", headers=headers)
-        assert view.status_code == 200
-        assert view.json()["readOnly"] is True
-        assert view.json()["kind"] == "ai"
-        assert view.json()["self"]["result"]["cultivation"] == gained
-        assert view.json()["history"]["result"][-1]["action"] == "cultivate"
-        clock_before = view.json()["world"]["result"]["time"]
-        assert (
-            c.get("/api/state", headers=headers).json()["world"]["result"]["time"]
-            == clock_before
+        assert rpc("tools/call", {"name": "cultivate_ops", "arguments": args}) == r
+        view = c.get("/api/v1/state", headers=headers).json()
+        assert view["self"]["result"]["cultivation"] == gained
+        assert view["history"]["result"][-1]["action"] == "cultivate"
+        assert view["readOnly"] is False
+        r = c.post(
+            "/api/v1/command",
+            headers=headers,
+            json={"tool": "cultivator_ops", "command": "rename 新道号"},
         )
-        assert (
-            c.post(
-                "/api/action",
-                headers=headers,
-                json={"tool": "cultivate", "arguments": {}},
-            ).status_code
-            == 403
+        assert r.status_code == 200
+        r = rpc(
+            "tools/call", {"name": "cultivator_ops", "arguments": {"command": "sheet"}}
         )
-        assert rpc("resources/list")["resources"][0]["uri"] == "xiuxian://rules"
-        assert rpc("prompts/list")["prompts"][0]["name"] == "begin_journey"
-        token2 = c.post("/api/register", json={"name": "第二AI", "kind": "ai"}).json()[
+        assert json.loads(r["content"][0]["text"])["result"]["name"] == "新道号"
+        key2 = c.post("/api/register", json={"name": "另一修士", "kind": "ai"}).json()[
             "api_key"
         ]
-        headers["Authorization"] = "Bearer " + token2
-        r = rpc("tools/call", {"name": "get_self", "arguments": {}})
-        assert json.loads(r["content"][0]["text"])["result"]["cultivation"] == 0
-        second_view = c.get("/api/state", headers=headers).json()
-        assert second_view["self"]["result"]["name"] == "第二AI"
-        assert second_view["history"]["result"] == []
+        assert (
+            c.get("/api/v1/state", headers={"Authorization": "Bearer " + key2}).json()[
+                "self"
+            ]["result"]["cultivation"]
+            == 0
+        )
 
 
 @pytest.mark.asyncio
 async def test_full_campaign_over_stdio(tmp_path):
-    from xiuxian.demo import campaign
-    import copy
+    from xiuxian.island_demo import campaign
 
     tape = []
     campaign(tmp_path / "expected.db", record=tape)
-    from xiuxian.engine import Game
-
-    born = next(
-        step["response"]["result"] for step in tape if step["tool"] == "get_self"
+    birth = next(
+        s["response"]["result"]
+        for s in tape
+        if s["tool"] == "cultivator_ops" and s["command"] == "sheet"
     )
-    live = Game(tmp_path / "live.db")
-    live.player["root"] = born["root"]
-    live.player["rootElements"] = born["rootElements"]
-    live.player["aptitude"] = born["aptitude"]
+    live = IslandGame(tmp_path / "live.db")
+    for key in ("root", "rootElements", "aptitude"):
+        live.player[key] = birth[key]
     live._store()
     live.close()
-    params = StdioServerParameters(
-        command=sys.executable,
-        args=["-m", "xiuxian.server", "--db", str(tmp_path / "live.db")],
-        env=dict(
-            os.environ,
-            PYTHONPATH=str(Path(__file__).resolve().parents[2] / "src"),
-            PYTHONIOENCODING="utf-8",
-        ),
-    )
-    async with stdio_client(params) as (reader, writer):
+    async with stdio_client(params(tmp_path / "live.db")) as (reader, writer):
         async with ClientSession(reader, writer) as session:
             await session.initialize()
             for step in tape:
                 actual = json.loads(
-                    (await session.call_tool(step["tool"], step["arguments"]))
+                    (
+                        await session.call_tool(
+                            step["tool"], {"command": step["command"]}
+                        )
+                    )
                     .content[0]
                     .text
                 )
                 expected = copy.deepcopy(step["response"])
-                if step["tool"] == "get_self":
+                if step["tool"] == "cultivator_ops" and step["command"] == "sheet":
                     for response in (actual, expected):
                         for key in ("id", "name", "createdAt"):
                             response["result"].pop(key, None)
-                assert actual == expected, (step["tool"], actual, expected)
+                assert actual == expected, (
+                    step["tool"],
+                    step["command"],
+                    actual,
+                    expected,
+                )

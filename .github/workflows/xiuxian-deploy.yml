@@ -1,4 +1,4 @@
-name: Qingyun deploy checks
+name: Lingxi deploy checks
 on:
   workflow_dispatch:
   push:

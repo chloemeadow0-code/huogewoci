@@ -1,4 +1,4 @@
-# Qingyun deployment extension, 2026-10-02. Apache-2.0.
+# Lingxi Island deployment extension. Apache-2.0; adapted MIT components in third_party.
 FROM python:3.12-slim
 WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \
@@ -12,6 +12,7 @@ COPY src /app/src
 COPY systems/xiuxian /app/systems/xiuxian
 COPY LICENSE /app/LICENSE
 COPY NOTICE /app/NOTICE
+COPY third_party /app/third_party
 RUN useradd --create-home --uid 10001 xiuxian && mkdir -p /app/server/data && chown -R xiuxian:xiuxian /app/server/data
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
