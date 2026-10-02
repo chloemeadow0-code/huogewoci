@@ -30,7 +30,7 @@ def create_http_app(data_dir=None):
 
     def action(name, args, who):
         with LOCK:
-            game = Game(db_path, **who)
+            game = Game(db_path, player_key=who['player_key'], player_name=who['player_name'])
             try:
                 return game.call(name, **args)
             finally:
@@ -68,10 +68,11 @@ def create_http_app(data_dir=None):
             return JSONResponse({'error': '注册已关闭，请使用已有凭证。'}, status_code=403)
         try:
             payload = await body(request)
-            require(set(payload) == {'name'}, '注册只接受 name。')
-            token, who = await run_in_threadpool(accounts.register, payload['name'])
+            require('name' in payload and set(payload) <= {'name','kind'}, '注册只接受 name 和 kind。')
+            token, who = await run_in_threadpool(accounts.register, payload['name'], payload.get('kind','human'))
             await run_in_threadpool(action, 'check_status', {}, who)
-            return JSONResponse({'api_key': token, 'name': who['player_name'], 'mcp_path': '/mcp/'}, status_code=201)
+            return JSONResponse({'api_key': token, 'name': who['player_name'], 'kind': who['kind'],
+                                 'mcp_path': '/mcp/' if who['kind'] == 'ai' else None}, status_code=201)
         except (RuleError, ValueError, TypeError):
             return JSONResponse({'error': '请使用 2～24 字的名字。'}, status_code=400)
 
@@ -148,6 +149,10 @@ def create_http_app(data_dir=None):
                 who = await run_in_threadpool(accounts.lookup, key)
                 if not who:
                     return await JSONResponse({'error': '缺少或无效的 Hogwarts 凭证。'}, status_code=401)(scope, receive, send)
+                required_kind = 'ai' if path.startswith('/mcp/') else 'human'
+                if who['kind'] != required_kind:
+                    error = 'MCP 只允许 AI 账号，请单独创建 AI 学生。' if required_kind == 'ai' else '网页操作只允许人类账号，请使用人类学生凭证。'
+                    return await JSONResponse({'error': error}, status_code=403)(scope, receive, send)
             origin = request.headers.get('origin')
             host = request.headers.get('host', '')
             if origin and origin not in (f'http://{host}', f'https://{host}', *origins):

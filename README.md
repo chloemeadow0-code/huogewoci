@@ -1,6 +1,6 @@
 # 雾梣学期 · 霍格沃茨 MCP 游戏
 
-可部署的原创霍格沃茨校园生活游戏。网页领取凭证，人和 AI 共用学生账号；
+可部署的原创霍格沃茨校园生活游戏。网页领取凭证，人和 AI 使用独立学生账号；
 多人共享校园、物体和叙事时钟，背包、魔咒、课程及已知事实各自独立。
 
 基于 [LoreKit](https://github.com/matluz1/lorekit)，保留其 SQLite 状态、区域 / 时间、
@@ -25,10 +25,10 @@ REGISTRATION_OPEN=true
 
 `PORT` 使用平台提供的值，未提供时默认 8080。保持一个服务副本。
 重新部署后，访问 `/health` 应返回 `status: ok`。打开 `/register` 领取学生凭证，
-进入 `/play`。点「复制 AI 接入地址」供 AI 使用：
+进入 `/play`。点「创建 AI 学生」，领取另一份 AI 专用凭证并复制接入地址：
 
 ```text
-https://你的域名/mcp/?api_key=hw_sk_你的凭证
+https://你的域名/mcp/?api_key=hw_sk_AI专用凭证
 ```
 
 MCP 类型选择 **Streamable HTTP**，支持 Bearer 请求头认证。
@@ -64,7 +64,7 @@ PYTHONPATH=src python -m pytest tests/hogwarts -q
 PYTHONPATH=src python -m hogwarts.demo
 ```
 
-本次 Windows / Python 3.12.10 实测 **32 项测试通过**，含真实 stdio / HTTP MCP、
+本次 Windows / Python 3.12.10 实测 **34 项测试通过**，含真实 stdio / HTTP MCP、
 凭证隔离、并发、重启恢复及完整 Demo；网页端到端与手机布局也实测通过。
 GitHub Actions 提供 Linux 测试、Docker 构建和持久卷重启验证，以实际工作流结果为准。
 

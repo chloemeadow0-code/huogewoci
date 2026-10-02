@@ -30,8 +30,8 @@ def client(tmp_path, monkeypatch):
         yield c
 
 
-def enroll(client, name):
-    response = client.post('/api/register', json={'name':name})
+def enroll(client, name, kind='human'):
+    response = client.post('/api/register', json={'name':name,'kind':kind})
     assert response.status_code == 201, response.text
     return response.json()['api_key']
 
@@ -169,7 +169,7 @@ async def test_real_http_mcp_full_demo(tmp_path):
                 await asyncio.sleep(.05)
             else:
                 raise AssertionError('HTTP server did not become healthy')
-            key=(await http.post(base+'/api/register',json={'name':'HTTP新生'})).json()['api_key']
+            key=(await http.post(base+'/api/register',json={'name':'HTTP新生','kind':'ai'})).json()['api_key']
             # Both slash forms avoid TLS-breaking redirects and query auth is supported.
             for path in ('/mcp','/mcp/'):
                 async with httpx.AsyncClient(trust_env=False) as transport:
@@ -190,7 +190,7 @@ async def test_real_http_mcp_full_demo(tmp_path):
                         assert status['name']=='HTTP新生'
                         assert status['house_points']==-3 and status['violations']
             browser=await http.get(base+'/api/state',headers=headers(key))
-            assert browser.json()['status']['result']['house_points']==-3
+            assert browser.status_code==403
     finally:
         proc.terminate()
         try:
@@ -199,3 +199,35 @@ async def test_real_http_mcp_full_demo(tmp_path):
             proc.kill()
             proc.wait()
         proc.stderr.close()
+
+
+def test_human_and_ai_channel_separation(client, tmp_path):
+    human=enroll(client,'人类新生','human')
+    ai=enroll(client,'AI同学','ai')
+    assert client.get('/mcp/',headers=headers(human)).status_code==403
+    assert client.get('/api/state',headers=headers(ai)).status_code==403
+    act(client,ai,'sleep',{'hours':0},expected=403)
+    act(client,human,'sleep',{'hours':0})
+    act(client,human,'use_item',{'item':'apple'})
+    accounts=Accounts(tmp_path/'data')
+    who=accounts.lookup(ai)
+    game=Game(tmp_path/'data'/'hogwarts.db',player_key=who['player_key'],player_name=who['player_name'])
+    try:
+        result=game.call('check_status')['result']
+        assert result['name']=='AI同学' and result['sleeping']
+        assert result['inventory']['apple']==2
+    finally:
+        game.close()
+
+
+def test_legacy_accounts_migrate_to_human(tmp_path):
+    import sqlite3
+    key='hw_sk_'+'x'*32
+    path=tmp_path/'accounts.db'
+    with sqlite3.connect(path) as db:
+        db.execute('CREATE TABLE accounts(key_hash TEXT PRIMARY KEY,player_key TEXT UNIQUE NOT NULL,name TEXT NOT NULL,created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+        db.execute('INSERT INTO accounts(key_hash,player_key,name) VALUES (?,?,?)',(Accounts.digest(key),'legacy','旧学生'))
+    registry=Accounts(tmp_path)
+    assert registry.lookup(key)['kind']=='human'
+    assert registry.lookup(key)['player_key']=='legacy'
+    assert registry.lookup(key)['player_name']=='旧学生'

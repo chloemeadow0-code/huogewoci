@@ -1,6 +1,6 @@
 # Hogwarts MCP 游戏第一版
 
-**已补齐云端部署版**：网页注册凭证、人和 AI 共用账号、多人共享校园、HTTP MCP，
+**已补齐云端部署版**：网页注册凭证、人和 AI 使用独立账号、多人共享校园、HTTP MCP，
 Docker / Zeabur 持久卷配置。启动与部署请看 [DEPLOY.md](DEPLOY.md)。
 下文的 stdio 命令仍可用于原单玩家本机入口。
 
@@ -162,7 +162,7 @@ $env:PYTHONPATH = Join-Path (Get-Location) 'src'
 
 ## 本次验证
 
-2026-10-02，Python 3.12.10 / MCP SDK 1.30.0：**32 个测试全部通过**。
+2026-10-02，Python 3.12.10 / MCP SDK 1.30.0：**34 个测试全部通过**。
 两个提示来自上游 D20 配置检测与 Starlette 的 httpx 测试适配器；无失败或跳过。
 本机报告保存在开发工作区，远端结果见仓库 Actions。
 

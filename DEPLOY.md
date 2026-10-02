@@ -1,7 +1,7 @@
 # 雾梣学期：云端部署
 
 这一版参考 [潮汐岛 allotment-relay](https://github.com/sue1231511/allotment-relay) 的部署与接入结构：
-一个服务运行一个共享世界，网页领取凭证，人和 AI 共用账号，Streamable HTTP MCP，
+一个服务运行一个共享世界，网页领取凭证，人和 AI 使用独立账号，Streamable HTTP MCP，
 SQLite 持久卷，平台 `PORT` 与 `/health`。实现保留 LoreKit 的存档、NPC 记忆、区域和时钟，
 新增代码独立实现；没有复制潮汐岛 NPC、剧情或游戏代码，也不修改潮汐岛仓库。
 
@@ -81,15 +81,21 @@ REGISTRATION_OPEN=true .venv/bin/python run-hogwarts.py
 
 ## 人和 AI 怎么接入
 
-1. 人打开 `/register`，填写 2～24 字的学生名，领取 `hw_sk_...`。
-2. 网页保存凭证并进入 `/play`；同一浏览器刷新继续原账号，也可粘贴凭证登录。
-3. 点「复制学生凭证」保存；目前没有账号找回，凭证相当于账号钥匙。
-4. 点「复制 AI 接入地址」，客户端使用 **Streamable HTTP**：
-   `https://你的域名/mcp/?api_key=hw_sk_...`。
+1. 人打开 `/register`，填写学生名，领取人类凭证；在 `/play` 登录自己的学生。
+2. 点击「创建 AI 学生」，填写另一个名字，领取独立的 AI 专用凭证。
+3. 保存人类与 AI 两份凭证。创建 AI 不会切换网页账号，不会复制人类的背包或进度。
+4. 将 AI 注册弹窗中的接入地址配置到 AI 客户端，类型选择 **Streamable HTTP**：
+   `https://你的域名/mcp/?api_key=hw_sk_AI专用凭证`。
 5. 支持请求头方式：地址 `https://你的域名/mcp/`，
-   `Authorization: Bearer hw_sk_...`。支持 headers 的客户端建议用这种方式。
+   `Authorization: Bearer hw_sk_AI专用凭证`。
 
-示例（客户端具体字段可能略有不同）：
+**服务端强制区分入口**：人类凭证访问 MCP 返回 403；AI 凭证访问网页状态 / 动作接口返回 403。
+每张凭证绑定一个独立学生，账号类型创建后固定，玩家工具不能更改类型或切换身份。
+账号表只保存凭证 SHA256 摘要，凭证不作为 MCP 工具参数传递。
+旧版本已有凭证自动归为人类账号，名字与学生进度保留；请为 AI 新建账号。
+没有自动找回凭证或将旧进度复制给 AI 的操作。
+
+例如客户端配置（具体字段可能略有不同）：
 
 ```json
 {
@@ -97,16 +103,14 @@ REGISTRATION_OPEN=true .venv/bin/python run-hogwarts.py
     "hogwarts": {
       "type": "http",
       "url": "https://你的域名/mcp/",
-      "headers": {"Authorization": "Bearer hw_sk_你的凭证"}
+      "headers": {"Authorization": "Bearer hw_sk_AI专用凭证"}
     }
   }
 }
 ```
 
-每张凭证对应一个独立学生，另一位学生领取另一张；人和 AI 可同时使用同一张。
-账号表只保存凭证 SHA256 摘要；凭证不会作为工具参数传递。
-访问日志默认关闭，避免查询参数中的凭证被写进服务日志。
 网页只展示公开人物、自己的状态与已知事实，同校名册只有名字、学院和地点。
+两种账号仍在同一校园生活，共用地点、物体、NPC 和叙事时钟。
 
 ## 共享校园的边界
 
@@ -124,7 +128,7 @@ REGISTRATION_OPEN=true .venv/bin/python run-hogwarts.py
 |---|---|
 | `/`、`/register`、`/play` | 注册 / 登录与实际游玩，支持手机 |
 | `/manual` | 人类校园手册 |
-| `POST /api/register` | `{"name":"名字"}`，开放注册时领取凭证 |
+| `POST /api/register` | `{"name":"名字","kind":"human"}` 或 `kind:"ai"`，类型默认 human |
 | `GET /api/state` | 当前凭证的公开校园视图与自己状态 |
 | `POST /api/action` | `{"tool":"move","arguments":{"destination":"hall"}}`；同一套玩家规则 |
 | `/mcp/` | 18 工具 Streamable HTTP MCP，需凭证 |
@@ -140,7 +144,7 @@ check_inventory、attend_class、study、practice_spell、cast_spell、use_item�
 进度、分支存档。**两份都要持久化和备份**。一致性备份可停止服务后备份整个持久卷；
 不要在服务运行时只复制一个 SQLite 主文件而忽略 WAL。
 
-本次在 Windows / Python 3.12.10 实测 **32 项测试全部通过**，包含真实 stdio 和 HTTP MCP
+本次在 Windows / Python 3.12.10 实测 **34 项测试全部通过**，包含真实 stdio 和 HTTP MCP
 完整 Demo、查询参数和 Bearer 两种认证、两个账号并发隔离、共享物体、个人知识、
 关闭注册后旧账号续玩、重启恢复，以及共享时钟下对非当前玩家的宵禁巡查。
 本机测试有两个提示：上游 D20 test_config 检测提示、Starlette 的 httpx 测试适配器弃用提示。

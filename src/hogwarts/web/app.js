@@ -30,11 +30,15 @@ function render(){if(!view)return;$('welcome').hidden=true;$('game').hidden=fals
 }
 function openNpc(n){activeNpc=n;$('dialog-name').textContent=n.name+' · '+n.role;$('message').value='';$('dialog-reply').replaceChildren();$('dialog-options').replaceChildren(button('打声招呼',()=>act('talk',{npc:n.id,message:'你好，我想了解校园生活。'})),button('送一颗苹果',()=>act('give',{npc:n.id,item:'apple'})));if(n.id==='professor')$('dialog-options').append(button('申请禁书区许可',()=>act('ask',{npc:n.id,topic:'permission'})));if(n.id==='merchant')$('dialog-options').append(button('购买恢复药剂 · 5 金币',()=>act('ask',{npc:n.id,topic:'buy tonic'})));$('conversation').showModal();}
 $('send-message').onclick=()=>{const message=$('message').value.trim();if(message&&activeNpc)act('talk',{npc:activeNpc.id,message});};
-$('register').onclick=async()=>{try{const r=await api('/api/register',{name:$('name').value});rememberKey(r.api_key);await refresh();log('学生凭证已领取。请点「复制学生凭证」保存，也可让 AI 使用同一账号。');}catch(e){$('entry-error').textContent=e.message;}};
+$('register').onclick=async()=>{try{const r=await api('/api/register',{name:$('name').value,kind:'human'});rememberKey(r.api_key);await refresh();log('人类学生凭证已领取。AI 需要通过「创建 AI 学生」领取另一份凭证。');}catch(e){$('entry-error').textContent=e.message;}};
 $('login').onclick=async()=>{const input=$('credential').value.trim();if(!input.startsWith('hw_sk_')){$('entry-error').textContent='请只粘贴 hw_sk_ 开头的凭证。';return;}rememberKey(input);try{await refresh();}catch(e){$('entry-error').textContent=e.message;}};
 $('logout').onclick=()=>{credential='';localStorage.removeItem('hogwarts-key');location.href='/';};
 async function copy(text){try{await navigator.clipboard.writeText(text);log('已复制，请妥善保存。');}catch{const input=node('textarea');input.value=text;$('log').prepend(input);input.select();log('浏览器未允许复制。请复制上方文本。');}}
 $('copy-key').onclick=()=>copy(credential);
-$('copy-mcp').onclick=()=>copy(location.origin+'/mcp/?api_key='+encodeURIComponent(credential));
+function openAiRegister(){$('ai-result').hidden=true;$('ai-error').textContent='';$('ai-registration').showModal();}
+$('open-ai-register').onclick=openAiRegister;
+$('open-ai-register-game').onclick=openAiRegister;
+$('register-ai').onclick=async()=>{try{const r=await api('/api/register',{name:$('ai-name').value,kind:'ai'});$('ai-key').value=r.api_key;$('ai-url').value=location.origin+'/mcp/?api_key='+encodeURIComponent(r.api_key);$('ai-result').hidden=false;if(view)await refresh();}catch(e){$('ai-error').textContent=e.message;}};
+$('copy-ai-url').onclick=()=>copy($('ai-url').value);
 if(credential)refresh().catch(e=>{$('entry-error').textContent=e.message;});
 setInterval(()=>{if(view&&!busy&&!document.hidden)refresh().catch(()=>{});},10000);
