@@ -164,7 +164,7 @@ $env:PYTHONPATH = Join-Path (Get-Location) 'src'
 
 2026-10-02，Python 3.12.10 / MCP SDK 1.30.0：**32 个测试全部通过**。
 两个提示来自上游 D20 配置检测与 Starlette 的 httpx 测试适配器；无失败或跳过。
-`hogwarts-test-results.xml` 为本次机器可读测试结果。
+本机报告保存在开发工作区，远端结果见仓库 Actions。
 
 验证了所有十种魔咒的实际效果、未学习禁用、施法失败消耗、目标校验、地点连接、
 三个课程、签到窗口、禁书区许可、交易与物品守恒、世界知识隔离、NPC 私密字段不泄漏、

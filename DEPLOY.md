@@ -143,16 +143,18 @@ check_inventory、attend_class、study、practice_spell、cast_spell、use_item�
 本次在 Windows / Python 3.12.10 实测 **32 项测试全部通过**，包含真实 stdio 和 HTTP MCP
 完整 Demo、查询参数和 Bearer 两种认证、两个账号并发隔离、共享物体、个人知识、
 关闭注册后旧账号续玩、重启恢复，以及共享时钟下对非当前玩家的宵禁巡查。
-测试有两个提示：上游 D20 test_config 检测提示、Starlette 的 httpx 测试适配器弃用提示。
-无测试失败或跳过。结果在 `hogwarts-test-results.xml`。
+本机测试有两个提示：上游 D20 test_config 检测提示、Starlette 的 httpx 测试适配器弃用提示。
+无测试失败或跳过。远端验证以本仓库 Actions 的实际结果为准。
 
 现有 Chrome 的端到端检查也通过：注册、起床、移动、NPC 对话、刷新继续账号；
-桌面与 390px 手机布局无横向溢出、无 JavaScript 错误。截图为 `hogwarts-preview.png`、
-`hogwarts-mobile.png` 和 `hogwarts-welcome.png`。
+桌面与 390px 手机布局无横向溢出、无 JavaScript 错误。截图和本机验证报告保存在开发工作区，
+不作为部署运行文件上传。
 
-当前机器没有 Docker / Podman，所以 **尚未在本机实际构建容器，也没有部署到公网**。
-已新增 GitHub Actions 的 Linux 测试、Docker 构建、持久卷重启检查；仓库上传后会运行，
-也可手动触发 `Hogwarts deploy checks`。不能把尚未运行的 CI 当成已通过。
+**代码已上传到 `chloemeadow0-code/huogewoci` 的 `main` 分支**。
+首次提交 `747c9a6` 对应的 [GitHub Actions 检查](https://github.com/chloemeadow0-code/huogewoci/actions/runs/36987529060)
+已成功：Linux 功能测试、Docker 构建、健康检查以及持久卷重启恢复均通过。
+仍没有部署到公网；连接 Zeabur 后按上面的配置创建自己的服务。
+本机没有 Docker / Podman，因此容器验证证据来自实际执行的云端 CI。
 
 部署包包含上游 Apache-2.0 LICENSE / NOTICE 与所需 LoreKit 源码，不包含本机 `.venv`、
 任何玩家数据库、账号凭证或本机绝对路径 MCP 配置。详细玩法见 `HOGWARTS.md` 和 `/manual`。
