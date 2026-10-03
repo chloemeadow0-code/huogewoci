@@ -2,10 +2,13 @@
 
 import argparse
 import json
+import logging
 import tempfile
 from pathlib import Path
 from .island import IslandGame
 from .mcp_dispatch import dispatch
+
+logger = logging.getLogger(__name__)
 
 
 def campaign(db, record=None):
@@ -53,6 +56,47 @@ def campaign(db, record=None):
         assert not g.player["battle"]
         assert g.player["kills"].get(target, 0) > 0
 
+    def ensure_breakthrough_ready():
+        """Cultivate/heal/restock until a breakthrough attempt is fully
+        affordable: enough cultivation, full hp, cooldown elapsed and, at
+        stage 3, a foundation pill in stock (every attempt consumes one)."""
+        for _ in range(40):
+            care()
+            s = act("cultivator_ops", "sheet")
+            if s["cultivation"] < s["cultivation_required"]:
+                act("cultivate_ops", "method qingxiao_sword 24")
+            elif (
+                g.player["stage"] == 3
+                and g.player["inventory"].get("foundation_pill", 0) < 1
+            ):
+                if g.player["stones"] >= 80:
+                    act("market_ops", "buy foundation_pill 1")
+                else:
+                    act("travel_ops", "go bamboo")
+                    battle("wolf")
+                    act("travel_ops", "go qingxiao")
+            elif g.player["hp"] < g.player["max_hp"] or g.player["statusEffects"]:
+                act("cultivate_ops", "retreat 8")
+            elif g.state["minutes"] < g.player["cooldownUntil"]:
+                act("cultivate_ops", "retreat 24")
+            else:
+                return
+        context = json.dumps(
+            {
+                "root": g.player["root"],
+                "aptitude": g.player["aptitude"],
+                "cultivation": g.player["cultivation"],
+                "required": s["cultivation_required"],
+                "stage": g.player["stage"],
+                "stones": g.player["stones"],
+            },
+            ensure_ascii=False,
+        )
+        logger.error("island demo breakthrough preparation did not converge: %s", context)
+        raise RuntimeError(
+            "breakthrough preparation did not converge after 40 rounds: " + context
+        )
+
     try:
         act("cultivator_ops", "sheet")
         act("sect_ops", "join qingxiao")
@@ -80,18 +124,26 @@ def campaign(db, record=None):
         act("cultivate_ops", "method qingxiao_sword 72")
         act("cultivate_ops", "retreat 8")
         for _ in range(4):
-            for retry in range(15):
-                care()
-                if g.state["minutes"] < g.player["cooldownUntil"]:
-                    act("cultivate_ops", "retreat 24")
-                if g.player["hp"] < g.player["max_hp"] or g.player["statusEffects"]:
-                    act("cultivate_ops", "retreat 8")
+            for retry in range(30):
+                ensure_breakthrough_ready()
                 r = act("realm_ops", "breakthrough")
                 if r["success"]:
                     break
-                act("cultivate_ops", "method qingxiao_sword 24")
             else:
-                raise RuntimeError("Repeated breakthrough failure")
+                context = json.dumps(
+                    {
+                        "root": g.player["root"],
+                        "aptitude": g.player["aptitude"],
+                        "stage": g.player["stage"],
+                        "cultivation": g.player["cultivation"],
+                        "stones": g.player["stones"],
+                    },
+                    ensure_ascii=False,
+                )
+                logger.error("island demo breakthrough loop exhausted: %s", context)
+                raise RuntimeError(
+                    "breakthrough did not converge after 30 attempts: " + context
+                )
         assert g.player["realm"] == "筑基"
         act("travel_ops", "go market")
         act("quest_ops", "accept realm_journey")
