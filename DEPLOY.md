@@ -39,3 +39,12 @@ $env:PYTHONPATH='src'
 完整恢复同时恢复 `accounts.db` 与 `xiuxian.db`，停机复制整个目录以涵盖 SQLite WAL。管理员快照不暴露给 AI 玩家。
 
 Docker Compose 保留原入口：复制 `.env.example` 为 `.env`，配置域名，`docker compose up -d --build`。默认端口只映射本机。CI 工作流 `Lingxi deploy checks` 执行 Python 测试、Docker 构建、真实容器注册及挂载卷重启验证；应以实际工作流结果为准。
+
+## 随机数密钥（rng_key）的保管
+
+随机判定由服务端密钥参与生成：密钥存在 `xiuxian.db` 的 `world_state.rng_key`，管理员快照又把整份状态（含该列）存在同一库的 `snapshots` 表里。因此：
+
+- 默认 `operator save` 生成的快照**包含密钥**，拿到快照文件的人可以复算后续所有随机判定。快照文件要按机密保管，不要发给任何未被授权的人。
+- 需要分享快照时用 `--redact-key`（仅 save 可用）：快照里的 `rng_key` 置为 NULL，密钥不出现在快照正文。取舍：用脱敏快照 `load` 后，世界会自动生成新密钥并继续运行，但**原随机序列不可复现**（历史记录里的旧点数仍可读，只是无法用它推算或重放后续判定）。
+- 无论是否脱敏，`xiuxian.db` 本体（含 WAL/SHM）始终包含密钥：整库备份、打包目录、挂载卷镜像都等同于交出密钥，分享前需自行脱敏或只交付 `--redact-key` 快照。
+- 相关背景见 LINGXI.md"奖励与防刷规则"一节的"随机点由持久化计数器加服务端密钥 world_state.rng_key 的 HMAC 产生"。

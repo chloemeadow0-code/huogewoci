@@ -1,7 +1,12 @@
 """Trusted local relational snapshots; never exposed as player tools."""
 
-import argparse, json, re
+import argparse
+import json
+import logging
+import re
 from .db import Store, SCHEMA, dumps
+
+logger = logging.getLogger(__name__)
 
 TABLES = tuple(
     n
@@ -10,7 +15,7 @@ TABLES = tuple(
 )
 
 
-def operate(path, action, name=None):
+def operate(path, action, name=None, redact_key=False):
     storage = Store(path)
     db = storage.db
     try:
@@ -32,11 +37,23 @@ def operate(path, action, name=None):
                     for t in TABLES
                 },
             }
+            if redact_key:
+                # Opt-in: strip the server-side roll key from the snapshot so
+                # it cannot be shared by accident. Loading such a snapshot
+                # regenerates a fresh key; the original roll sequence is no
+                # longer reproducible (documented trade-off).
+                for row in body["tables"]["world_state"]:
+                    if "rng_key" in row:
+                        row["rng_key"] = None
             db.execute(
                 "INSERT OR REPLACE INTO snapshots VALUES (?,CURRENT_TIMESTAMP,?)",
                 (name, dumps(body)),
             )
             result = {"saved": name, "tables": len(TABLES)}
+            if not redact_key:
+                logger.warning(
+                    "快照包含随机数密钥 rng_key，请按机密保管；如需分享请使用 --redact-key"
+                )
         elif action == "load":
             row = db.execute(
                 "SELECT body FROM snapshots WHERE name=?", (name,)
@@ -65,6 +82,7 @@ def operate(path, action, name=None):
         db.commit()
         return result
     except Exception:
+        logger.exception("snapshot operation failed: action=%s name=%s", action, name)
         db.rollback()
         raise
     finally:
@@ -76,10 +94,19 @@ def main():
     parser.add_argument("--db", default="data/xiuxian.db")
     parser.add_argument("action", choices=["save", "load", "list"])
     parser.add_argument("name", nargs="?")
+    parser.add_argument(
+        "--redact-key",
+        action="store_true",
+        help="仅 save 可用：把快照里的 rng_key 置空；load 后世界生成新密钥，"
+        "原随机序列不可复现",
+    )
     args = parser.parse_args()
     if args.action != "list" and not args.name:
         parser.error("save/load requires a name")
-    print(dumps(operate(args.db, args.action, args.name)))
+    if args.redact_key and args.action != "save":
+        parser.error("--redact-key 只能与 save 一起使用")
+    logging.basicConfig()
+    print(dumps(operate(args.db, args.action, args.name, redact_key=args.redact_key)))
 
 
 if __name__ == "__main__":

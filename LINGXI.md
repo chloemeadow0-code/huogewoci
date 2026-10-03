@@ -27,7 +27,7 @@ run-xiuxian.py start-xiuxian.ps1 Dockerfile compose.yaml
 
 角色身份/地点在 cultivators；数值在 cultivator_stats；背包、装备、功法、技能、状态、关系、任务分别独立。API 提供 name/sect/realm/realm_stage/cultivation/cultivation_required/hp/max_hp/qi/max_qi/spirit/strength/agility/defense/aptitude/spirit_root/location/reputation/sect_reputation/money/inventory/equipment/techniques/skills/quests/relationships/status_effects/injuries，历史由 history 子命令分页查询。为旧规则复用，SQL 部分字段保留 maxQi/stage/stones 等命名，API 同时提供新别名。
 
-WAL、30 秒 busy_timeout、BEGIN IMMEDIATE、进程 RLock；MCP/v1 外层最多 5 次锁重试。资源扣除、随机序列、奖励和成功请求缓存同事务；重复编号不重复获得收益，编号改参数会拒绝；只缓存成功结果，失败请求不改变状态，可用同一编号修正后重试。随机点由持久化计数器加服务端密钥 world_state.rng_key 的 HMAC 产生，管理员快照含该密钥须按机密保管。管理员 snapshots 独立于实时存档；完整备份还要保存 accounts.db。
+WAL、30 秒 busy_timeout、BEGIN IMMEDIATE、进程 RLock；MCP/v1 外层最多 5 次锁重试。资源扣除、随机序列、奖励和成功请求缓存同事务；重复编号不重复获得收益，编号改参数会拒绝；只缓存成功结果，失败请求不改变状态，可用同一编号修正后重试。随机点由持久化计数器加服务端密钥 world_state.rng_key 的 HMAC 产生，管理员快照含该密钥须按机密保管；快照分享与整库备份的保管细节见 DEPLOY.md 的“随机数密钥（rng_key）的保管”一节，需要分享时可用 `operator save --redact-key` 生成脱敏快照。管理员 snapshots 独立于实时存档；完整备份还要保存 accounts.db。
 
 ## MCP 工具与全部子命令
 
