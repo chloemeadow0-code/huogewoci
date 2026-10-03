@@ -2,14 +2,17 @@ from __future__ import annotations
 import inspect
 import copy
 import json
+import logging
 import threading
 from pathlib import Path
 from lorekit.db import init_schema, get_db
-from .rules import require, bounded_int, RuleError
+from .rules import require, bounded_int, RuleError, new_rng_key, rng_value
 from datetime import datetime, timezone
 from .models import Player, StatusEffect
 from .routes import RouteRules
 from .birth import generate_root, generate_aptitude
+
+logger = logging.getLogger(__name__)
 
 LOCK = threading.RLock()
 CONTENT = json.loads(
@@ -55,6 +58,7 @@ RECIPES = CONTENT["recipes"]
 
 class Game(RouteRules):
     pack = CONTENT
+    _extra_minutes = 0
 
     def __init__(self, db_path, player_key=None, player_name="无名修士"):
         self.path = str(Path(db_path).resolve())
@@ -84,6 +88,7 @@ class Game(RouteRules):
                     "tick": 0,
                     "minutes": 0,
                     "rng": 1234567,
+                    "rngKey": new_rng_key(),
                     "players": {},
                     "events": [],
                     "realm": {"cycle": 0},
@@ -147,6 +152,7 @@ class Game(RouteRules):
             self.state = self._load_state()
             before = copy.deepcopy(self.state)
             self._rolls = []
+            self._extra_minutes = 0
             try:
                 require(tool in TOOLS, "未知工具")
                 require(
@@ -204,13 +210,31 @@ class Game(RouteRules):
                     "random": copy.deepcopy(self._rolls),
                     "availableActions": self.available_actions(),
                 }
-            except (RuleError, TypeError, KeyError) as error:
+            except RuleError as error:
                 self.db.rollback()
                 self.state = before
+                return {"ok": False, "error": str(error)}
+            except (TypeError, KeyError) as error:
+                self.db.rollback()
+                self.state = before
+                logger.exception(
+                    "game call failed: tool=%s player=%s kwargs=%s tick=%s",
+                    tool,
+                    self.key,
+                    kwargs,
+                    self.state["tick"],
+                )
                 return {"ok": False, "error": str(error)}
             except Exception:
                 self.db.rollback()
                 self.state = before
+                logger.exception(
+                    "game call failed: tool=%s player=%s kwargs=%s tick=%s",
+                    tool,
+                    self.key,
+                    kwargs,
+                    self.state["tick"],
+                )
                 raise
 
     def rename(self, name: str):
@@ -270,6 +294,7 @@ class Game(RouteRules):
         return QUESTS[quest]
 
     def _upgrade(self):
+        self.state.setdefault("rngKey", new_rng_key())
         p = self.player
         defaults = dict(
             id=self.key,
@@ -304,9 +329,10 @@ class Game(RouteRules):
         self._upgrade_routes()
 
     def _roll(self, purpose):
-        # Persisted PRNG; rollback restores it, clients cannot select a seed or roll.
-        self.state["rng"] = (1664525 * self.state["rng"] + 1013904223) % 4294967296
-        value = self.state["rng"] % 100 + 1
+        # Keyed roll stream: the save only stores a counter and a server-side
+        # key; clients see individual rolls, not a state they can roll forward.
+        self.state["rng"] += 1
+        value = rng_value(self.state["rngKey"], self.state["rng"])
         self._rolls.append({"purpose": purpose, "value": value})
         return value
 
@@ -318,6 +344,8 @@ class Game(RouteRules):
         )
         if in_battle:
             minutes = 2
+        minutes += self._extra_minutes
+        self._extra_minutes = 0
         old_day = self.state["minutes"] // 1440
         self.state["minutes"] += minutes
         self._advance_beasts(self.state["minutes"] - minutes, self.state["minutes"])
@@ -785,6 +813,10 @@ class Game(RouteRules):
         require(self._realm_index() >= s["requirements"]["realm"], "境界不足")
         return self._turn(skill)
 
+    def _pays_victory_reward(self, target, first_kill):
+        """Whether a victory pays stones and drops; overridable per world."""
+        return True
+
     def _turn(self, skill=None, item=None, escape=False):
         from .rules import escape_chance
 
@@ -892,10 +924,14 @@ class Game(RouteRules):
             )
         elif e["hp"] <= 0:
             target = b["target"]
+            first_kill = p["kills"].get(target, 0) == 0
             p["kills"][target] = p["kills"].get(target, 0) + 1
-            p["stones"] += e["reward"]
+            paid = self._pays_victory_reward(target, first_kill)
+            reward = e["reward"] if paid else 0
+            drops = e["drops"] if paid else {}
+            p["stones"] += reward
             trackedLoot = self._track_reward(target)
-            for k, n in e["drops"].items():
+            for k, n in drops.items():
                 self._add(k, n)
             if p["location"] == "realm":
                 p["realmLoot"].append("boss:" + target)
@@ -904,9 +940,11 @@ class Game(RouteRules):
             p["battle"] = None
             result.update(
                 outcome="victory",
-                loot={**e["drops"], **trackedLoot},
-                stones=e["reward"],
+                loot={**drops, **trackedLoot},
+                stones=reward,
             )
+            if not paid:
+                result["message"] = "此敌曾被击败,这次没有再得到战利品"
         return self._finish_route_turn(skill, log, result, b)
 
     def use_item(self, item: str):

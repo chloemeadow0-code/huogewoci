@@ -4,10 +4,13 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import logging
 from pathlib import Path
 from .engine import Game, CONTENT, TOOLS, READ_ONLY, LOCK, ENEMIES
 from .db import Store, dumps
 from .rules import require, RuleError, bounded_int
+
+logger = logging.getLogger(__name__)
 
 ISLAND = json.loads(
     (Path(__file__).resolve().parents[2] / "systems/xiuxian/island.json").read_text(
@@ -193,7 +196,10 @@ class IslandGame(Game):
                         new_events=[],
                         available_actions=self.available_actions(),
                     )
-                if request_id:
+                # Only successful responses are replayable: a failed request
+                # leaves no state change, so a corrected retry under the same
+                # id must not be pinned to the failure.
+                if request_id and response["ok"]:
                     self.db.execute(
                         "INSERT INTO idempotency VALUES (?,?,?,?)",
                         (self.key, request_id, fingerprint, dumps(response)),
@@ -210,6 +216,13 @@ class IslandGame(Game):
                     "available_actions": self.available_actions(),
                 }
             except Exception:
+                logger.exception(
+                    "island call failed: tool=%s player=%s request_id=%s kwargs=%s",
+                    tool,
+                    self.key,
+                    request_id,
+                    kwargs,
+                )
                 self.db.rollback()
                 raise
             finally:
@@ -295,6 +308,27 @@ class IslandGame(Game):
         )
         return super().breakthrough()
 
+    def _open_auctions(self):
+        """Open listings with the bidder identity redacted; the raw owner stays
+        in the database for escrow settlement, clients get has_bid/is_mine."""
+        rows = self.db.execute(
+            "SELECT * FROM market_listings WHERE quantity>0 AND ends>?",
+            (self.state["minutes"],),
+        )
+        auctions = []
+        for r in rows:
+            details = json.loads(r["details"])
+            owner = details.pop("owner", None)
+            auctions.append(
+                dict(r)
+                | {
+                    "details": details,
+                    "has_bid": owner is not None,
+                    "is_mine": owner == self.key,
+                }
+            )
+        return auctions
+
     def get_world(self):
         where = self.player["islandLocation"]
         loc = ISLAND["locations"][where]
@@ -334,13 +368,7 @@ class IslandGame(Game):
                     "kind": "旧档委托",
                     "legacy": True,
                 }
-        data["auctions"] = [
-            dict(r) | {"details": json.loads(r["details"])}
-            for r in self.db.execute(
-                "SELECT * FROM market_listings WHERE quantity>0 AND ends>?",
-                (self.state["minutes"],),
-            )
-        ]
+        data["auctions"] = self._open_auctions()
         return data
 
     def travel(self, destination, node=None):
@@ -425,6 +453,7 @@ class IslandGame(Game):
             "hermit": "guide",
         }
         npc = aliases.get(npc, npc)
+        taught_reputation = 0
         require(self._npc_present(npc), "人物不在此处")
         require(
             topic
@@ -458,8 +487,13 @@ class IslandGame(Game):
                 self.player["islandLocation"] in (self.player.get("route"), "market"),
                 "跨宗门传承需坊市信誉",
             )
+            day = self.state["minutes"] // 1440
+            teach_day_key = "teach_day:" + npc
+            if self.player["counters"].get(teach_day_key) != day:
+                self.player["counters"][teach_day_key] = day
+                taught_reputation = 2
+                self.player["reputation"] += 2
             r["trust"] += 1
-            self.player["reputation"] += 2
             technique = n.get("technique")
             if technique and technique not in self.player["techniques"]:
                 self.player["techniques"].append(technique)
@@ -499,6 +533,7 @@ class IslandGame(Game):
             ),
             "relationship": copy.deepcopy(r),
             "quest": n["personalQuest"],
+            "reputation_gained": taught_reputation,
         }
 
     def _local_enemies(self):
@@ -526,6 +561,11 @@ class IslandGame(Game):
         )
         return enemies
 
+    def _pays_victory_reward(self, target, first_kill):
+        # First takedown of a villain pays; later kills still count for
+        # quest progress but yield nothing, so story order never locks up.
+        return first_kill or target not in ISLAND["villains"]
+
     def _open_battle(self, target, surprise=False):
         p = self.player
         require(target in self._local_enemies(), "目标不在此处")
@@ -544,6 +584,10 @@ class IslandGame(Game):
     def explore(self):
         p = self.player
         require(p["location"] in ("wild", "realm") and p["hp"] > 10, "当前无法探索")
+        require(
+            self._current_event().get("blocked") != p["location"],
+            "区域因坍塌暂时无法探索",
+        )
         if p["location"] == "realm":
             require(self.state["minutes"] % (7 * 1440) < 2 * 1440, "秘境关闭，请离开")
             require(p["node"] not in p["realmLoot"], "此节点本周期已探索")
@@ -759,10 +803,11 @@ class IslandGame(Game):
             self._consume(option["item"], option["quantity"])
         p["stones"] -= option.get("stones", 0)
         p["qi"] -= option.get("qi", 0)
-        self.state["minutes"] += option["hours"] * 60
+        self._extra_minutes = option["hours"] * 60
+        closed = self.state["minutes"] + self._extra_minutes
         success = self._roll("incident_resolution") <= option["success"]
         if success:
-            e.update(status="closed", closed=self.state["minutes"], choice=choice)
+            e.update(status="closed", closed=closed, choice=choice)
             if e["type"] in ("meridians", "deviation", "poison"):
                 p["statusEffects"] = []
             if e["type"] == "beast_injury" and p.get("beast"):
@@ -915,13 +960,7 @@ class IslandGame(Game):
     def market_catalog(self):
         return {
             "shop": self.get_world()["shop"],
-            "auctions": [
-                dict(r) | {"details": json.loads(r["details"])}
-                for r in self.db.execute(
-                    "SELECT * FROM market_listings WHERE quantity>0 AND ends>?",
-                    (self.state["minutes"],),
-                )
-            ],
+            "auctions": self._open_auctions(),
         }
 
     def market_bid(self, listing, amount: int):

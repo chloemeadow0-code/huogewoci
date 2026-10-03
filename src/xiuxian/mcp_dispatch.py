@@ -5,12 +5,15 @@ _call_ops adapts allotment-relay/server/mcp_dispatch.py (MIT); see third_party.
 
 from __future__ import annotations
 import asyncio
+import logging
 import shlex
 import sqlite3
 from starlette.concurrency import run_in_threadpool
 from .island import IslandGame, ISLAND
 from .engine import CONTENT
 from .rules import require, RuleError
+
+logger = logging.getLogger(__name__)
 
 HELP = {
     "cultivator_ops": "身份与个人记录。空=sheet。sheet；rename 云游客；history 20；incidents；resolve 1 care。改名不改凭证、信誉或出生属性。",
@@ -320,6 +323,10 @@ async def _call_ops(fn, *args, **kwargs):
             if "locked" not in str(exc).lower():
                 raise
             if attempt == 4:
+                logger.warning(
+                    "database busy, giving up after 5 retries: %s",
+                    args[0] if args else getattr(fn, "__name__", fn),
+                )
                 return {
                     "ok": False,
                     "error": "数据库正忙，请用相同request_id稍后重试。",

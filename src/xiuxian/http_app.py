@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -21,6 +22,8 @@ from .mcp_dispatch import MCP_TOOLS, dispatch, _call_ops
 import xiuxian.engine as engine
 from .rules import RuleError, require
 from .server import create_server
+
+logger = logging.getLogger(__name__)
 
 STATIC = Path(__file__).parent / "web"
 
@@ -46,6 +49,9 @@ def create_http_app(data_dir=None):
             finally:
                 game.close()
 
+    def _client(request):
+        return request.client.host if request.client else "unknown"
+
     async def health(request):
         try:
 
@@ -69,6 +75,7 @@ def create_http_app(data_dir=None):
                 }
             )
         except Exception:
+            logger.exception("health check failed")
             return JSONResponse({"status": "unavailable"}, status_code=503)
 
     async def document(request):
@@ -120,6 +127,9 @@ def create_http_app(data_dir=None):
                 status_code=201,
             )
         except (RuleError, ValueError, TypeError):
+            logger.warning(
+                "register rejected from %s", _client(request), exc_info=True
+            )
             return JSONResponse({"error": "请使用 2～24 字的名字。"}, status_code=400)
 
     async def state(request):
@@ -149,6 +159,9 @@ def create_http_app(data_dir=None):
             )
             return JSONResponse(result, status_code=200 if result["ok"] else 400)
         except (RuleError, ValueError, TypeError):
+            logger.warning(
+                "rename rejected from %s", _client(request), exc_info=True
+            )
             return JSONResponse({"error": "无效道号，请使用2至24字。"}, status_code=400)
 
     async def perform(request):
@@ -176,6 +189,9 @@ def create_http_app(data_dir=None):
             )
             return JSONResponse(result, status_code=200 if result["ok"] else 400)
         except (RuleError, ValueError, TypeError):
+            logger.warning(
+                "action rejected from %s", _client(request), exc_info=True
+            )
             return JSONResponse(
                 {"ok": False, "error": "无效的玩家动作。"}, status_code=400
             )

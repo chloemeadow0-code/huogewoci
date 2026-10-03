@@ -5,6 +5,8 @@ import json
 import sqlite3
 from pathlib import Path
 
+from .rules import new_rng_key
+
 
 def dumps(value):
     return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
@@ -28,7 +30,7 @@ CHILD = {
     "ledgers",
 }
 SCHEMA = """
-CREATE TABLE IF NOT EXISTS world_state(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER,tick INTEGER,minutes INTEGER,rng INTEGER,cycle INTEGER);
+CREATE TABLE IF NOT EXISTS world_state(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER,tick INTEGER,minutes INTEGER,rng INTEGER,cycle INTEGER,rng_key TEXT);
 CREATE TABLE IF NOT EXISTS cultivators(id TEXT PRIMARY KEY,name TEXT,sect TEXT,realm TEXT,location TEXT,node TEXT,method TEXT,root TEXT,createdAt TEXT);
 CREATE TABLE IF NOT EXISTS cultivator_stats(cultivator_id TEXT PRIMARY KEY);
 CREATE TABLE IF NOT EXISTS cultivator_meta(cultivator_id TEXT,key TEXT,value TEXT,PRIMARY KEY(cultivator_id,key));
@@ -69,6 +71,9 @@ class Store:
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute("PRAGMA synchronous=NORMAL")
         self.db.executescript(SCHEMA)
+        columns = {r[1] for r in self.db.execute("PRAGMA table_info(world_state)")}
+        if "rng_key" not in columns:
+            self.db.execute("ALTER TABLE world_state ADD COLUMN rng_key TEXT")
         columns = {r[1] for r in self.db.execute("PRAGMA table_info(cultivator_stats)")}
         for column in STATS:
             if column not in columns:
@@ -90,17 +95,21 @@ class Store:
                     self.db.execute(
                         "INSERT OR IGNORE INTO migrations(name) VALUES ('qingyun_json_to_relational')"
                     )
-                    return json.loads(row[0])
+                    state = json.loads(row[0])
+                    state.setdefault("rngKey", new_rng_key())
+                    return state
             return {
                 "version": 1,
                 "tick": 0,
                 "minutes": 0,
                 "rng": 1234567,
+                "rngKey": new_rng_key(),
                 "realm": {"cycle": 0},
                 "players": {},
                 "events": [],
             }
         state = {k: world[k] for k in ("version", "tick", "minutes", "rng")}
+        state["rngKey"] = world["rng_key"] or new_rng_key()
         state.update(realm={"cycle": world["cycle"]}, events=[], players={})
         state["events"] = [
             json.loads(r[0])
@@ -221,9 +230,10 @@ class Store:
     def save(self, state):
         db = self.db
         db.execute(
-            "INSERT OR REPLACE INTO world_state VALUES (1,?,?,?,?,?)",
+            "INSERT OR REPLACE INTO world_state"
+            " (id,version,tick,minutes,rng,cycle,rng_key) VALUES (1,?,?,?,?,?,?)",
             tuple(state[k] for k in ("version", "tick", "minutes", "rng"))
-            + (state["realm"]["cycle"],),
+            + (state["realm"]["cycle"], state.get("rngKey") or new_rng_key()),
         )
         db.execute("DELETE FROM world_events")
         db.executemany(

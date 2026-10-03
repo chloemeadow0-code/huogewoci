@@ -1,5 +1,9 @@
 """Central, deterministic combat formulas and input validation."""
 
+import hashlib
+import hmac
+import secrets
+
 
 class RuleError(ValueError):
     pass
@@ -8,6 +12,18 @@ class RuleError(ValueError):
 def require(condition, message):
     if not condition:
         raise RuleError(message)
+
+
+def new_rng_key():
+    """Server-side secret for the roll stream; never exposed to clients."""
+    return secrets.token_hex(32)
+
+
+def rng_value(key, counter):
+    """Draw one roll in 1..100 from the keyed stream; the plain counter stays
+    in the save while the key never leaves the server."""
+    digest = hmac.new(key.encode(), str(counter).encode(), hashlib.sha256).digest()
+    return int.from_bytes(digest[:8], "big") % 100 + 1
 
 
 def bounded_int(value, minimum, maximum):

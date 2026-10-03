@@ -27,7 +27,7 @@ run-xiuxian.py start-xiuxian.ps1 Dockerfile compose.yaml
 
 角色身份/地点在 cultivators；数值在 cultivator_stats；背包、装备、功法、技能、状态、关系、任务分别独立。API 提供 name/sect/realm/realm_stage/cultivation/cultivation_required/hp/max_hp/qi/max_qi/spirit/strength/agility/defense/aptitude/spirit_root/location/reputation/sect_reputation/money/inventory/equipment/techniques/skills/quests/relationships/status_effects/injuries，历史由 history 子命令分页查询。为旧规则复用，SQL 部分字段保留 maxQi/stage/stones 等命名，API 同时提供新别名。
 
-WAL、30 秒 busy_timeout、BEGIN IMMEDIATE、进程 RLock；MCP/v1 外层最多 5 次锁重试。资源扣除、随机序列、奖励和成功请求缓存同事务；重复编号不重复获得收益，编号改参数会拒绝。管理员 snapshots 独立于实时存档；完整备份还要保存 accounts.db。
+WAL、30 秒 busy_timeout、BEGIN IMMEDIATE、进程 RLock；MCP/v1 外层最多 5 次锁重试。资源扣除、随机序列、奖励和成功请求缓存同事务；重复编号不重复获得收益，编号改参数会拒绝；只缓存成功结果，失败请求不改变状态，可用同一编号修正后重试。随机点由持久化计数器加服务端密钥 world_state.rng_key 的 HMAC 产生，管理员快照含该密钥须按机密保管。管理员 snapshots 独立于实时存档；完整备份还要保存 accounts.db。
 
 ## MCP 工具与全部子命令
 
@@ -37,14 +37,14 @@ relay_manual 返回全局手册，不修改状态。其余工具支持 help，ID
 | 工具 | command |
 | --- | --- |
 | relay_manual | 无参数，全局手册 |
-| cultivator_ops | sheet; rename <道号>; history [1–50]; incidents; resolve <编号> <care / materials / self> |
+| cultivator_ops | sheet; rename <道号>; history [1–100]; incidents; resolve <编号> <care / materials / self> |
 | sect_ops | status; join <qingxiao / xuanheng / danxia / fuyao / rogue>; task list; task accept <任务>; task step <任务> [分支]; task submit <任务> |
 | cultivate_ops | status; meditate [1–72小时]; method <功法> [小时]; retreat [小时]; learn <功法>; ask <NPC> |
 | travel_ops | map; go <地点> [节点]; explore |
 | battle_ops | status; fight <附近敌人>; skill <已学技能>; item <物品>; retreat; formation <ward / snare / gather / kill> |
 | bag_ops | list; use <物品>; equip <法器>; ledger [物品] |
 | refine_ops | list; pill <配方/物品> [数量]; weapon <配方/物品> [数量]; craft <配方> [数量] |
-| npc_ops | list; talk <NPC> [greeting / quest / teach / rumor / help / insult / spar]; gift <NPC> <物品>; beast <contract [种类] / feed / heal / stance [assist / rest / forced] / release / abuse / train>; track <敌人> |
+| npc_ops | list; talk <NPC> [greeting / quest / teach / rumor / help / insult / spar]; gift <NPC> <物品>; beast <contract [种类] / feed / heal / stance [assist / rest / forced] / release / abuse / train>; track <敌人>。teach 传授功法与信任照常，但每位导师每游戏日只加一次声望（+2），返回 reputation_gained 表示本次实际加的声望 |
 | quest_ops | list; accept <任务>; step <任务> [report / protect]; submit <任务> |
 | market_ops | list; buy <物品> [数量]; sell <物品> [数量]; auction; bid <拍品ID> <灵石> |
 | realm_ops | status; breakthrough; enter; leave |
@@ -373,3 +373,10 @@ maxQi = 50 + 境界序号×20 + 阶段序号×5 + 功法灵力加值
 当前尚未实现：组队与师徒编制、死亡转世、复杂天劫、跨岛世界、完整宗门竞争与门规执法、独立灵兽进化树、不同 NPC 的复杂日程和自由对话、玩家自建拍卖。任务分支目前为统一 report/protect 两类，剧情深度可以继续扩展。灾档处置采用三类通用方案；有持久代价和限制，未做每种事故的大型剧情。世界按游戏行动推进，未实现现实时间后台。金丹/元婴有规则，但完整成长演示目前验证到筑基及秘境；高境界专属区域与经济平衡还需扩充。保存仍重载世界集合，规模扩大需增量写入及历史/幂等缓存维护。
 
 本地测试与推送不等于 Zeabur 已发布；应通过实际线上版本、工具列表和发布日志验证。
+
+## 奖励与防刷规则
+
+- 反派人物（6 名）首次被击败时发放灵石与掉落；之后再战仍可进行、击杀数照常累计（任务判定不受影响），但不再发奖励，结果里带提示"此敌曾被击败,这次没有再得到战利品"。普通妖兽与切磋对象奖励不变。
+- 导师 teach：功法传授、信任照常，每位导师每游戏日只加一次声望（+2），当日重复请教 reputation_gained 为 0。
+- 拍卖列表不返回其他玩家的内部标识；出价过的拍品只给 has_bid 布尔，本人最高出价时 is_mine 为 true。托管与结算仍由服务端内部完成。
+- 随机点由持久化计数器（world_state.rng）加服务端密钥（world_state.rng_key）的 HMAC-SHA256 产生，玩家可见单次点数但无法由点数序列推算后续判定；密钥只存服务端，不出现在任何 API 响应中，管理员快照含该密钥，须按机密保管。
