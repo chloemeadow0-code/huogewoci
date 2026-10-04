@@ -17,13 +17,13 @@ logger = logging.getLogger(__name__)
 
 HELP = {
     "cultivator_ops": "身份与个人记录。空=sheet。sheet；rename 云游客；history 20；incidents；resolve 1 care。改名不改凭证、信誉或出生属性。",
-    "sect_ops": "宗门与路线。空=status。status；join qingxiao；task list；task accept trial_qingxiao；task step trial_qingxiao report；task submit trial_qingxiao。只能选择一次路线；散修join rogue。",
+    "sect_ops": "宗门与路线。空=status。status；join qingxiao；task list；task accept trial_qingxiao；task step trial_qingxiao report；task submit trial_qingxiao；hall 查看贡献殿；redeem <物品> [数量] 用贡献兑换。只能选择一次路线；散修join rogue。",
     "cultivate_ops": "修炼与长期功法。空=status。meditate 4；method qingxiao_sword 4；retreat 8；learn qingxiao_sword；ask 林青枝。单位游戏小时，不是现实等待；功法与技能分开。",
     "travel_ops": "山海行路。空=map。map；go 青竹林；go 潮生秘境 古殿；explore。只能沿相邻出口；筑基解锁高级区域。",
     "battle_ops": "逐回合斗法。空=status。fight wolf；skill 青云剑诀；item 回气丹；retreat；formation ward。fight只开战；技能效果来自固定配置，禁止追加数值。",
     "bag_ops": "背包、装备与履历。空=list。list；use 回气丹；equip 青云剑；ledger 青云剑。use/equip只使用已持有物品。",
     "refine_ops": "炼丹炼器与制符。空=list。list；pill 回气丹 2；weapon 青云剑 1；craft paper_talisman 1。检查功法、境界、材料，结果由代码判定。",
-    "npc_ops": "附近人物与关系。空=list。list；talk 林青枝；talk 林青枝 teach；gift 林青枝 灵草；beast contract cloud_fox；beast feed；beast train；track wolf。人类与AI共用关系和灵兽。",
+    "npc_ops": "附近人物与关系。空=list。list；talk 林青枝；talk 林青枝 teach；gift 林青枝 灵草；beast contract cloud_fox；beast feed；beast train；beast evolve 进化灵兽；track wolf。人类与AI共用关系和灵兽。",
     "quest_ops": "阶段任务。空=list。list；accept trial_qingxiao；step trial_qingxiao；step trial_qingxiao report；submit trial_qingxiao。阶段必须由实际行动达成；终幕report/protect二选一。",
     "market_ops": "灵石交易与竞价。空=list。list；buy 回气丹 1；sell 灵草 2；auction；bid auction:0 50。竞价托管，到期交付，被超价退还。黑市须亲自前往。",
     "realm_ops": "境界与潮生秘境。空=status。status；breakthrough；enter；leave。突破检查修为、状态、功法及材料，失败有记录和处置。",
@@ -51,6 +51,9 @@ HINTS = {
     "incident_resolve": ("world_ops", "resolve <编号> <选项>"),
     "prepare_formation": ("battle_ops", "formation ward"),
     "manage_beast": ("npc_ops", "beast feed"),
+    "beast_evolve": ("npc_ops", "beast evolve"),
+    "sect_hall": ("sect_ops", "hall"),
+    "redeem": ("sect_ops", "redeem <物品>"),
     "rename": ("cultivator_ops", "rename <道号>"),
 }
 
@@ -136,6 +139,10 @@ def parse(group, command, game):
     if group == "sect_ops":
         if action == "status":
             return finish("inspect_route")
+        if action == "hall":
+            return finish("sect_hall")
+        if action == "redeem":
+            return finish("redeem", item=item(), amount=number(1))
         if action == "join":
             return finish("choose_route", route=resolve(take(), CONTENT["routes"]))
         if action == "task":

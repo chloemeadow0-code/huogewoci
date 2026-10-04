@@ -692,7 +692,8 @@
     "golden_pill_superior": 300,
     "soul_pill_fine": 350,
     "soul_pill_superior": 500,
-    "core_array_chart": 80
+    "core_array_chart": 80,
+    "evolution_crystal": 60
   },
   "recipes": {
     "potion": {
@@ -1256,6 +1257,15 @@
       "stackable": true,
       "effects": {},
       "requirements": {}
+    },
+    "evolution_crystal": {
+      "name": "进化晶核",
+      "type": "材料",
+      "rarity": "稀有",
+      "value": 60,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
     }
   },
   "events": [
@@ -1769,7 +1779,21 @@
     "swordMomentumDamage": 10,
     "proficiencyLevelXp": 5000,
     "proficiencyPowerPerLevel": 2,
-    "proficiencyMaxLevel": 10
+    "proficiencyMaxLevel": 10,
+    "beastEvolution": {
+      "crystalItem": "evolution_crystal",
+      "awakenLevel": 3,
+      "awakenCrystals": 1,
+      "awakenStones": 50,
+      "awakenMaxHp": 20,
+      "awakenStrength": 3,
+      "formLevel": 6,
+      "formCrystals": 3,
+      "formStones": 200,
+      "formMaxHp": 45,
+      "formStrength": 7,
+      "formComboChance": 40
+    }
   },
   "beasts": {
     "cloud_fox": {
@@ -1918,5 +1942,14 @@
       20,
       10
     ]
+  },
+  "sect_hall": {
+    "potion_superior": 8,
+    "golden_pill": 20,
+    "soul_pill": 35,
+    "core": 12,
+    "relic_fragment": 15,
+    "evolution_crystal": 45,
+    "core_array_chart": 60
   }
 }

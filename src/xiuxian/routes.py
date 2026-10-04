@@ -774,7 +774,8 @@ class RouteRules:
             "需伏妖门身份或散修御兽传承",
         )
         require(
-            action in ("contract", "feed", "heal", "stance", "release", "abuse"),
+            action
+            in ("contract", "feed", "heal", "stance", "release", "abuse", "evolve"),
             "未知灵兽动作",
         )
         require(p["battle"] is None, "战斗中不能重新调整契约或养育")
@@ -840,6 +841,38 @@ class RouteRules:
                 )
                 p["beast"] = None
                 return {"released": True, "registered": True}
+            elif action == "evolve":
+                rules = self.pack["route_rules"]["beastEvolution"]
+                stage = pet.get("evolution")
+                if not stage:
+                    need_level = rules["awakenLevel"]
+                    need_crystals = rules["awakenCrystals"]
+                    need_stones = rules["awakenStones"]
+                    name = "灵醒"
+                    hp_gain = rules["awakenMaxHp"]
+                    str_gain = rules["awakenStrength"]
+                elif stage == "灵醒":
+                    need_level = rules["formLevel"]
+                    need_crystals = rules["formCrystals"]
+                    need_stones = rules["formStones"]
+                    name = "化形"
+                    hp_gain = rules["formMaxHp"]
+                    str_gain = rules["formStrength"]
+                else:
+                    require(False, "灵兽已至化形,无法再进化")
+                require(
+                    pet["level"] >= need_level, f"灵兽需 {need_level} 级才能{name}"
+                )
+                require(pet["injuries"] == 0, "灵兽带伤,先疗伤再进化")
+                self._consume(rules["crystalItem"], need_crystals)
+                require(p["stones"] >= need_stones, f"进化需 {need_stones} 灵石")
+                p["stones"] -= need_stones
+                pet["maxHp"] += hp_gain
+                pet["hp"] = min(pet["maxHp"], pet["hp"] + hp_gain)
+                pet["strength"] += str_gain
+                pet["evolution"] = name
+                if name == "灵醒" and "guard" not in pet["skills"]:
+                    pet["skills"].append("guard")
             if pet["loyalty"] <= 0:
                 p["beast"] = None
                 return {"released": True, "reason": "忠诚耗尽"}
@@ -911,6 +944,17 @@ class RouteRules:
                 "hp": pet["hp"],
             }
         )
+        # 化形灵兽的撕咬:命中后按配置概率追加一次半伤连击。
+        if (
+            hit > 0
+            and enemy["hp"] > 0
+            and pet.get("evolution") == "化形"
+            and self._roll("beast_combo")
+            <= self.pack["route_rules"]["beastEvolution"]["formComboChance"]
+        ):
+            combo = max(1, hit // 2)
+            enemy["hp"] = max(0, enemy["hp"] - combo)
+            log.append({"actor": "beast", "skill": "combo", "damage": combo})
 
     def _route_world(self, result):
         p = self.player

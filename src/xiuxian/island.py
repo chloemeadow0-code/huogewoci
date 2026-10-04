@@ -28,6 +28,8 @@ EXTRA = (
     "market_bid",
     "beast_train",
     "npc_list",
+    "sect_hall",
+    "redeem",
 )
 for name in EXTRA:
     if name not in TOOLS:
@@ -43,6 +45,7 @@ READ_ONLY.update(
         "world_log",
         "market_catalog",
         "npc_list",
+        "sect_hall",
     }
 )
 
@@ -238,15 +241,20 @@ class IslandGame(Game):
                 "world_log",
                 "market_catalog",
                 "npc_list",
+                "sect_hall",
             ]
         )
         if not self.player.get("battle"):
             result.extend(
                 ["quest_step", "incident_resolve", "market_bid", "beast_train"]
             )
+            if self.player.get("beast"):
+                result.append("beast_evolve")
             if self.player.get("route"):
                 if self._local_enemies():
                     result.append("fight")
+                if self.player["islandLocation"] == self.player.get("route"):
+                    result.append("redeem")
                 if any(
                     q["location"] == self.player["islandLocation"]
                     for q in ISLAND["quests"].values()
@@ -369,6 +377,7 @@ class IslandGame(Game):
                     "legacy": True,
                 }
         data["auctions"] = self._open_auctions()
+        data["sectHall"] = self.sect_hall()
         return data
 
     def travel(self, destination, node=None):
@@ -609,6 +618,10 @@ class IslandGame(Game):
             self._add("iron", 1)
             p["stones"] += 8
             result["loot"] = {"iron": 1, "stones": 8}
+            if p["location"] == "realm":
+                # 潮汐宝藏:秘境里的宝箱额外凝出一枚进化晶核。
+                self._add("evolution_crystal", 1)
+                result["loot"]["evolution_crystal"] = 1
         self._explore_extra(event, result)
         p["hp"] = max(1, p["hp"] - self._current_event().get("exploreDamage", 0))
         return result
@@ -955,6 +968,31 @@ class IslandGame(Game):
             "reward": reward,
             "contribution": q["contribution"],
             "branch": stage["branch"],
+        }
+
+    def sect_hall(self):
+        return {
+            "contribution": self.player["contribution"],
+            "catalog": self.pack["sect_hall"],
+            "note": "用贡献兑换,需回本宗驻地;散修没有宗门贡献殿",
+        }
+
+    def redeem(self, item: str, amount: int = 1):
+        amount = bounded_int(amount, 1, 10)
+        p = self.player
+        require(p.get("route"), "散修没有宗门贡献殿")
+        require(p["islandLocation"] == p["route"], "请回本宗驻地兑换")
+        catalog = self.pack["sect_hall"]
+        require(item in catalog, "贡献殿没有这件物品")
+        cost = catalog[item] * amount
+        require(p["contribution"] >= cost, f"贡献不足,需 {cost}")
+        p["contribution"] -= cost
+        self._add(item, amount)
+        return {
+            "item": item,
+            "amount": amount,
+            "cost": cost,
+            "contribution": p["contribution"],
         }
 
     def market_catalog(self):
