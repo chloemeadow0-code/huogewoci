@@ -300,9 +300,25 @@ class IslandGame(Game):
         return result
 
     def _can_cultivate(self):
-        return self.player["islandLocation"] == (
-            "market" if self._is_rogue() else self.player.get("route")
-        )
+        loc = self.player["islandLocation"]
+        if loc == ("market" if self._is_rogue() else self.player.get("route")):
+            return True
+        # 盟谊:可在盟友宗门的地盘借地修炼。
+        relations = self.pack.get("sect_relations", {}).get(self.player.get("route"), {})
+        return loc in relations.get("allies", []) and loc != self.player.get("route")
+
+    def cultivate(self, method="basic_meditation", duration=1):
+        result = super().cultivate(method, duration)
+        # 盟谊切磋:在盟友宗门的地盘修炼,论道补益修为。
+        relations = self.pack.get("sect_relations", {}).get(self.player.get("route"), {})
+        if (
+            self.player["islandLocation"] in relations.get("allies", [])
+            and self.player["islandLocation"] != self.player.get("route")
+        ):
+            bonus = duration * 2
+            self.player["cultivation"] += bonus
+            result["alliedInsight"] = bonus
+        return result
 
     def breakthrough(self):
         p = self.player
@@ -375,6 +391,9 @@ class IslandGame(Game):
                 }
         data["auctions"] = self._open_auctions()
         data["sectHall"] = self.sect_hall()
+        data["sectRelations"] = self.pack.get("sect_relations", {}).get(
+            self.player.get("route"), {}
+        )
         return data
 
     def travel(self, destination, node=None):
@@ -568,6 +587,16 @@ class IslandGame(Game):
             "bamboo": ["wolf", "young_viper"],
         }.get(where, [])
         enemies = {k: ENEMIES[k] for k in keys}
+        # 宗门征战:站上敌对宗门的地盘,便可以挑战他们的护法弟子。
+        relations = self.pack.get("sect_relations", {})
+        my_sect = self.player.get("route")
+        if where in relations and my_sect in relations[where].get("enemies", []):
+            defender = where + "_defender"
+            if (
+                defender in ENEMIES
+                and self._realm_index() >= ENEMIES[defender]["realm"]
+            ):
+                enemies[defender] = ENEMIES[defender]
         enemies.update(
             {
                 k: v["enemy"]
@@ -708,6 +737,22 @@ class IslandGame(Game):
 
     def _after_action(self, tool, result, before):
         p = self.player
+        target = result.get("target") or ""
+        if target.endswith("_defender") and result.get("outcome") == "victory":
+            sect = target[: -len("_defender")]
+            day = self.state["minutes"] // 1440
+            war_key = "war_day:" + sect
+            if p["counters"].get(war_key) != day:
+                p["counters"][war_key] = day
+                p["sectReputation"] += 3
+                p["contribution"] += 3
+                self.state.setdefault("flags", {})["feud:" + sect] = {
+                    "day": day, "active": True,
+                }
+                result["sectWar"] = {
+                    "sect": sect, "reputationGained": 3, "contributionGained": 3,
+                    "note": "每日首胜记功；宗门间已结血仇",
+                }
         if (
             before.get("battle")
             and not p["battle"]

@@ -970,5 +970,136 @@
     "relic_fragment": 15,
     "evolution_crystal": 45,
     "core_array_chart": 60
+  },
+  "sect_relations": {
+    "qingxiao": {
+      "allies": [
+        "xuanheng",
+        "taixu",
+        "tiangong",
+        "canglang",
+        "xingluo"
+      ],
+      "enemies": [
+        "hehuan",
+        "youming",
+        "fentian"
+      ],
+      "note": "正道盟柱石；与焚天谷有比武旧怨"
+    },
+    "xuanheng": {
+      "allies": [
+        "qingxiao",
+        "taixu",
+        "tiangong",
+        "canglang",
+        "xingluo"
+      ],
+      "enemies": [
+        "hehuan",
+        "youming",
+        "fentian"
+      ],
+      "note": "焚天谷走水烧了阵台，此仇未报"
+    },
+    "taixu": {
+      "allies": [
+        "qingxiao",
+        "xuanheng",
+        "tiangong",
+        "canglang",
+        "xingluo"
+      ],
+      "enemies": [
+        "hehuan",
+        "youming"
+      ],
+      "note": "雷法镇邪，专克魔道"
+    },
+    "tiangong": {
+      "allies": [
+        "qingxiao",
+        "xuanheng",
+        "taixu",
+        "canglang",
+        "xingluo"
+      ],
+      "enemies": [
+        "hehuan",
+        "youming"
+      ],
+      "note": "只管锻器，但魔道欺上门也会还手"
+    },
+    "canglang": {
+      "allies": [
+        "qingxiao",
+        "xuanheng",
+        "taixu",
+        "tiangong",
+        "xingluo"
+      ],
+      "enemies": [
+        "hehuan",
+        "youming",
+        "fentian"
+      ],
+      "note": "水火不容，走水旧怨"
+    },
+    "xingluo": {
+      "allies": [
+        "qingxiao",
+        "xuanheng",
+        "taixu",
+        "tiangong",
+        "canglang"
+      ],
+      "enemies": [
+        "hehuan",
+        "youming"
+      ],
+      "note": "缉拿魔道要犯"
+    },
+    "hehuan": {
+      "allies": [
+        "youming"
+      ],
+      "enemies": [
+        "qingxiao",
+        "xuanheng",
+        "taixu",
+        "tiangong",
+        "canglang",
+        "xingluo"
+      ],
+      "note": "魔道盟共进退"
+    },
+    "youming": {
+      "allies": [
+        "hehuan"
+      ],
+      "enemies": [
+        "qingxiao",
+        "xuanheng",
+        "taixu",
+        "tiangong",
+        "canglang",
+        "xingluo"
+      ],
+      "note": "魔道盟共进退"
+    },
+    "fentian": {
+      "allies": [],
+      "enemies": [
+        "xuanheng",
+        "canglang",
+        "qingxiao"
+      ],
+      "note": "谁都不服，旧怨一堆"
+    },
+    "wanxiang": {
+      "allies": [],
+      "enemies": [],
+      "note": "生意人，两边都做生意"
+    }
   }
 }

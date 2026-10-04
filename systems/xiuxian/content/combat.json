@@ -783,6 +783,234 @@
       },
       "species": "mechanism",
       "strength": 30
+    },
+    "qingxiao_defender": {
+      "name": "青霄执法弟子",
+      "location": "qingxiao",
+      "hp": 70,
+      "defense": 5,
+      "reward": 40,
+      "agility": 13,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 1,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 18
+    },
+    "xuanheng_defender": {
+      "name": "玄衡护阵弟子",
+      "location": "xuanheng",
+      "hp": 65,
+      "defense": 6,
+      "reward": 40,
+      "agility": 12,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 1,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 16
+    },
+    "danxia_defender": {
+      "name": "丹霞药修弟子",
+      "location": "danxia",
+      "hp": 60,
+      "defense": 4,
+      "reward": 35,
+      "agility": 11,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 0,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 14
+    },
+    "fuyao_defender": {
+      "name": "伏妖巡山弟子",
+      "location": "fuyao",
+      "hp": 70,
+      "defense": 5,
+      "reward": 40,
+      "agility": 13,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 1,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 17
+    },
+    "taixu_defender": {
+      "name": "太虚雷法弟子",
+      "location": "taixu",
+      "hp": 65,
+      "defense": 5,
+      "reward": 42,
+      "agility": 12,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 1,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 18
+    },
+    "hehuan_defender": {
+      "name": "合欢护法弟子",
+      "location": "hehuan",
+      "hp": 60,
+      "defense": 4,
+      "reward": 45,
+      "agility": 15,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 1,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 15
+    },
+    "youming_defender": {
+      "name": "幽冥煞修",
+      "location": "youming",
+      "hp": 75,
+      "defense": 5,
+      "reward": 48,
+      "agility": 12,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 1,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 19
+    },
+    "tiangong_defender": {
+      "name": "天工器修弟子",
+      "location": "tiangong",
+      "hp": 80,
+      "defense": 7,
+      "reward": 45,
+      "agility": 10,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 1,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 20
+    },
+    "canglang_defender": {
+      "name": "沧浪水修弟子",
+      "location": "canglang",
+      "hp": 55,
+      "defense": 4,
+      "reward": 35,
+      "agility": 12,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 0,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 13
+    },
+    "fentian_defender": {
+      "name": "焚天炎修弟子",
+      "location": "fentian",
+      "hp": 70,
+      "defense": 4,
+      "reward": 46,
+      "agility": 13,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 1,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 21
+    },
+    "wanxiang_defender": {
+      "name": "万象护卫",
+      "location": "wanxiang",
+      "hp": 50,
+      "defense": 3,
+      "reward": 38,
+      "agility": 11,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 0,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 12
+    },
+    "xingluo_defender": {
+      "name": "星罗缉捕卫",
+      "location": "xingluo",
+      "hp": 75,
+      "defense": 6,
+      "reward": 44,
+      "agility": 13,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 1,
+      "type": "宗门护法",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {},
+      "species": "human",
+      "strength": 18
     }
   },
   "protected_enemies": [

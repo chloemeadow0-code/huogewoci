@@ -964,6 +964,7 @@ class Game(RouteRules):
                 result["qiLeeched"] = leech
             result.update(
                 outcome="victory",
+                target=target,
                 loot={**drops, **trackedLoot},
                 stones=reward,
             )

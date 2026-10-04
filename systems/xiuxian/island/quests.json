@@ -1855,6 +1855,46 @@
           "rewardBonus": 8
         }
       }
+    },
+    "xuanheng_war_fentian": {
+      "name": "阵压焚天",
+      "location": "xuanheng",
+      "npc": "xuanheng_mentor",
+      "kind": "宗门征战",
+      "sect": "xuanheng",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "xuanheng_mentor",
+          "label": "领阵压焚天的将令"
+        },
+        {
+          "type": "kill",
+          "target": "fentian_defender",
+          "location": "fentian",
+          "label": "兵临焚天谷，阵压炎修弟子"
+        },
+        {
+          "type": "return",
+          "location": "xuanheng",
+          "label": "回玄衡阵门报捷"
+        }
+      ],
+      "reward": 90,
+      "reputation": 12,
+      "contribution": 15,
+      "branches": {
+        "report": {
+          "name": "如实报捷",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "约束同门不扩大事端",
+          "cost": 8,
+          "rewardBonus": 12
+        }
+      }
     }
   }
 }
