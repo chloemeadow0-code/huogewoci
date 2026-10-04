@@ -379,6 +379,188 @@
         "realm": 0
       },
       "school": "lightning"
+    },
+    "nether_claw": {
+      "name": "噬魂爪",
+      "type": "attack",
+      "cost": 6,
+      "power": 95,
+      "cooldown": 1,
+      "accuracy": 88,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "nether"
+    },
+    "yin_shield": {
+      "name": "阴煞罩",
+      "type": "defense",
+      "cost": 4,
+      "power": 18,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "nether"
+    },
+    "gold_dart": {
+      "name": "金算盘珠",
+      "type": "attack",
+      "cost": 4,
+      "power": 78,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "merchant"
+    },
+    "swift_ledger": {
+      "name": "疾账步",
+      "type": "movement",
+      "cost": 4,
+      "power": 15,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "merchant"
+    },
+    "gear_strike": {
+      "name": "机关臂铠",
+      "type": "attack",
+      "cost": 6,
+      "power": 105,
+      "cooldown": 2,
+      "accuracy": 85,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "artificer"
+    },
+    "fortify_frame": {
+      "name": "锻体淬甲",
+      "type": "defense",
+      "cost": 5,
+      "power": 28,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "artificer"
+    },
+    "tide_sweep": {
+      "name": "潮汐引",
+      "type": "attack",
+      "cost": 5,
+      "power": 80,
+      "cooldown": 1,
+      "accuracy": 90,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "tide"
+    },
+    "moon_balm": {
+      "name": "月华露",
+      "type": "heal",
+      "cost": 6,
+      "power": 40,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "tide"
+    },
+    "cinder_fist": {
+      "name": "焚山拳",
+      "type": "attack",
+      "cost": 7,
+      "power": 108,
+      "cooldown": 2,
+      "accuracy": 82,
+      "target": "enemy",
+      "effect": "burn",
+      "effectChance": 45,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "ember"
+    },
+    "blaze_dash": {
+      "name": "燎原步",
+      "type": "movement",
+      "cost": 4,
+      "power": 16,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "ember"
+    },
+    "constable_chain": {
+      "name": "锁灵链",
+      "type": "attack",
+      "cost": 6,
+      "power": 82,
+      "cooldown": 2,
+      "accuracy": 88,
+      "target": "enemy",
+      "effect": "root",
+      "effectChance": 40,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "constable"
+    },
+    "pursuit_step": {
+      "name": "追风缉步",
+      "type": "movement",
+      "cost": 4,
+      "power": 18,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "constable"
     }
   },
   "npcs": {
@@ -1032,6 +1214,105 @@
       "passiveEffects": {
         "strength": 2
       },
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "youming_sha": {
+      "name": "幽冥煞功",
+      "type": "煞道",
+      "school": "nether",
+      "route": "youming",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "水",
+        "土"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "wanxiang_ledger": {
+      "name": "万象心经",
+      "type": "商道",
+      "school": "merchant",
+      "route": "wanxiang",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "金",
+        "土"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "tiangong_formula": {
+      "name": "天工开物诀",
+      "type": "锻造",
+      "school": "artificer",
+      "route": "tiangong",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "金",
+        "土"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 4,
+      "passiveEffects": {
+        "defense": 2
+      },
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "canglang_tide": {
+      "name": "沧浪潮息诀",
+      "type": "水道",
+      "school": "tide",
+      "route": "canglang",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "水",
+        "木"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 8,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "fentian_flame": {
+      "name": "焚天炎诀",
+      "type": "炎道",
+      "school": "ember",
+      "route": "fentian",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "火"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 4,
+      "passiveEffects": {
+        "strength": 2
+      },
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "xingluo_warrant": {
+      "name": "星罗缉要",
+      "type": "缉道",
+      "school": "constable",
+      "route": "xingluo",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "金",
+        "木"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 5,
+      "passiveEffects": {},
       "maxLevel": 10,
       "tuition": 20
     }
@@ -1907,6 +2188,341 @@
         "personal_taixu_mentor"
       ],
       "teacher": "太虚观主"
+    },
+    "youming": {
+      "name": "幽冥殿",
+      "background": "修煞道的宗门，信奉生死同源。殿中弟子以自身血气为引，愈是濒死，煞气愈盛。正道骂他们玩火，他们笑正道怕死。",
+      "position": "濒死爆发、煞道控制、亡灵见闻",
+      "advantages": [
+        "残血爆发冠绝全岛",
+        "煞道控制",
+        "无惧苦战"
+      ],
+      "disadvantages": [
+        "需要卖血操作",
+        "治疗手段差",
+        "声望低"
+      ],
+      "rules": [
+        "借煞不得取凡人生气",
+        "殿中血斗须立生死状",
+        "叛殿者煞气反噬"
+      ],
+      "resources": [
+        "煞功刻卷",
+        "阴煞地眼",
+        "生死状"
+      ],
+      "modifiers": {
+        "desperationPower": 60,
+        "attackDamage": 5,
+        "healEffect": -15
+      },
+      "mechanism": "气血低于三成时进入借煞状态，攻击威力提升六成——把自己打进鬼门关再赢回来。",
+      "disciplines": [
+        "nether",
+        "body"
+      ],
+      "technique": "youming_sha",
+      "skills": [
+        "strike",
+        "guard",
+        "nether_claw",
+        "yin_shield"
+      ],
+      "nodes": [
+        "山门",
+        "幽冥大殿",
+        "煞眼",
+        "骨阶",
+        "任务堂",
+        "藏经阁"
+      ],
+      "quests": [
+        "trial_youming",
+        "personal_youming_mentor"
+      ],
+      "teacher": "幽冥殿主"
+    },
+    "wanxiang": {
+      "name": "万象楼",
+      "background": "不是宗门，是一座开在全岛各地的楼。买卖消息，买卖货物，也买卖体面。楼主说天下没有不能谈的生意，只有不够的价码。",
+      "position": "商道、消息、溢价买卖、人脉",
+      "advantages": [
+        "卖货溢价五成",
+        "买货便宜",
+        "消息灵通",
+        "赚钱最快"
+      ],
+      "disadvantages": [
+        "武力平平",
+        "树敌于黑市",
+        "宗门武力弱"
+      ],
+      "rules": [
+        "买卖公平，缺斤短两逐出楼",
+        "楼中消息按价出售",
+        "不得白嫖楼中人脉"
+      ],
+      "resources": [
+        "万象账房",
+        "全岛商路",
+        "消息网",
+        "拍卖渠道"
+      ],
+      "modifiers": {
+        "sellBonus": 50,
+        "purchasePrice": -5,
+        "attackDamage": -10
+      },
+      "mechanism": "万象金字招牌：卖货溢价五成、买货再让半成——战斗不行，但你永远比别人有钱。",
+      "disciplines": [
+        "merchant",
+        "craft"
+      ],
+      "technique": "wanxiang_ledger",
+      "skills": [
+        "strike",
+        "guard",
+        "gold_dart",
+        "swift_ledger"
+      ],
+      "nodes": [
+        "楼首",
+        "账房",
+        "库房",
+        "消息阁",
+        "任务堂",
+        "会客厅"
+      ],
+      "quests": [
+        "trial_wanxiang",
+        "personal_wanxiang_mentor"
+      ],
+      "teacher": "万象楼主"
+    },
+    "tiangong": {
+      "name": "天工阁",
+      "background": "器修祖庭。阁中弟子不拜神也不拜师，拜的是自己亲手锻出来的每一件法器。阁训：器有魂，锻其形，先锻心。",
+      "position": "锻造、装备强化、法器与机关",
+      "advantages": [
+        "装备威力冠绝",
+        "锻造成功率最高",
+        "器修底蕴"
+      ],
+      "disadvantages": [
+        "自身功夫平平",
+        "依赖法器",
+        "耗材开销大"
+      ],
+      "rules": [
+        "弟子法器须亲手所锻",
+        "不得以次充好",
+        "阁中法器禁出岛"
+      ],
+      "resources": [
+        "锻炉",
+        "图纸",
+        "法器谱",
+        "机关耗材"
+      ],
+      "modifiers": {
+        "equipmentPower": 40,
+        "forgingChance": 20,
+        "healEffect": -5
+      },
+      "mechanism": "装备属性加成放大四成——同一柄剑，天工弟子握着就是更锋利。",
+      "disciplines": [
+        "artificer",
+        "craft"
+      ],
+      "technique": "tiangong_formula",
+      "skills": [
+        "strike",
+        "guard",
+        "gear_strike",
+        "fortify_frame"
+      ],
+      "nodes": [
+        "山门",
+        "锻炉大殿",
+        "图纸阁",
+        "淬火池",
+        "任务堂",
+        "器藏室"
+      ],
+      "quests": [
+        "trial_tiangong",
+        "personal_tiangong_mentor"
+      ],
+      "teacher": "天工阁老"
+    },
+    "canglang": {
+      "name": "沧浪水榭",
+      "background": "水榭建在月汐湖的活水眼上。这里不教杀人，教的是怎么在杀局里活下来——潮起时走，潮落时生。",
+      "position": "治疗、水系辅助、脱身、续航",
+      "advantages": [
+        "治疗最强",
+        "脱身成功率大增",
+        "续航持久"
+      ],
+      "disadvantages": [
+        "攻击乏力",
+        "输出垫底",
+        "依赖水脉"
+      ],
+      "rules": [
+        "水法不得污染活水眼",
+        "救人分文不取",
+        "榭中不得结死仇"
+      ],
+      "resources": [
+        "活水眼",
+        "潮汐历",
+        "水榭医典"
+      ],
+      "modifiers": {
+        "healEffect": 30,
+        "escapeBonus": 20,
+        "attackDamage": -10
+      },
+      "mechanism": "潮息护体：逃离战斗的成功率提升两成，打不过就走，走得掉就是赢。",
+      "disciplines": [
+        "tide",
+        "medicine"
+      ],
+      "technique": "canglang_tide",
+      "skills": [
+        "strike",
+        "guard",
+        "tide_sweep",
+        "moon_balm"
+      ],
+      "nodes": [
+        "山门",
+        "水榭主殿",
+        "活水眼",
+        "药庐",
+        "任务堂",
+        "听潮台"
+      ],
+      "quests": [
+        "trial_canglang",
+        "personal_canglang_mentor"
+      ],
+      "teacher": "沧浪榭主"
+    },
+    "fentian": {
+      "name": "焚天谷",
+      "background": "炎道狂人聚在火山余脉上，信条只有一句：火力不足，是因为烧得不够多。谷中丹炉比房子多，走水是家常便饭。",
+      "position": "火系爆发、点燃、狂攻",
+      "advantages": [
+        "攻击最高",
+        "点燃持续伤害",
+        "气势吓人"
+      ],
+      "disadvantages": [
+        "治疗最差",
+        "烧资源",
+        "经常误伤自己人"
+      ],
+      "rules": [
+        "焚火不得出谷",
+        "走水者罚抄谷训百遍",
+        "禁燃凡人屋舍"
+      ],
+      "resources": [
+        "火山余脉",
+        "炎诀",
+        "丹火",
+        "走水记录"
+      ],
+      "modifiers": {
+        "attackDamage": 10,
+        "healEffect": -20,
+        "alchemyChance": -10
+      },
+      "mechanism": "谷中拳法自带火劲：命中后有概率点燃对手，火焰会烧上两个回合。",
+      "disciplines": [
+        "ember",
+        "alchemy"
+      ],
+      "technique": "fentian_flame",
+      "skills": [
+        "strike",
+        "guard",
+        "cinder_fist",
+        "blaze_dash"
+      ],
+      "nodes": [
+        "山门",
+        "焚天大殿",
+        "丹火房",
+        "余脉坑道",
+        "任务堂",
+        "罚抄堂"
+      ],
+      "quests": [
+        "trial_fentian",
+        "personal_fentian_mentor"
+      ],
+      "teacher": "焚天谷主"
+    },
+    "xingluo": {
+      "name": "星罗卫",
+      "background": "奉岛规而立的缉捕卫所，专拿岛上悬赏的要犯。腰牌一亮，黑市都要给三分面子。卫训：天网恢恢，疏而不漏账。",
+      "position": "缉拿、悬赏、控制、秩序",
+      "advantages": [
+        "缉拿赏金",
+        "控制链",
+        "正道背景硬"
+      ],
+      "disadvantages": [
+        "中规中矩",
+        "公务缠身",
+        "黑市死敌"
+      ],
+      "rules": [
+        "拿人须有赏格",
+        "不得私刑",
+        "卫所令牌禁借"
+      ],
+      "resources": [
+        "赏格令",
+        "缉拿术",
+        "卫所牢狱",
+        "全岛档案"
+      ],
+      "modifiers": {
+        "killBounty": 8,
+        "combatReputation": 20,
+        "healEffect": -5
+      },
+      "mechanism": "每个敌人首次缉拿归案，卫所额外发放八灵石悬赏——拿人拿首，赏不重付。",
+      "disciplines": [
+        "constable",
+        "body"
+      ],
+      "technique": "xingluo_warrant",
+      "skills": [
+        "strike",
+        "guard",
+        "constable_chain",
+        "pursuit_step"
+      ],
+      "nodes": [
+        "卫所大门",
+        "指挥使帐",
+        "缉拿堂",
+        "牢狱",
+        "任务堂",
+        "档房"
+      ],
+      "quests": [
+        "trial_xingluo",
+        "personal_xingluo_mentor"
+      ],
+      "teacher": "星罗卫指挥使"
     }
   },
   "disciplines": {
@@ -1918,7 +2534,13 @@
     "beast": "御兽",
     "body": "体修",
     "charm": "魅道",
-    "lightning": "雷法"
+    "lightning": "雷法",
+    "nether": "煞道",
+    "merchant": "商道",
+    "artificer": "锻造",
+    "tide": "水道",
+    "ember": "炎道",
+    "constable": "缉道"
   },
   "materials": {
     "array_bolt": {
@@ -2144,6 +2766,36 @@
       "iron",
       "armor",
       "foundation_pill"
+    ],
+    "youming": [
+      "potion",
+      "herb",
+      "iron"
+    ],
+    "wanxiang": [
+      "potion",
+      "herb",
+      "iron"
+    ],
+    "tiangong": [
+      "potion",
+      "iron",
+      "armor"
+    ],
+    "canglang": [
+      "potion",
+      "herb",
+      "golden_pill"
+    ],
+    "fentian": [
+      "potion",
+      "herb",
+      "iron"
+    ],
+    "xingluo": [
+      "potion",
+      "herb",
+      "armor"
     ]
   },
   "blackmarket_stock": [

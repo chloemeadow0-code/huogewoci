@@ -7,7 +7,11 @@ from .engine import Game
 
 def journeys(folder):
     results = {}
-    for route in ("qingxiao", "xuanheng", "danxia", "fuyao", "hehuan", "taixu", "rogue"):
+    for route in (
+        "qingxiao", "xuanheng", "danxia", "fuyao", "hehuan", "taixu",
+        "youming", "wanxiang", "tiangong", "canglang", "fentian", "xingluo",
+        "rogue",
+    ):
         g = Game(
             Path(folder) / (route + ".db"), player_key=route, player_name="试玩修士"
         )
@@ -68,6 +72,13 @@ def journeys(folder):
                 act("fight", target="sparring")
                 duel()
                 act("use_item", item="potion")
+            elif route in (
+                "youming", "wanxiang", "tiangong", "canglang", "fentian", "xingluo",
+            ):
+                act("fight", target="sparring")
+                duel()
+                if route == "wanxiang":
+                    act("trade", item="herb", side="sell")  # merchant premium
             elif route == "hehuan":
                 act("fight", target="sparring")
                 duel()

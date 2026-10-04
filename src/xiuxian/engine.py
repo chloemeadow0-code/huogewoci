@@ -269,6 +269,8 @@ class Game(RouteRules):
         require(p["location"] in ("town", "sect"), "交易需到宗门商店或青石镇")
         require(item in PRICES and side in ("buy", "sell"), "无效交易")
         price = PRICES[item] if side == "buy" else max(1, PRICES[item] // 2)
+        if side == "sell":
+            price = self._percent(price, self._bonus("sellBonus"))
         price = self._shop_price(item, side, price)
         if side == "buy":
             require(p["stones"] >= price * quantity, "灵石不足")
@@ -506,10 +508,13 @@ class Game(RouteRules):
     def _stats(self, actor):
         stats = {k: actor[k] for k in ("strength", "defense", "agility", "spirit")}
         if actor is self.player:
+            equip_boost = self._bonus("equipmentPower")
             for item in actor["equipment"].values():
                 if item:
                     for k, v in CONTENT["items"][item]["effects"].items():
-                        stats[k] = stats.get(k, 0) + v
+                        stats[k] = stats.get(k, 0) + (
+                            self._percent(v, equip_boost) if equip_boost else v
+                        )
             for k, v in CONTENT["techniques"][actor["method"]][
                 "passiveEffects"
             ].items():
@@ -773,6 +778,17 @@ class Game(RouteRules):
                 shields[0]["value"] -= absorbed
             target["hp"] = max(0, target["hp"] - hit)
             result["damage"] = hit
+            if s.get("effect") and self._roll("skill_ailment") <= s.get(
+                "effectChance", 0
+            ):
+                self._effect(
+                    target,
+                    s["effect"],
+                    max(1, power // 4),
+                    s.get("duration", 2),
+                    skill,
+                )
+                result["ailment"] = s["effect"]
         elif s["type"] == "heal":
             if not any(e["type"] == "heal_block" for e in actor["statusEffects"]):
                 actor["hp"] = min(actor["max_hp"], actor["hp"] + power)
@@ -852,8 +868,11 @@ class Game(RouteRules):
                         self._restore(item)
                         log.append({"actor": "player", "item": item})
                 elif escape:
-                    escaped = not controlled and self._roll("retreat") <= escape_chance(
+                    escape_odds = escape_chance(
                         self._stats(p)["agility"], self._stats(e)["agility"]
+                    ) + self._bonus("escapeBonus")
+                    escaped = not controlled and self._roll("retreat") <= min(
+                        95, max(10, escape_odds)
                     )
                     log.append({"actor": "player", "escaped": escaped})
                     if escaped:
@@ -938,6 +957,10 @@ class Game(RouteRules):
             if target == "sparring" and self._current_event().get("id") == "tournament":
                 p["reputation"] += 1
             p["battle"] = None
+            bounty = self._bonus("killBounty")
+            if bounty and first_kill:
+                p["stones"] += bounty
+                result["bounty"] = bounty
             leech = self._bonus("victoryQiLeech")
             if leech and p["qi"] < p["maxQi"]:
                 p["qi"] = min(p["maxQi"], p["qi"] + leech)

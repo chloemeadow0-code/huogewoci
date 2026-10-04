@@ -10,7 +10,8 @@
       "requiredRealm": 0,
       "exits": [
         "market",
-        "bamboo"
+        "bamboo",
+        "tiangong"
       ],
       "description": "断云山上，剑声穿过清晨的薄雾。"
     },
@@ -69,7 +70,13 @@
         "bamboo",
         "lake",
         "hehuan",
-        "taixu"
+        "taixu",
+        "youming",
+        "wanxiang",
+        "tiangong",
+        "canglang",
+        "fentian",
+        "xingluo"
       ],
       "description": "山与海相遇的集市，四宗修士和散修在此交换见闻。"
     },
@@ -82,7 +89,8 @@
       "requiredRealm": 0,
       "exits": [
         "market",
-        "ruins"
+        "ruins",
+        "wanxiang"
       ],
       "description": "窄巷挂着一盏淡红纸灯，残卷与消息都有代价。"
     },
@@ -123,7 +131,8 @@
       "requiredRealm": 1,
       "exits": [
         "fuyao",
-        "lake"
+        "lake",
+        "xingluo"
       ],
       "description": "越过边境石标，追踪与避险比莽撞更有用。"
     },
@@ -139,7 +148,8 @@
         "mist",
         "ridge",
         "secret",
-        "hehuan"
+        "hehuan",
+        "canglang"
       ],
       "description": "月色被湖水收下，潮汐时灵脉会缓慢回应。"
     },
@@ -153,7 +163,8 @@
       "exits": [
         "blackmarket",
         "xuanheng",
-        "secret"
+        "secret",
+        "youming"
       ],
       "description": "倾倒的旧山门仍有禁制，残缺石刻记着另一种选择。"
     },
@@ -166,7 +177,8 @@
       "requiredRealm": 1,
       "exits": [
         "lake",
-        "ruins"
+        "ruins",
+        "fentian"
       ],
       "description": "潮生潮落之间，古阵只在一周的前两日打开。"
     },
@@ -194,6 +206,84 @@
         "market"
       ],
       "description": "观星台直入云霄，雷池在殿后日夜奔鸣，符纸的墨香混着臭氧。"
+    },
+    "youming": {
+      "id": "youming",
+      "name": "幽冥殿",
+      "area": "sect",
+      "x": 0.9,
+      "y": 0.4,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "ruins"
+      ],
+      "description": "灰雾常年不散，殿门口挂的不是灯笼，是一串串风干的名字。"
+    },
+    "wanxiang": {
+      "id": "wanxiang",
+      "name": "万象楼",
+      "area": "sect",
+      "x": 0.6,
+      "y": 0.85,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "blackmarket"
+      ],
+      "description": "楼高九层，一层卖货九层卖消息，顶层挂着一块从不落地的匾。"
+    },
+    "tiangong": {
+      "id": "tiangong",
+      "name": "天工阁",
+      "area": "sect",
+      "x": 0.1,
+      "y": 0.45,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "qingxiao"
+      ],
+      "description": "锻炉的火光昼夜映着半边山壁，锤声比鸡叫更准。"
+    },
+    "canglang": {
+      "id": "canglang",
+      "name": "沧浪水榭",
+      "area": "sect",
+      "x": 0.45,
+      "y": 0.9,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "lake"
+      ],
+      "description": "半座水榭浸在湖里，潮声日夜不息，据说能听见岛的心跳。"
+    },
+    "fentian": {
+      "id": "fentian",
+      "name": "焚天谷",
+      "area": "sect",
+      "x": 0.88,
+      "y": 0.15,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "secret"
+      ],
+      "description": "山是黑的，云是红的，空气里有淡淡的硫磺味和不服输的火气。"
+    },
+    "xingluo": {
+      "id": "xingluo",
+      "name": "星罗卫",
+      "area": "sect",
+      "x": 0.72,
+      "y": 0.88,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "ridge"
+      ],
+      "description": "黑瓦白墙的卫所立在东南角，门前石碑刻着全岛现行的赏格。"
     }
   },
   "npcs": {
@@ -648,6 +738,144 @@
       "personalQuest": "personal_taixu_mentor",
       "specialEvent": "雷池异动",
       "technique": "taixu_thunder"
+    },
+    "youming_mentor": {
+      "name": "殿主·墨十三",
+      "identity": "幽冥殿主",
+      "duty": "功法指导",
+      "background": "从鬼门关自己走回来过一次，回来之后就不太在乎别人怎么看了。",
+      "personality": "寡言深邃",
+      "positive": "言出必行",
+      "negative": "过于超然",
+      "location": "youming",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_youming_mentor",
+      "specialEvent": "煞眼共鸣",
+      "technique": "youming_sha"
+    },
+    "wanxiang_mentor": {
+      "name": "楼主·白算盘",
+      "identity": "万象楼主",
+      "duty": "功法指导",
+      "background": "三岁能算账，三十岁买下了这座楼。常说拳头是最不划算的武器。",
+      "personality": "精明圆滑",
+      "positive": "契约精神",
+      "negative": "锱铢必较",
+      "location": "wanxiang",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_wanxiang_mentor",
+      "specialEvent": "断账之夜",
+      "technique": "wanxiang_ledger"
+    },
+    "tiangong_mentor": {
+      "name": "阁老·欧冶残",
+      "identity": "天工阁老",
+      "duty": "功法指导",
+      "background": "左手三根手指留在了某件失败的法器里，之后锻出的东西再没失败过。",
+      "personality": "沉默较真",
+      "positive": "一丝不苟",
+      "negative": "不通变通",
+      "location": "tiangong",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_tiangong_mentor",
+      "specialEvent": "残器现世",
+      "technique": "tiangong_formula"
+    },
+    "canglang_mentor": {
+      "name": "榭主·温枕流",
+      "identity": "沧浪榭主",
+      "duty": "功法指导",
+      "background": "医过正道也医过魔道，只问伤势不问出身，为此两边都欠她人情。",
+      "personality": "温和通透",
+      "positive": "医者仁心",
+      "negative": "不愿杀人",
+      "location": "canglang",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_canglang_mentor",
+      "specialEvent": "活水眼涨潮",
+      "technique": "canglang_tide"
+    },
+    "fentian_mentor": {
+      "name": "谷主·祝无霜",
+      "identity": "焚天谷主",
+      "duty": "功法指导",
+      "background": "把谷训抄了一百遍之后把谷训烧了，说记在心里就够了。",
+      "personality": "暴烈率真",
+      "positive": "说到做到",
+      "negative": "一点就着",
+      "location": "fentian",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_fentian_mentor",
+      "specialEvent": "余脉走水",
+      "technique": "fentian_flame"
+    },
+    "xingluo_mentor": {
+      "name": "指挥使·铁无援",
+      "identity": "星罗卫指挥使",
+      "duty": "功法指导",
+      "background": "上任指挥使是他亲手拿的，罪名是私放悬赏要犯。公事公办到这个地步，也算一种境界。",
+      "personality": "铁面肃正",
+      "positive": "公正不阿",
+      "negative": "刻板",
+      "location": "xingluo",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_xingluo_mentor",
+      "specialEvent": "赏格更新",
+      "technique": "xingluo_warrant"
     }
   },
   "villains": {
@@ -2292,6 +2520,486 @@
         }
       },
       "sect": "taixu"
+    },
+    "trial_youming": {
+      "name": "幽冥殿入门试炼",
+      "location": "youming",
+      "npc": "youming_mentor",
+      "kind": "宗门任务",
+      "sect": "youming",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "youming_mentor",
+          "label": "拜见幽冥殿主"
+        },
+        {
+          "type": "kill",
+          "target": "wolf",
+          "location": "bamboo",
+          "label": "押送煞核途中击退妖狼"
+        },
+        {
+          "type": "return",
+          "location": "youming",
+          "label": "回幽冥殿复命"
+        }
+      ],
+      "reward": 65,
+      "reputation": 3,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_youming_mentor": {
+      "name": "煞眼共鸣",
+      "location": "youming",
+      "npc": "youming_mentor",
+      "kind": "NPC任务",
+      "sect": "youming",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "youming_mentor",
+          "label": "听墨十三细说缘由"
+        },
+        {
+          "type": "kill",
+          "target": "wolf",
+          "location": "bamboo",
+          "label": "押送煞核途中击退妖狼"
+        },
+        {
+          "type": "return",
+          "location": "youming",
+          "label": "回幽冥殿复命"
+        }
+      ],
+      "reward": 35,
+      "reputation": 5,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "trial_wanxiang": {
+      "name": "万象楼入门试炼",
+      "location": "wanxiang",
+      "npc": "wanxiang_mentor",
+      "kind": "宗门任务",
+      "sect": "wanxiang",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "wanxiang_mentor",
+          "label": "拜见万象楼主"
+        },
+        {
+          "type": "explore",
+          "location": "mist",
+          "count": 2,
+          "label": "护送账册穿过黑雾林"
+        },
+        {
+          "type": "return",
+          "location": "wanxiang",
+          "label": "回万象楼复命"
+        }
+      ],
+      "reward": 65,
+      "reputation": 6,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_wanxiang_mentor": {
+      "name": "断账之夜",
+      "location": "wanxiang",
+      "npc": "wanxiang_mentor",
+      "kind": "NPC任务",
+      "sect": "wanxiang",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "wanxiang_mentor",
+          "label": "听白算盘细说缘由"
+        },
+        {
+          "type": "explore",
+          "location": "mist",
+          "count": 2,
+          "label": "护送账册穿过黑雾林"
+        },
+        {
+          "type": "return",
+          "location": "wanxiang",
+          "label": "回万象楼复命"
+        }
+      ],
+      "reward": 35,
+      "reputation": 5,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "trial_tiangong": {
+      "name": "天工阁入门试炼",
+      "location": "tiangong",
+      "npc": "tiangong_mentor",
+      "kind": "宗门任务",
+      "sect": "tiangong",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "tiangong_mentor",
+          "label": "拜见天工阁老"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 2,
+          "label": "取回玄铁矿料"
+        },
+        {
+          "type": "return",
+          "location": "tiangong",
+          "label": "回天工阁复命"
+        }
+      ],
+      "reward": 65,
+      "reputation": 6,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_tiangong_mentor": {
+      "name": "残器现世",
+      "location": "tiangong",
+      "npc": "tiangong_mentor",
+      "kind": "NPC任务",
+      "sect": "tiangong",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "tiangong_mentor",
+          "label": "听欧冶残细说缘由"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 2,
+          "label": "取回玄铁矿料"
+        },
+        {
+          "type": "return",
+          "location": "tiangong",
+          "label": "回天工阁复命"
+        }
+      ],
+      "reward": 35,
+      "reputation": 5,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "trial_canglang": {
+      "name": "沧浪水榭入门试炼",
+      "location": "canglang",
+      "npc": "canglang_mentor",
+      "kind": "宗门任务",
+      "sect": "canglang",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "canglang_mentor",
+          "label": "拜见沧浪榭主"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 3,
+          "label": "采三株带露灵草"
+        },
+        {
+          "type": "return",
+          "location": "canglang",
+          "label": "回沧浪水榭复命"
+        }
+      ],
+      "reward": 65,
+      "reputation": 6,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_canglang_mentor": {
+      "name": "活水眼涨潮",
+      "location": "canglang",
+      "npc": "canglang_mentor",
+      "kind": "NPC任务",
+      "sect": "canglang",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "canglang_mentor",
+          "label": "听温枕流细说缘由"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 3,
+          "label": "采三株带露灵草"
+        },
+        {
+          "type": "return",
+          "location": "canglang",
+          "label": "回沧浪水榭复命"
+        }
+      ],
+      "reward": 35,
+      "reputation": 5,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "trial_fentian": {
+      "name": "焚天谷入门试炼",
+      "location": "fentian",
+      "npc": "fentian_mentor",
+      "kind": "宗门任务",
+      "sect": "fentian",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "fentian_mentor",
+          "label": "拜见焚天谷主"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 2,
+          "label": "放一场受控的火"
+        },
+        {
+          "type": "return",
+          "location": "fentian",
+          "label": "回焚天谷复命"
+        }
+      ],
+      "reward": 65,
+      "reputation": 6,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_fentian_mentor": {
+      "name": "余脉走水",
+      "location": "fentian",
+      "npc": "fentian_mentor",
+      "kind": "NPC任务",
+      "sect": "fentian",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "fentian_mentor",
+          "label": "听祝无霜细说缘由"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 2,
+          "label": "放一场受控的火"
+        },
+        {
+          "type": "return",
+          "location": "fentian",
+          "label": "回焚天谷复命"
+        }
+      ],
+      "reward": 35,
+      "reputation": 5,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "trial_xingluo": {
+      "name": "星罗卫入门试炼",
+      "location": "xingluo",
+      "npc": "xingluo_mentor",
+      "kind": "宗门任务",
+      "sect": "xingluo",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "xingluo_mentor",
+          "label": "拜见星罗卫指挥使"
+        },
+        {
+          "type": "kill",
+          "target": "wolf",
+          "location": "bamboo",
+          "label": "缉拿在逃妖狼"
+        },
+        {
+          "type": "return",
+          "location": "xingluo",
+          "label": "回星罗卫复命"
+        }
+      ],
+      "reward": 65,
+      "reputation": 6,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
+    },
+    "personal_xingluo_mentor": {
+      "name": "赏格更新",
+      "location": "xingluo",
+      "npc": "xingluo_mentor",
+      "kind": "NPC任务",
+      "sect": "xingluo",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "xingluo_mentor",
+          "label": "听铁无援细说缘由"
+        },
+        {
+          "type": "kill",
+          "target": "wolf",
+          "location": "bamboo",
+          "label": "缉拿在逃妖狼"
+        },
+        {
+          "type": "return",
+          "location": "xingluo",
+          "label": "回星罗卫复命"
+        }
+      ],
+      "reward": 35,
+      "reputation": 5,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "妥善善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      }
     }
   },
   "incidents": {

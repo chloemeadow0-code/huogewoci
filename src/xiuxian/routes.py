@@ -400,6 +400,9 @@ class RouteRules:
                 )
                 * self.pack["route_rules"]["proficiencyPowerPerLevel"]
             )
+            desperation = self._bonus("desperationPower")
+            if desperation and self.player["hp"] * 3 <= self.player["max_hp"]:
+                power = self._percent(power, desperation)  # 借煞:气血越低,煞气越盛
         if s["type"] == "attack" and b["firstDamage"]:
             info["formationBonus"] = b["firstDamage"]
             b["firstDamage"] = 0

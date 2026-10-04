@@ -5,7 +5,7 @@ export function scene(data,act){
  const b=(label,tool,command,disabled=false)=>button(label,()=>act(tool,command),disabled);
  for(const id of["actions","exits","npcs","quests","enemies","skills","inventory","shop","incidents","world-events","crafting","relations"])el(id).replaceChildren();
  el("location-name").textContent=w.location.name;el("description").textContent=w.location.description;
- if(!p.route)for(const[id,name]of Object.entries({qingxiao:"青霄剑宗",xuanheng:"玄衡阵门",danxia:"丹霞谷",fuyao:"伏妖门",taixu:"太虚观",hehuan:"合欢宗",rogue:"散修"}))el("actions").append(b(name,"sect_ops","join "+id));
+ if(!p.route)for(const[id,name]of Object.entries({qingxiao:"青霄剑宗",xuanheng:"玄衡阵门",danxia:"丹霞谷",fuyao:"伏妖门",taixu:"太虚观",hehuan:"合欢宗",youming:"幽冥殿",fentian:"焚天谷",tiangong:"天工阁",canglang:"沧浪水榭",wanxiang:"万象楼",xingluo:"星罗卫",rogue:"散修"}))el("actions").append(b(name,"sect_ops","join "+id));
  const avail=w.nearbyActions||[];
  for(const[action,label,tool,command]of[["cultivate","修炼四时","cultivate_ops","meditate 4"],["explore","探索周围","travel_ops","explore"],["retreat","闭关休养","cultivate_ops","retreat 8"],["breakthrough","尝试突破","realm_ops","breakthrough"]])if(avail.includes(action))el("actions").append(b(label,tool,command));
  for(const destination of w.location.exits)el("exits").append(b(w.map[destination].name,"travel_ops","go "+destination,!!p.battle));

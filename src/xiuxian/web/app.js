@@ -16,7 +16,7 @@ item.append(meta,text);log.append(item)}}
 subscribe(data=>{el("welcome").hidden=true;el("game").hidden=false;
 for(const id of["logout","rename-player","copy-key"])el(id).hidden=false;el("watch-note").hidden=true;
 hud(data);map(data,act);scene(data,act);renderChronicle(data)});
-const routeNotes={qingxiao:"剑先问心，再问敌。实战与机动。",xuanheng:"天地有序，万物可解。预阵与秘境破解。",danxia:"药可以救人，也可以杀人。丹品与医修。",fuyao:"与灵兽同行，在狩猎和共存间作出选择。",taixu:"雷霆即是秩序。雷符与法术爆发。",hehuan:"魔道之名，规矩自守。汲取续航，柔性议价。",rogue:"没有山门，也有自己的路。混合流派与奇遇。"};
+const routeNotes={qingxiao:"剑先问心，再问敌。实战与机动。",xuanheng:"天地有序，万物可解。预阵与秘境破解。",danxia:"药可以救人，也可以杀人。丹品与医修。",fuyao:"与灵兽同行，在狩猎和共存间作出选择。",taixu:"雷霆即是秩序。雷符与法术爆发。",hehuan:"魔道之名，规矩自守。汲取续航，柔性议价。",youming:"愈是濒死，煞气愈盛。借煞背水。",fentian:"火力不足，是因为烧得不够多。点燃一切。",taixu:"雷霆即是秩序。雷符与法术爆发。",tiangong:"器有魂，锻其形，先锻心。装备至上。",canglang:"潮起时走，潮落时生。打不过就走。",wanxiang:"拳头是最不划算的武器。买卖公道。",xingluo:"天网恢恢，疏而不漏账。拿人拿首。",rogue:"没有山门，也有自己的路。混合流派与奇遇。"};
 el("route").onchange=()=>el("route-note").textContent=routeNotes[el("route").value];el("route").onchange();
 el("register").onclick=async()=>{try{const data=await api.register(el("name").value,el("route").value);saveKey(data.api_key);await refresh();toast("已入岛，请保存凭证。人类与AI使用这同一个号。")}catch(error){el("entry-error").textContent=error.message}};
 el("login").onclick=async()=>{try{saveKey(el("key").value.trim());await refresh()}catch(error){el("entry-error").textContent=error.message}};
