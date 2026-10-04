@@ -7,7 +7,7 @@ from .engine import Game
 
 def journeys(folder):
     results = {}
-    for route in ("qingxiao", "xuanheng", "danxia", "fuyao", "rogue"):
+    for route in ("qingxiao", "xuanheng", "danxia", "fuyao", "hehuan", "taixu", "rogue"):
         g = Game(
             Path(folder) / (route + ".db"), player_key=route, player_name="试玩修士"
         )
@@ -68,6 +68,13 @@ def journeys(folder):
                 act("fight", target="sparring")
                 duel()
                 act("use_item", item="potion")
+            elif route == "hehuan":
+                act("fight", target="sparring")
+                duel()
+                act("trade", item="potion")  # charm-route discount applies
+            elif route == "taixu":
+                act("fight", target="sparring")
+                duel()
             elif route == "fuyao":
                 act("manage_beast", action="contract", beast="stone_ape")
                 act("manage_beast", action="feed")

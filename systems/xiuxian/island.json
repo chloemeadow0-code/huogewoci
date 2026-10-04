@@ -67,7 +67,9 @@
         "fuyao",
         "blackmarket",
         "bamboo",
-        "lake"
+        "lake",
+        "hehuan",
+        "taixu"
       ],
       "description": "山与海相遇的集市，四宗修士和散修在此交换见闻。"
     },
@@ -136,7 +138,8 @@
         "market",
         "mist",
         "ridge",
-        "secret"
+        "secret",
+        "hehuan"
       ],
       "description": "月色被湖水收下，潮汐时灵脉会缓慢回应。"
     },
@@ -166,6 +169,31 @@
         "ruins"
       ],
       "description": "潮生潮落之间，古阵只在一周的前两日打开。"
+    },
+    "hehuan": {
+      "id": "hehuan",
+      "name": "合欢宗·花舫殿",
+      "area": "sect",
+      "x": 0.34,
+      "y": 0.74,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "lake"
+      ],
+      "description": "月汐湖畔的花舫连成一片，丝竹声里藏着三百年魔道的规矩与体面。"
+    },
+    "taixu": {
+      "id": "taixu",
+      "name": "太虚观",
+      "area": "sect",
+      "x": 0.16,
+      "y": 0.3,
+      "requiredRealm": 0,
+      "exits": [
+        "market"
+      ],
+      "description": "观星台直入云霄，雷池在殿后日夜奔鸣，符纸的墨香混着臭氧。"
     }
   },
   "npcs": {
@@ -574,6 +602,52 @@
       "personalQuest": "personal_guide",
       "specialEvent": "旧事重访",
       "technique": "verdant"
+    },
+    "hehuan_mentor": {
+      "name": "洛璃",
+      "identity": "合欢圣女",
+      "duty": "功法指导",
+      "background": "宗内都说她修的是最正统的欢喜禅功，正道都说她最不安分。两种说法她都认。",
+      "personality": "慵懒锋利",
+      "positive": "重诺",
+      "negative": "睚眦必报",
+      "location": "hehuan",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_hehuan_mentor",
+      "specialEvent": "旧账重提",
+      "technique": "hehuan_zen"
+    },
+    "taixu_mentor": {
+      "name": "玄雷子",
+      "identity": "太虚观主",
+      "duty": "功法指导",
+      "background": "五十年前以一道雷符劈碎妖潮先锋，从此观星台的灯没再灭过。",
+      "personality": "古板持重",
+      "positive": "嫉恶如仇",
+      "negative": "不通人情",
+      "location": "taixu",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_taixu_mentor",
+      "specialEvent": "雷池异动",
+      "technique": "taixu_thunder"
     }
   },
   "villains": {
@@ -880,7 +954,8 @@
           "cost": 5,
           "rewardBonus": 8
         }
-      }
+      },
+      "sect": "qingxiao"
     },
     "trial_xuanheng": {
       "name": "山门初历",
@@ -919,7 +994,8 @@
           "cost": 5,
           "rewardBonus": 8
         }
-      }
+      },
+      "sect": "xuanheng"
     },
     "trial_danxia": {
       "name": "山门初历",
@@ -958,7 +1034,8 @@
           "cost": 5,
           "rewardBonus": 8
         }
-      }
+      },
+      "sect": "danxia"
     },
     "trial_fuyao": {
       "name": "山门初历",
@@ -997,7 +1074,8 @@
           "cost": 5,
           "rewardBonus": 8
         }
-      }
+      },
+      "sect": "fuyao"
     },
     "rogue_trial": {
       "name": "一位散修的第一步",
@@ -2054,6 +2132,166 @@
           "rewardBonus": 8
         }
       }
+    },
+    "trial_hehuan": {
+      "name": "花舫初入",
+      "location": "hehuan",
+      "npc": "hehuan_mentor",
+      "kind": "宗门任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "hehuan_mentor",
+          "label": "拜见合欢圣女"
+        },
+        {
+          "type": "kill",
+          "target": "wolf",
+          "location": "bamboo",
+          "label": "替花舫清理青竹林的妖狼"
+        },
+        {
+          "type": "return",
+          "location": "hehuan",
+          "label": "回花舫交差"
+        }
+      ],
+      "reward": 90,
+      "reputation": 4,
+      "contribution": 12,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "留一线并善后",
+          "cost": 5,
+          "rewardBonus": 10
+        }
+      },
+      "sect": "hehuan"
+    },
+    "trial_taixu": {
+      "name": "雷符试炼",
+      "location": "taixu",
+      "npc": "taixu_mentor",
+      "kind": "宗门任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "taixu_mentor",
+          "label": "拜见太虚观主"
+        },
+        {
+          "type": "explore",
+          "location": "bamboo",
+          "count": 2,
+          "label": "在青竹林实测两道雷符"
+        },
+        {
+          "type": "return",
+          "location": "taixu",
+          "label": "回观复命"
+        }
+      ],
+      "reward": 65,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "重绘符纸并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      },
+      "sect": "taixu"
+    },
+    "personal_hehuan_mentor": {
+      "name": "洛璃的旧账",
+      "location": "hehuan",
+      "npc": "hehuan_mentor",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "hehuan_mentor",
+          "label": "听洛璃讲一段旧账"
+        },
+        {
+          "type": "kill",
+          "target": "wolf",
+          "location": "bamboo",
+          "label": "找到赖账者的妖狼线索"
+        },
+        {
+          "type": "return",
+          "location": "hehuan",
+          "label": "回花舫复命"
+        }
+      ],
+      "reward": 40,
+      "reputation": 3,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "拿钱消事",
+          "cost": 5,
+          "rewardBonus": 10
+        }
+      },
+      "sect": "hehuan"
+    },
+    "personal_taixu_mentor": {
+      "name": "雷池异动",
+      "location": "taixu",
+      "npc": "taixu_mentor",
+      "kind": "NPC任务",
+      "stages": [
+        {
+          "type": "talk",
+          "npc": "taixu_mentor",
+          "label": "听观主说明雷池异动"
+        },
+        {
+          "type": "explore",
+          "location": "ruins",
+          "count": 1,
+          "label": "去旧宗遗址追查雷气源头"
+        },
+        {
+          "type": "return",
+          "location": "taixu",
+          "label": "回观复命"
+        }
+      ],
+      "reward": 30,
+      "reputation": 8,
+      "contribution": 10,
+      "branches": {
+        "report": {
+          "name": "如实报告",
+          "cost": 0,
+          "rewardBonus": 0
+        },
+        "protect": {
+          "name": "重设符阵并善后",
+          "cost": 5,
+          "rewardBonus": 8
+        }
+      },
+      "sect": "taixu"
     }
   },
   "incidents": {

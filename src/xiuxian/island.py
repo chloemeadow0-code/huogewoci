@@ -552,6 +552,8 @@ class IslandGame(Game):
             "xuanheng": ["sparring"],
             "danxia": ["sparring"],
             "fuyao": ["sparring"],
+            "hehuan": ["sparring"],
+            "taixu": ["sparring"],
             "bamboo": ["wolf"],
             "mist": ["wolf", "bandit"],
             "ridge": ["wolf", "protected_deer"],
@@ -865,6 +867,8 @@ class IslandGame(Game):
             return super().accept_quest(quest)
         q = ISLAND["quests"][quest]
         p = self.player
+        sect = q.get("sect")
+        require(sect is None or p.get("route") == sect, "这是其他宗门的任务")
         require(q["location"] == p["islandLocation"], "请到任务发布地")
         require(quest not in p["quests"], "已领取任务")
         p["quests"][quest] = "active"
@@ -970,10 +974,17 @@ class IslandGame(Game):
             "branch": stage["branch"],
         }
 
+    def _hall_catalog(self):
+        catalog = dict(self.pack["sect_hall"])
+        catalog.update(
+            self.pack.get("route_hall", {}).get(self.player.get("route"), {})
+        )
+        return catalog
+
     def sect_hall(self):
         return {
             "contribution": self.player["contribution"],
-            "catalog": self.pack["sect_hall"],
+            "catalog": self._hall_catalog(),
             "note": "用贡献兑换,需回本宗驻地;散修没有宗门贡献殿",
         }
 
@@ -982,7 +993,7 @@ class IslandGame(Game):
         p = self.player
         require(p.get("route"), "散修没有宗门贡献殿")
         require(p["islandLocation"] == p["route"], "请回本宗驻地兑换")
-        catalog = self.pack["sect_hall"]
+        catalog = self._hall_catalog()
         require(item in catalog, "贡献殿没有这件物品")
         cost = catalog[item] * amount
         require(p["contribution"] >= cost, f"贡献不足,需 {cost}")

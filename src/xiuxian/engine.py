@@ -938,6 +938,10 @@ class Game(RouteRules):
             if target == "sparring" and self._current_event().get("id") == "tournament":
                 p["reputation"] += 1
             p["battle"] = None
+            leech = self._bonus("victoryQiLeech")
+            if leech and p["qi"] < p["maxQi"]:
+                p["qi"] = min(p["maxQi"], p["qi"] + leech)
+                result["qiLeeched"] = leech
             result.update(
                 outcome="victory",
                 loot={**drops, **trackedLoot},

@@ -318,6 +318,67 @@
         "realm": 0
       },
       "school": "general"
+    },
+    "hehuan_bell": {
+      "name": "摄魂铃",
+      "type": "control",
+      "cost": 6,
+      "power": 18,
+      "cooldown": 2,
+      "accuracy": 85,
+      "target": "enemy",
+      "effect": "stun",
+      "effectChance": 65,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "charm"
+    },
+    "hehuan_palm": {
+      "name": "柔云掌",
+      "type": "attack",
+      "cost": 5,
+      "power": 85,
+      "cooldown": 1,
+      "accuracy": 90,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "charm"
+    },
+    "thunder_sigil": {
+      "name": "雷火符",
+      "type": "attack",
+      "cost": 7,
+      "power": 125,
+      "cooldown": 2,
+      "accuracy": 80,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "lightning"
+    },
+    "thunder_ward": {
+      "name": "雷盾符",
+      "type": "defense",
+      "cost": 4,
+      "power": 22,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "lightning"
     }
   },
   "npcs": {
@@ -939,6 +1000,40 @@
       },
       "maxLevel": 10,
       "tuition": 25
+    },
+    "hehuan_zen": {
+      "name": "欢喜禅功",
+      "type": "魅道",
+      "school": "charm",
+      "route": "hehuan",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "水",
+        "火"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 8,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "taixu_thunder": {
+      "name": "太虚雷诀",
+      "type": "雷法",
+      "school": "lightning",
+      "route": "taixu",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "金",
+        "火"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 6,
+      "passiveEffects": {
+        "strength": 2
+      },
+      "maxLevel": 10,
+      "tuition": 20
     }
   },
   "items": {
@@ -1687,6 +1782,131 @@
         "delivery"
       ],
       "teacher": null
+    },
+    "hehuan": {
+      "name": "合欢宗",
+      "background": "魔道名册上排得上号的宗门，以欢喜禅功闻名，也被正道侧目了三百年。宗内规矩森严：汲取有道，强采滥取是重罪。花舫不拒来客，但正道四宗的任务与名册从不带合欢弟子玩。",
+      "position": "魅惑控制、汲取续航、灵活交易、消息灵通",
+      "advantages": [
+        "控制强",
+        "战斗续航独特",
+        "买货最便宜",
+        "消息与黑道人脉",
+        "任务报酬高"
+      ],
+      "disadvantages": [
+        "正道任务与名册对其关闭",
+        "声望收益低",
+        "正面爆发一般",
+        "名声差",
+        "依赖先手"
+      ],
+      "rules": [
+        "汲取须对方自愿或战阵之上",
+        "禁止强采滥取",
+        "禁止拐卖凡人",
+        "违者逐出宗门并废去修为"
+      ],
+      "resources": [
+        "摄魂铃",
+        "欢喜禅功",
+        "花舫消息网",
+        "柔性议价",
+        "魔道人脉"
+      ],
+      "modifiers": {
+        "charmEffect": 25,
+        "attackDamage": -5,
+        "purchasePrice": -10,
+        "victoryQiLeech": 15,
+        "healEffect": 10,
+        "combatReputation": -50
+      },
+      "mechanism": "战斗胜利时以欢喜禅功汲取敌方灵力续战（+15 灵力）；柔性议价让购买价格打九折；正道四宗的任务与名册对其关闭，本宗任务报酬更高但声望收益减半。",
+      "disciplines": [
+        "charm",
+        "medicine"
+      ],
+      "technique": "hehuan_zen",
+      "skills": [
+        "strike",
+        "guard",
+        "hehuan_bell",
+        "hehuan_palm"
+      ],
+      "nodes": [
+        "山门",
+        "花舫主殿",
+        "弦月台",
+        "香堂",
+        "任务堂",
+        "藏经阁",
+        "宗门商店"
+      ],
+      "quests": [
+        "trial_hehuan",
+        "personal_hehuan_mentor"
+      ],
+      "teacher": "合欢圣女"
+    },
+    "taixu": {
+      "name": "太虚观",
+      "background": "正道雷法传承的执牛耳者，观中符箓与雷法同修。太虚弟子相信雷霆即是秩序：一人一笔，画的是天宪，落的是雷火。",
+      "position": "雷法输出、符箓防御、法术爆发、镇邪",
+      "advantages": [
+        "法术爆发高",
+        "符箓防御扎实",
+        "镇邪任务独占",
+        "正道声望好"
+      ],
+      "disadvantages": [
+        "治疗弱",
+        "依赖灵力",
+        "近身吃亏",
+        "符箓耗材"
+      ],
+      "rules": [
+        "雷法不得对准无辜",
+        "符箓须亲手绘制",
+        "禁止以雷法私斗于坊市"
+      ],
+      "resources": [
+        "雷符纸",
+        "雷诀刻本",
+        "观星台",
+        "镇邪任务"
+      ],
+      "modifiers": {
+        "lightningEffect": 25,
+        "attackDamage": 5,
+        "healEffect": -10
+      },
+      "mechanism": "雷法符箓类法术威力吃雷法加成，正面输出仅次于专精剑修；符箓防御可以提前布下，但治疗与续航偏弱。",
+      "disciplines": [
+        "lightning",
+        "talisman"
+      ],
+      "technique": "taixu_thunder",
+      "skills": [
+        "strike",
+        "guard",
+        "thunder_sigil",
+        "thunder_ward"
+      ],
+      "nodes": [
+        "山门",
+        "三清殿",
+        "观星台",
+        "符房",
+        "任务堂",
+        "雷池",
+        "藏经阁"
+      ],
+      "quests": [
+        "trial_taixu",
+        "personal_taixu_mentor"
+      ],
+      "teacher": "太虚观主"
     }
   },
   "disciplines": {
@@ -1696,7 +1916,9 @@
     "formation": "阵道",
     "craft": "器道",
     "beast": "御兽",
-    "body": "体修"
+    "body": "体修",
+    "charm": "魅道",
+    "lightning": "雷法"
   },
   "materials": {
     "array_bolt": {
@@ -1908,6 +2130,20 @@
       "foundation_pill",
       "golden_pill",
       "soul_pill"
+    ],
+    "hehuan": [
+      "potion",
+      "herb",
+      "iron",
+      "golden_pill",
+      "forbidden_pill"
+    ],
+    "taixu": [
+      "potion",
+      "herb",
+      "iron",
+      "armor",
+      "foundation_pill"
     ]
   },
   "blackmarket_stock": [
@@ -1951,5 +2187,10 @@
     "relic_fragment": 15,
     "evolution_crystal": 45,
     "core_array_chart": 60
+  },
+  "route_hall": {
+    "hehuan": {
+      "forbidden_pill": 30
+    }
   }
 }

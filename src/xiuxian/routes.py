@@ -382,7 +382,9 @@ class RouteRules:
         school = s.get("school", "general")
         p = self.player
         b = p["battle"]
-        if school in ("formation", "talisman", "mechanism") and s["type"] != "attack":
+        if school in ("formation", "talisman", "mechanism", "charm", "lightning") and s[
+            "type"
+        ] != "attack":
             power = self._percent(power, self._bonus(school + "Effect"))
         if school != "sword" and s["type"] != "attack":
             power = self._percent(power, self._bonus("nonSwordEffect"))

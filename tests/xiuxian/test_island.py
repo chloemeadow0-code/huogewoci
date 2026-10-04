@@ -24,8 +24,8 @@ def island(tmp_path, monkeypatch):
 
 def test_content_scope():
     assert (
-        len(ISLAND["locations"]) == 12
-        and len(ISLAND["npcs"]) == 18
+        len(ISLAND["locations"]) == 14
+        and len(ISLAND["npcs"]) == 20
         and len(ISLAND["villains"]) == 6
     )
     assert len(MCP_TOOLS) == 13
@@ -364,6 +364,8 @@ def test_relational_craft_and_all_technique_types(island, monkeypatch):
         "符道",
         "器道",
         "御兽",
+        "魅道",
+        "雷法",
     }
     island.player["inventory"]["iron"] = 3
     island._store()
