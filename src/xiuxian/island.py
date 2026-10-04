@@ -6,17 +6,14 @@ import hashlib
 import json
 import logging
 from pathlib import Path
+from .data import load_pack
 from .engine import Game, CONTENT, TOOLS, READ_ONLY, LOCK, ENEMIES
 from .db import Store, dumps
 from .rules import require, RuleError, bounded_int
 
 logger = logging.getLogger(__name__)
 
-ISLAND = json.loads(
-    (Path(__file__).resolve().parents[2] / "systems/xiuxian/island.json").read_text(
-        encoding="utf-8"
-    )
-)
+ISLAND = load_pack("island")
 EXTRA = (
     "quest_list",
     "quest_step",
@@ -560,12 +557,15 @@ class IslandGame(Game):
             "canglang": ["sparring"],
             "fentian": ["sparring"],
             "xingluo": ["sparring"],
+            "starfall": ["rock_scorpion", "young_viper"],
+            "heart_island": ["heart_guardian"],
             "bamboo": ["wolf"],
-            "mist": ["wolf", "bandit"],
-            "ridge": ["wolf", "protected_deer"],
-            "lake": ["wolf"],
-            "ruins": ["bandit"],
-            "secret": ["guardian"],
+            "mist": ["wolf", "bandit", "mist_wraith"],
+            "ridge": ["wolf", "protected_deer", "rock_scorpion", "ember_hound"],
+            "lake": ["wolf", "lake_drake"],
+            "ruins": ["bandit", "ruin_puppet"],
+            "secret": ["guardian", "tide_maiden"],
+            "bamboo": ["wolf", "young_viper"],
         }.get(where, [])
         enemies = {k: ENEMIES[k] for k in keys}
         enemies.update(

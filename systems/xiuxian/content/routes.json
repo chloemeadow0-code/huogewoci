@@ -1,0 +1,974 @@
+{
+  "routes": {
+    "qingxiao": {
+      "name": "青霄剑宗",
+      "background": "立于断云山。边境剑修为抵御妖患和兽潮逐渐聚成宗门；大兽潮中死守山道七日，保住山下数城后正式立宗。信奉“剑先问心，再问敌”，强调实战和下山历练。",
+      "position": "纯战斗、单体爆发、机动、实战成长",
+      "advantages": [
+        "战斗功法完整",
+        "宗门声望高",
+        "实战任务多",
+        "剑器资源稳定",
+        "下山历练机会最多"
+      ],
+      "disadvantages": [
+        "竞争最激烈",
+        "受伤概率高",
+        "任务普遍危险",
+        "辅助生产支持弱",
+        "弱者容易被边缘化"
+      ],
+      "rules": [
+        "不得临阵抛弃同门",
+        "禁止私斗致死",
+        "禁止私修禁录邪剑",
+        "任务期间不得擅自脱队"
+      ],
+      "resources": [
+        "剑诀",
+        "剑器",
+        "演武场",
+        "剑冢",
+        "护送与讨伐任务"
+      ],
+      "modifiers": {
+        "swordDamage": 12,
+        "combatGrowth": 15,
+        "combatReputation": 20,
+        "productionGrowth": -10,
+        "nonSwordEffect": -5
+      },
+      "mechanism": "连续两回合主动攻击且未被控制，获得剑势：下一次攻击命中+10，伤害+10%，使用后消失。",
+      "disciplines": [
+        "sword"
+      ],
+      "technique": "qingxiao_sword",
+      "skills": [
+        "strike",
+        "guard",
+        "dash",
+        "sword_burst"
+      ],
+      "nodes": [
+        "山门",
+        "弟子居",
+        "任务堂",
+        "藏经阁",
+        "演武场",
+        "剑冢",
+        "宗门商店",
+        "炼丹房",
+        "炼器房"
+      ],
+      "quests": [
+        "escort",
+        "slay"
+      ],
+      "teacher": "断云山剑师"
+    },
+    "xuanheng": {
+      "name": "玄衡阵门",
+      "background": "建立在上古护城大阵遗址，最初由维护古阵的阵师、符师、机关师、炼器师发展而来。宗门是一组可移动、封锁、重组的阵法节点，信奉“天地有序，万物可解”。",
+      "position": "阵法、符箓、机关、炼器、秘境破解、提前准备",
+      "advantages": [
+        "探索秘境能力强",
+        "阵符机关资源丰富",
+        "可提前布置战场",
+        "炼器经济好",
+        "防守控场优秀"
+      ],
+      "disadvantages": [
+        "遭遇战偏弱",
+        "依赖材料和准备时间",
+        "阵法被破后劣势大",
+        "学习门槛高",
+        "内部技术壁垒严重"
+      ],
+      "rules": [
+        "核心阵图禁止外传",
+        "禁止擅自出售宗门机关",
+        "禁止私改护山大阵",
+        "禁止复制核心禁制用于私斗"
+      ],
+      "resources": [
+        "阵图",
+        "阵旗",
+        "符箓",
+        "机关",
+        "炼器炉",
+        "灵脉节点",
+        "遗迹研究资格"
+      ],
+      "modifiers": {
+        "formationEffect": 15,
+        "talismanEffect": 15,
+        "mechanismEffect": 15,
+        "disarmChance": 20,
+        "anomalyChance": 15,
+        "surpriseDamage": -10,
+        "materialCost": 10
+      },
+      "mechanism": "非突然遭遇战前可预置一个护阵、困阵、聚灵阵或杀阵；每战只能预置一个。",
+      "disciplines": [
+        "formation",
+        "craft"
+      ],
+      "technique": "xuanheng_array",
+      "skills": [
+        "strike",
+        "guard",
+        "bind",
+        "array_bolt",
+        "talisman_shield",
+        "mechanical_bolt"
+      ],
+      "nodes": [
+        "山门",
+        "弟子居",
+        "任务堂",
+        "阵图阁",
+        "机关坊",
+        "炼器房",
+        "灵脉节点",
+        "宗门商店",
+        "炼丹房",
+        "藏经阁"
+      ],
+      "quests": [
+        "disarm",
+        "mechanism_supply"
+      ],
+      "teacher": "古阵研究师"
+    },
+    "danxia": {
+      "name": "丹霞谷",
+      "background": "药山深处的医修、炼丹师与采药人聚居地。瘟疫席卷数州时大规模出山救治凡人，声名大振后成为正统宗门。谷中认为“药可以救人，也可以杀人”，同时研究药与毒。",
+      "position": "炼丹、医修、治疗、毒术、灵植、稳定经济",
+      "advantages": [
+        "生存强",
+        "丹药资源最好",
+        "治疗方便",
+        "赚钱稳定",
+        "材料利用率高"
+      ],
+      "disadvantages": [
+        "爆发弱",
+        "依赖稀有药材",
+        "炼丹烧资源",
+        "近身吃亏",
+        "禁药研究可能受罚"
+      ],
+      "rules": [
+        "禁止未经许可人体试药",
+        "禁止私售禁丹",
+        "禁止隐瞒丹药副作用",
+        "禁止给同门下毒",
+        "高危毒方需备案"
+      ],
+      "resources": [
+        "丹炉",
+        "丹方",
+        "灵植园",
+        "医书",
+        "毒经",
+        "诊疗任务",
+        "采药任务"
+      ],
+      "modifiers": {
+        "pillEffect": 20,
+        "healingEffect": 15,
+        "herbExtraChance": 15,
+        "alchemyChance": 10,
+        "attackDamage": -8,
+        "forgingChance": -10
+      },
+      "mechanism": "自产丹药有额外概率提升为良品、上品：药效提高、副作用降低、售价提高；越级炼丹可能废丹或炸炉。",
+      "disciplines": [
+        "alchemy",
+        "medicine"
+      ],
+      "technique": "danxia_herbal",
+      "skills": [
+        "strike",
+        "guard",
+        "heal",
+        "poison"
+      ],
+      "nodes": [
+        "山门",
+        "弟子居",
+        "任务堂",
+        "灵植园",
+        "诊疗堂",
+        "毒经阁",
+        "炼丹房",
+        "炼器房",
+        "宗门商店",
+        "藏经阁"
+      ],
+      "quests": [
+        "clinic",
+        "herbs"
+      ],
+      "teacher": "药山医师"
+    },
+    "fuyao": {
+      "name": "伏妖门",
+      "background": "荒岭边境妖兽密集，猎妖人、体修和驭兽师为活命抱团，长期抵挡兽潮后形成宗门。门内对“妖到底该不该杀”存在猎杀、驯养、共存三派。",
+      "position": "御兽、体修、荒野探索、妖兽狩猎、生存",
+      "advantages": [
+        "荒野生存强",
+        "对妖兽优势",
+        "可契约灵兽",
+        "危险探索收益高",
+        "持续战斗好"
+      ],
+      "disadvantages": [
+        "任务危险",
+        "重伤概率高",
+        "灵兽培养烧钱",
+        "资源收入不稳定",
+        "派系冲突明显"
+      ],
+      "rules": [
+        "禁止虐杀契约灵兽",
+        "禁止将危险妖兽带入凡人区",
+        "禁止猎杀保护种群",
+        "契约解除必须登记",
+        "高危妖兽不得私养"
+      ],
+      "resources": [
+        "妖兽材料",
+        "兽丹",
+        "驭兽术",
+        "体修功法",
+        "荒野地图",
+        "狩猎任务",
+        "灵兽契约"
+      ],
+      "modifiers": {
+        "beastDamage": 12,
+        "wildInjuryChance": -15,
+        "trackChance": 20,
+        "petGrowth": 20,
+        "townPrice": 5,
+        "alchemyChance": -8
+      },
+      "mechanism": "一只主要契约灵兽，独立等级、忠诚、性格、技能、状态、伤势；饥饿、虐待、强迫重伤出战可能解除契约。",
+      "disciplines": [
+        "beast",
+        "body"
+      ],
+      "technique": "fuyao_body",
+      "skills": [
+        "strike",
+        "guard",
+        "heal",
+        "body_strike"
+      ],
+      "nodes": [
+        "山门",
+        "弟子居",
+        "任务堂",
+        "兽苑",
+        "狩猎堂",
+        "荒野图阁",
+        "体修场",
+        "契约登记处",
+        "炼丹房",
+        "炼器房",
+        "宗门商店",
+        "藏经阁"
+      ],
+      "quests": [
+        "hunt",
+        "protected_rescue"
+      ],
+      "teacher": "荒岭驭兽师",
+      "factions": [
+        "猎杀",
+        "驯养",
+        "共存"
+      ]
+    },
+    "rogue": {
+      "name": "散修",
+      "background": "无门无派修士靠坊市、私人师承、残卷、临时队伍、黑市和奇遇生存。宗门常轻视散修，但许多遗迹、失传功法和秘境消息由散修率先带出。",
+      "position": "自由成长、混合流派、奇遇、黑市、高风险高自由",
+      "advantages": [
+        "不受门规",
+        "自由组合流派",
+        "奇遇多",
+        "接触黑市偏门功法",
+        "无需宗门贡献"
+      ],
+      "disadvantages": [
+        "资源不稳",
+        "突破成本高",
+        "容易被骗抢",
+        "无宗门保护",
+        "高级功法获取困难"
+      ],
+      "rules": [],
+      "resources": [
+        "坊市",
+        "黑市",
+        "遗迹",
+        "残卷",
+        "私人交易",
+        "临时队伍",
+        "奇遇"
+      ],
+      "modifiers": {
+        "crossSchoolPenaltyReduction": 50,
+        "adventureChance": 15,
+        "blackmarketChance": 15,
+        "breakthroughCost": 15,
+        "purchasePrice": 8
+      },
+      "mechanism": "可同时保留四个主方向，宗门弟子两个。主方向越多，每体系提升越慢；记录黑市信誉、坊市信誉、散修盟关系、队伍口碑和通缉。",
+      "disciplines": [
+        "sword",
+        "alchemy",
+        "formation",
+        "beast"
+      ],
+      "technique": null,
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "nodes": [],
+      "quests": [
+        "relic",
+        "delivery"
+      ],
+      "teacher": null
+    },
+    "hehuan": {
+      "name": "合欢宗",
+      "background": "魔道名册上排得上号的宗门，以欢喜禅功闻名，也被正道侧目了三百年。宗内规矩森严：汲取有道，强采滥取是重罪。花舫不拒来客，但正道四宗的任务与名册从不带合欢弟子玩。",
+      "position": "魅惑控制、汲取续航、灵活交易、消息灵通",
+      "advantages": [
+        "控制强",
+        "战斗续航独特",
+        "买货最便宜",
+        "消息与黑道人脉",
+        "任务报酬高"
+      ],
+      "disadvantages": [
+        "正道任务与名册对其关闭",
+        "声望收益低",
+        "正面爆发一般",
+        "名声差",
+        "依赖先手"
+      ],
+      "rules": [
+        "汲取须对方自愿或战阵之上",
+        "禁止强采滥取",
+        "禁止拐卖凡人",
+        "违者逐出宗门并废去修为"
+      ],
+      "resources": [
+        "摄魂铃",
+        "欢喜禅功",
+        "花舫消息网",
+        "柔性议价",
+        "魔道人脉"
+      ],
+      "modifiers": {
+        "charmEffect": 25,
+        "attackDamage": -5,
+        "purchasePrice": -10,
+        "victoryQiLeech": 15,
+        "healEffect": 10,
+        "combatReputation": -50
+      },
+      "mechanism": "战斗胜利时以欢喜禅功汲取敌方灵力续战（+15 灵力）；柔性议价让购买价格打九折；正道四宗的任务与名册对其关闭，本宗任务报酬更高但声望收益减半。",
+      "disciplines": [
+        "charm",
+        "medicine"
+      ],
+      "technique": "hehuan_zen",
+      "skills": [
+        "strike",
+        "guard",
+        "hehuan_bell",
+        "hehuan_palm"
+      ],
+      "nodes": [
+        "山门",
+        "花舫主殿",
+        "弦月台",
+        "香堂",
+        "任务堂",
+        "藏经阁",
+        "宗门商店"
+      ],
+      "quests": [
+        "trial_hehuan",
+        "personal_hehuan_mentor"
+      ],
+      "teacher": "合欢圣女"
+    },
+    "taixu": {
+      "name": "太虚观",
+      "background": "正道雷法传承的执牛耳者，观中符箓与雷法同修。太虚弟子相信雷霆即是秩序：一人一笔，画的是天宪，落的是雷火。",
+      "position": "雷法输出、符箓防御、法术爆发、镇邪",
+      "advantages": [
+        "法术爆发高",
+        "符箓防御扎实",
+        "镇邪任务独占",
+        "正道声望好"
+      ],
+      "disadvantages": [
+        "治疗弱",
+        "依赖灵力",
+        "近身吃亏",
+        "符箓耗材"
+      ],
+      "rules": [
+        "雷法不得对准无辜",
+        "符箓须亲手绘制",
+        "禁止以雷法私斗于坊市"
+      ],
+      "resources": [
+        "雷符纸",
+        "雷诀刻本",
+        "观星台",
+        "镇邪任务"
+      ],
+      "modifiers": {
+        "lightningEffect": 25,
+        "attackDamage": 5,
+        "healEffect": -10
+      },
+      "mechanism": "雷法符箓类法术威力吃雷法加成，正面输出仅次于专精剑修；符箓防御可以提前布下，但治疗与续航偏弱。",
+      "disciplines": [
+        "lightning",
+        "talisman"
+      ],
+      "technique": "taixu_thunder",
+      "skills": [
+        "strike",
+        "guard",
+        "thunder_sigil",
+        "thunder_ward"
+      ],
+      "nodes": [
+        "山门",
+        "三清殿",
+        "观星台",
+        "符房",
+        "任务堂",
+        "雷池",
+        "藏经阁"
+      ],
+      "quests": [
+        "trial_taixu",
+        "personal_taixu_mentor"
+      ],
+      "teacher": "太虚观主"
+    },
+    "youming": {
+      "name": "幽冥殿",
+      "background": "修煞道的宗门，信奉生死同源。殿中弟子以自身血气为引，愈是濒死，煞气愈盛。正道骂他们玩火，他们笑正道怕死。",
+      "position": "濒死爆发、煞道控制、亡灵见闻",
+      "advantages": [
+        "残血爆发冠绝全岛",
+        "煞道控制",
+        "无惧苦战"
+      ],
+      "disadvantages": [
+        "需要卖血操作",
+        "治疗手段差",
+        "声望低"
+      ],
+      "rules": [
+        "借煞不得取凡人生气",
+        "殿中血斗须立生死状",
+        "叛殿者煞气反噬"
+      ],
+      "resources": [
+        "煞功刻卷",
+        "阴煞地眼",
+        "生死状"
+      ],
+      "modifiers": {
+        "desperationPower": 60,
+        "attackDamage": 5,
+        "healEffect": -15
+      },
+      "mechanism": "气血低于三成时进入借煞状态，攻击威力提升六成——把自己打进鬼门关再赢回来。",
+      "disciplines": [
+        "nether",
+        "body"
+      ],
+      "technique": "youming_sha",
+      "skills": [
+        "strike",
+        "guard",
+        "nether_claw",
+        "yin_shield"
+      ],
+      "nodes": [
+        "山门",
+        "幽冥大殿",
+        "煞眼",
+        "骨阶",
+        "任务堂",
+        "藏经阁"
+      ],
+      "quests": [
+        "trial_youming",
+        "personal_youming_mentor"
+      ],
+      "teacher": "幽冥殿主"
+    },
+    "wanxiang": {
+      "name": "万象楼",
+      "background": "不是宗门，是一座开在全岛各地的楼。买卖消息，买卖货物，也买卖体面。楼主说天下没有不能谈的生意，只有不够的价码。",
+      "position": "商道、消息、溢价买卖、人脉",
+      "advantages": [
+        "卖货溢价五成",
+        "买货便宜",
+        "消息灵通",
+        "赚钱最快"
+      ],
+      "disadvantages": [
+        "武力平平",
+        "树敌于黑市",
+        "宗门武力弱"
+      ],
+      "rules": [
+        "买卖公平，缺斤短两逐出楼",
+        "楼中消息按价出售",
+        "不得白嫖楼中人脉"
+      ],
+      "resources": [
+        "万象账房",
+        "全岛商路",
+        "消息网",
+        "拍卖渠道"
+      ],
+      "modifiers": {
+        "sellBonus": 50,
+        "purchasePrice": -5,
+        "attackDamage": -10
+      },
+      "mechanism": "万象金字招牌：卖货溢价五成、买货再让半成——战斗不行，但你永远比别人有钱。",
+      "disciplines": [
+        "merchant",
+        "craft"
+      ],
+      "technique": "wanxiang_ledger",
+      "skills": [
+        "strike",
+        "guard",
+        "gold_dart",
+        "swift_ledger"
+      ],
+      "nodes": [
+        "楼首",
+        "账房",
+        "库房",
+        "消息阁",
+        "任务堂",
+        "会客厅"
+      ],
+      "quests": [
+        "trial_wanxiang",
+        "personal_wanxiang_mentor"
+      ],
+      "teacher": "万象楼主"
+    },
+    "tiangong": {
+      "name": "天工阁",
+      "background": "器修祖庭。阁中弟子不拜神也不拜师，拜的是自己亲手锻出来的每一件法器。阁训：器有魂，锻其形，先锻心。",
+      "position": "锻造、装备强化、法器与机关",
+      "advantages": [
+        "装备威力冠绝",
+        "锻造成功率最高",
+        "器修底蕴"
+      ],
+      "disadvantages": [
+        "自身功夫平平",
+        "依赖法器",
+        "耗材开销大"
+      ],
+      "rules": [
+        "弟子法器须亲手所锻",
+        "不得以次充好",
+        "阁中法器禁出岛"
+      ],
+      "resources": [
+        "锻炉",
+        "图纸",
+        "法器谱",
+        "机关耗材"
+      ],
+      "modifiers": {
+        "equipmentPower": 40,
+        "forgingChance": 20,
+        "healEffect": -5
+      },
+      "mechanism": "装备属性加成放大四成——同一柄剑，天工弟子握着就是更锋利。",
+      "disciplines": [
+        "artificer",
+        "craft"
+      ],
+      "technique": "tiangong_formula",
+      "skills": [
+        "strike",
+        "guard",
+        "gear_strike",
+        "fortify_frame"
+      ],
+      "nodes": [
+        "山门",
+        "锻炉大殿",
+        "图纸阁",
+        "淬火池",
+        "任务堂",
+        "器藏室"
+      ],
+      "quests": [
+        "trial_tiangong",
+        "personal_tiangong_mentor"
+      ],
+      "teacher": "天工阁老"
+    },
+    "canglang": {
+      "name": "沧浪水榭",
+      "background": "水榭建在月汐湖的活水眼上。这里不教杀人，教的是怎么在杀局里活下来——潮起时走，潮落时生。",
+      "position": "治疗、水系辅助、脱身、续航",
+      "advantages": [
+        "治疗最强",
+        "脱身成功率大增",
+        "续航持久"
+      ],
+      "disadvantages": [
+        "攻击乏力",
+        "输出垫底",
+        "依赖水脉"
+      ],
+      "rules": [
+        "水法不得污染活水眼",
+        "救人分文不取",
+        "榭中不得结死仇"
+      ],
+      "resources": [
+        "活水眼",
+        "潮汐历",
+        "水榭医典"
+      ],
+      "modifiers": {
+        "healEffect": 30,
+        "escapeBonus": 20,
+        "attackDamage": -10
+      },
+      "mechanism": "潮息护体：逃离战斗的成功率提升两成，打不过就走，走得掉就是赢。",
+      "disciplines": [
+        "tide",
+        "medicine"
+      ],
+      "technique": "canglang_tide",
+      "skills": [
+        "strike",
+        "guard",
+        "tide_sweep",
+        "moon_balm"
+      ],
+      "nodes": [
+        "山门",
+        "水榭主殿",
+        "活水眼",
+        "药庐",
+        "任务堂",
+        "听潮台"
+      ],
+      "quests": [
+        "trial_canglang",
+        "personal_canglang_mentor"
+      ],
+      "teacher": "沧浪榭主"
+    },
+    "fentian": {
+      "name": "焚天谷",
+      "background": "炎道狂人聚在火山余脉上，信条只有一句：火力不足，是因为烧得不够多。谷中丹炉比房子多，走水是家常便饭。",
+      "position": "火系爆发、点燃、狂攻",
+      "advantages": [
+        "攻击最高",
+        "点燃持续伤害",
+        "气势吓人"
+      ],
+      "disadvantages": [
+        "治疗最差",
+        "烧资源",
+        "经常误伤自己人"
+      ],
+      "rules": [
+        "焚火不得出谷",
+        "走水者罚抄谷训百遍",
+        "禁燃凡人屋舍"
+      ],
+      "resources": [
+        "火山余脉",
+        "炎诀",
+        "丹火",
+        "走水记录"
+      ],
+      "modifiers": {
+        "attackDamage": 10,
+        "healEffect": -20,
+        "alchemyChance": -10
+      },
+      "mechanism": "谷中拳法自带火劲：命中后有概率点燃对手，火焰会烧上两个回合。",
+      "disciplines": [
+        "ember",
+        "alchemy"
+      ],
+      "technique": "fentian_flame",
+      "skills": [
+        "strike",
+        "guard",
+        "cinder_fist",
+        "blaze_dash"
+      ],
+      "nodes": [
+        "山门",
+        "焚天大殿",
+        "丹火房",
+        "余脉坑道",
+        "任务堂",
+        "罚抄堂"
+      ],
+      "quests": [
+        "trial_fentian",
+        "personal_fentian_mentor"
+      ],
+      "teacher": "焚天谷主"
+    },
+    "xingluo": {
+      "name": "星罗卫",
+      "background": "奉岛规而立的缉捕卫所，专拿岛上悬赏的要犯。腰牌一亮，黑市都要给三分面子。卫训：天网恢恢，疏而不漏账。",
+      "position": "缉拿、悬赏、控制、秩序",
+      "advantages": [
+        "缉拿赏金",
+        "控制链",
+        "正道背景硬"
+      ],
+      "disadvantages": [
+        "中规中矩",
+        "公务缠身",
+        "黑市死敌"
+      ],
+      "rules": [
+        "拿人须有赏格",
+        "不得私刑",
+        "卫所令牌禁借"
+      ],
+      "resources": [
+        "赏格令",
+        "缉拿术",
+        "卫所牢狱",
+        "全岛档案"
+      ],
+      "modifiers": {
+        "killBounty": 8,
+        "combatReputation": 20,
+        "healEffect": -5
+      },
+      "mechanism": "每个敌人首次缉拿归案，卫所额外发放八灵石悬赏——拿人拿首，赏不重付。",
+      "disciplines": [
+        "constable",
+        "body"
+      ],
+      "technique": "xingluo_warrant",
+      "skills": [
+        "strike",
+        "guard",
+        "constable_chain",
+        "pursuit_step"
+      ],
+      "nodes": [
+        "卫所大门",
+        "指挥使帐",
+        "缉拿堂",
+        "牢狱",
+        "任务堂",
+        "档房"
+      ],
+      "quests": [
+        "trial_xingluo",
+        "personal_xingluo_mentor"
+      ],
+      "teacher": "星罗卫指挥使"
+    }
+  },
+  "disciplines": {
+    "sword": "剑修",
+    "alchemy": "丹道",
+    "medicine": "医修",
+    "formation": "阵道",
+    "craft": "器道",
+    "beast": "御兽",
+    "body": "体修",
+    "charm": "魅道",
+    "lightning": "雷法",
+    "nether": "煞道",
+    "merchant": "商道",
+    "artificer": "锻造",
+    "tide": "水道",
+    "ember": "炎道",
+    "constable": "缉道"
+  },
+  "route_stock": {
+    "qingxiao": [
+      "sword",
+      "armor",
+      "potion",
+      "foundation_pill",
+      "golden_pill",
+      "soul_pill",
+      "herb",
+      "iron"
+    ],
+    "xuanheng": [
+      "array_flag",
+      "paper_talisman",
+      "mechanism_part",
+      "iron",
+      "herb",
+      "armor",
+      "potion",
+      "foundation_pill",
+      "golden_pill",
+      "soul_pill"
+    ],
+    "danxia": [
+      "herb",
+      "potion",
+      "manual",
+      "foundation_pill",
+      "golden_pill",
+      "soul_pill",
+      "core"
+    ],
+    "fuyao": [
+      "potion",
+      "herb",
+      "core",
+      "armor",
+      "foundation_pill",
+      "golden_pill",
+      "soul_pill"
+    ],
+    "hehuan": [
+      "potion",
+      "herb",
+      "iron",
+      "golden_pill",
+      "forbidden_pill"
+    ],
+    "taixu": [
+      "potion",
+      "herb",
+      "iron",
+      "armor",
+      "foundation_pill"
+    ],
+    "youming": [
+      "potion",
+      "herb",
+      "iron"
+    ],
+    "wanxiang": [
+      "potion",
+      "herb",
+      "iron"
+    ],
+    "tiangong": [
+      "potion",
+      "iron",
+      "armor"
+    ],
+    "canglang": [
+      "potion",
+      "herb",
+      "golden_pill"
+    ],
+    "fentian": [
+      "potion",
+      "herb",
+      "iron"
+    ],
+    "xingluo": [
+      "potion",
+      "herb",
+      "armor"
+    ]
+  },
+  "route_hall": {
+    "hehuan": {
+      "forbidden_pill": 30
+    }
+  },
+  "route_rules": {
+    "baseCraftChance": 85,
+    "qualityChance": 25,
+    "superiorChance": 10,
+    "qualityEffects": {
+      "ordinary": 100,
+      "fine": 120,
+      "superior": 145
+    },
+    "qualityPrices": {
+      "ordinary": 100,
+      "fine": 140,
+      "superior": 200
+    },
+    "pillSideEffect": 4,
+    "crossSchoolPenalty": 20,
+    "extraDisciplinePenalty": 10,
+    "wildInjuryChance": 35,
+    "disarmChance": 50,
+    "anomalyChance": 20,
+    "adventureChance": 10,
+    "blackmarketChance": 20,
+    "trackChance": 55,
+    "beastContractCost": 20,
+    "beastFeedCost": 8,
+    "rogueRecoveryHourly": 2,
+    "combatXp": 1000,
+    "craftXp": 1000,
+    "swordMomentumHit": 10,
+    "swordMomentumDamage": 10,
+    "proficiencyLevelXp": 5000,
+    "proficiencyPowerPerLevel": 2,
+    "proficiencyMaxLevel": 10,
+    "beastEvolution": {
+      "crystalItem": "evolution_crystal",
+      "awakenLevel": 3,
+      "awakenCrystals": 1,
+      "awakenStones": 50,
+      "awakenMaxHp": 20,
+      "awakenStrength": 3,
+      "formLevel": 6,
+      "formCrystals": 3,
+      "formStones": 200,
+      "formMaxHp": 45,
+      "formStrength": 7,
+      "formComboChance": 40
+    }
+  },
+  "sect_hall": {
+    "potion_superior": 8,
+    "golden_pill": 20,
+    "soul_pill": 35,
+    "core": 12,
+    "relic_fragment": 15,
+    "evolution_crystal": 45,
+    "core_array_chart": 60
+  }
+}

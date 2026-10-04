@@ -1,0 +1,840 @@
+{
+  "skills": {
+    "strike": {
+      "name": "青云剑诀",
+      "type": "attack",
+      "cost": 0,
+      "power": 100,
+      "cooldown": 0,
+      "accuracy": 95,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "sword"
+    },
+    "guard": {
+      "name": "磐石诀",
+      "type": "defense",
+      "cost": 3,
+      "power": 12,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
+    },
+    "heal": {
+      "name": "回春诀",
+      "type": "heal",
+      "cost": 6,
+      "power": 18,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "medicine"
+    },
+    "bind": {
+      "name": "缚灵诀",
+      "type": "control",
+      "cost": 8,
+      "power": 1,
+      "cooldown": 3,
+      "accuracy": 95,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
+    },
+    "haste": {
+      "name": "御风诀",
+      "type": "buff",
+      "cost": 4,
+      "power": 6,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
+    },
+    "poison": {
+      "name": "毒藤术",
+      "type": "debuff",
+      "cost": 6,
+      "power": 3,
+      "cooldown": 2,
+      "accuracy": 90,
+      "target": "enemy",
+      "effect": "poison",
+      "effectChance": 90,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "alchemy"
+    },
+    "dash": {
+      "name": "流云步",
+      "type": "movement",
+      "cost": 4,
+      "power": 8,
+      "cooldown": 2,
+      "accuracy": 100,
+      "target": "self",
+      "effect": "haste",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
+    },
+    "escape": {
+      "name": "遁光术",
+      "type": "escape",
+      "cost": 5,
+      "power": 20,
+      "cooldown": 1,
+      "accuracy": 100,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
+    },
+    "sword_burst": {
+      "cost": 8,
+      "power": 150,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "type": "attack",
+      "name": "断云斩",
+      "school": "sword"
+    },
+    "array_bolt": {
+      "cost": 5,
+      "power": 120,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "type": "attack",
+      "name": "阵旗·穿山",
+      "school": "formation"
+    },
+    "mechanical_bolt": {
+      "cost": 3,
+      "power": 110,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "type": "attack",
+      "name": "机关连弩",
+      "school": "mechanism"
+    },
+    "talisman_shield": {
+      "cost": 4,
+      "power": 15,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "type": "defense",
+      "name": "护身符",
+      "school": "talisman"
+    },
+    "body_strike": {
+      "cost": 3,
+      "power": 120,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "type": "attack",
+      "name": "伏妖拳",
+      "school": "body"
+    },
+    "calm": {
+      "name": "清心诀",
+      "type": "buff",
+      "cost": 4,
+      "power": 4,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 80,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
+    },
+    "weaken": {
+      "name": "落叶诀",
+      "type": "debuff",
+      "cost": 5,
+      "power": 2,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "enemy",
+      "effectChance": 80,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general",
+      "effect": "weakness"
+    },
+    "escape_step": {
+      "name": "归风步",
+      "type": "escape",
+      "cost": 4,
+      "power": 15,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 80,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
+    },
+    "hehuan_bell": {
+      "name": "摄魂铃",
+      "type": "control",
+      "cost": 6,
+      "power": 18,
+      "cooldown": 2,
+      "accuracy": 85,
+      "target": "enemy",
+      "effect": "stun",
+      "effectChance": 65,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "charm"
+    },
+    "hehuan_palm": {
+      "name": "柔云掌",
+      "type": "attack",
+      "cost": 5,
+      "power": 85,
+      "cooldown": 1,
+      "accuracy": 90,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "charm"
+    },
+    "thunder_sigil": {
+      "name": "雷火符",
+      "type": "attack",
+      "cost": 7,
+      "power": 125,
+      "cooldown": 2,
+      "accuracy": 80,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "lightning"
+    },
+    "thunder_ward": {
+      "name": "雷盾符",
+      "type": "defense",
+      "cost": 4,
+      "power": 22,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "lightning"
+    },
+    "nether_claw": {
+      "name": "噬魂爪",
+      "type": "attack",
+      "cost": 6,
+      "power": 95,
+      "cooldown": 1,
+      "accuracy": 88,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "nether"
+    },
+    "yin_shield": {
+      "name": "阴煞罩",
+      "type": "defense",
+      "cost": 4,
+      "power": 18,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "nether"
+    },
+    "gold_dart": {
+      "name": "金算盘珠",
+      "type": "attack",
+      "cost": 4,
+      "power": 78,
+      "cooldown": 1,
+      "accuracy": 95,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "merchant"
+    },
+    "swift_ledger": {
+      "name": "疾账步",
+      "type": "movement",
+      "cost": 4,
+      "power": 15,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "merchant"
+    },
+    "gear_strike": {
+      "name": "机关臂铠",
+      "type": "attack",
+      "cost": 6,
+      "power": 105,
+      "cooldown": 2,
+      "accuracy": 85,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "artificer"
+    },
+    "fortify_frame": {
+      "name": "锻体淬甲",
+      "type": "defense",
+      "cost": 5,
+      "power": 28,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "artificer"
+    },
+    "tide_sweep": {
+      "name": "潮汐引",
+      "type": "attack",
+      "cost": 5,
+      "power": 80,
+      "cooldown": 1,
+      "accuracy": 90,
+      "target": "enemy",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "tide"
+    },
+    "moon_balm": {
+      "name": "月华露",
+      "type": "heal",
+      "cost": 6,
+      "power": 40,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "tide"
+    },
+    "cinder_fist": {
+      "name": "焚山拳",
+      "type": "attack",
+      "cost": 7,
+      "power": 108,
+      "cooldown": 2,
+      "accuracy": 82,
+      "target": "enemy",
+      "effect": "burn",
+      "effectChance": 45,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "ember"
+    },
+    "blaze_dash": {
+      "name": "燎原步",
+      "type": "movement",
+      "cost": 4,
+      "power": 16,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "ember"
+    },
+    "constable_chain": {
+      "name": "锁灵链",
+      "type": "attack",
+      "cost": 6,
+      "power": 82,
+      "cooldown": 2,
+      "accuracy": 88,
+      "target": "enemy",
+      "effect": "root",
+      "effectChance": 40,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "constable"
+    },
+    "pursuit_step": {
+      "name": "追风缉步",
+      "type": "movement",
+      "cost": 4,
+      "power": 18,
+      "cooldown": 2,
+      "accuracy": 95,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 3,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "constable"
+    }
+  },
+  "enemies": {
+    "wolf": {
+      "name": "山狼",
+      "location": "wild",
+      "hp": 40,
+      "defense": 2,
+      "reward": 12,
+      "agility": 8,
+      "qi": 30,
+      "maxQi": 30,
+      "strength": 9,
+      "realm": 0,
+      "type": "普通妖兽",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {
+        "fang": 2
+      },
+      "species": "beast"
+    },
+    "guardian": {
+      "name": "秘境石卫",
+      "location": "realm",
+      "hp": 100,
+      "defense": 5,
+      "reward": 40,
+      "agility": 12,
+      "qi": 30,
+      "maxQi": 30,
+      "strength": 17,
+      "realm": 1,
+      "type": "Boss",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {
+        "core": 1,
+        "sword_manual": 1
+      },
+      "species": "mechanism"
+    },
+    "serpent": {
+      "name": "赤鳞蛇",
+      "location": "wild",
+      "hp": 55,
+      "strength": 11,
+      "defense": 3,
+      "reward": 18,
+      "agility": 14,
+      "qi": 30,
+      "maxQi": 30,
+      "realm": 0,
+      "type": "精英妖兽",
+      "skills": [
+        "strike",
+        "poison"
+      ],
+      "drops": {
+        "herb": 2
+      },
+      "species": "beast"
+    },
+    "bandit": {
+      "name": "劫道散修",
+      "location": "wild",
+      "hp": 65,
+      "strength": 13,
+      "defense": 4,
+      "reward": 20,
+      "agility": 11,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 0,
+      "type": "敌对修士",
+      "skills": [
+        "strike",
+        "heal"
+      ],
+      "drops": {
+        "iron": 1
+      },
+      "species": "human"
+    },
+    "sparring": {
+      "name": "演武傀儡",
+      "location": "sect",
+      "hp": 50,
+      "strength": 8,
+      "defense": 3,
+      "reward": 0,
+      "agility": 9,
+      "qi": 0,
+      "maxQi": 0,
+      "realm": 0,
+      "type": "切磋",
+      "skills": [
+        "strike"
+      ],
+      "drops": {},
+      "species": "mechanism"
+    },
+    "protected_deer": {
+      "name": "受保护灵鹿",
+      "location": "wild",
+      "hp": 45,
+      "strength": 5,
+      "defense": 2,
+      "reward": 0,
+      "agility": 15,
+      "qi": 0,
+      "maxQi": 0,
+      "realm": 0,
+      "type": "普通妖兽",
+      "skills": [
+        "strike"
+      ],
+      "drops": {
+        "protected_core": 1
+      },
+      "species": "beast"
+    },
+    "young_viper": {
+      "name": "竹叶青",
+      "location": "bamboo",
+      "hp": 40,
+      "defense": 2,
+      "reward": 18,
+      "agility": 12,
+      "qi": 20,
+      "maxQi": 20,
+      "realm": 0,
+      "type": "普通妖兽",
+      "skills": [
+        "strike"
+      ],
+      "drops": {
+        "tide_dew": 1
+      },
+      "species": "beast",
+      "strength": 9
+    },
+    "mist_wraith": {
+      "name": "雾妖",
+      "location": "mist",
+      "hp": 70,
+      "defense": 4,
+      "reward": 45,
+      "agility": 13,
+      "qi": 40,
+      "maxQi": 40,
+      "realm": 1,
+      "type": "精英妖兽",
+      "skills": [
+        "strike",
+        "poison"
+      ],
+      "drops": {
+        "tide_dew": 1,
+        "cold_jade": 1
+      },
+      "species": "beast",
+      "strength": 14
+    },
+    "lake_drake": {
+      "name": "湖心蛟蜥",
+      "location": "lake",
+      "hp": 85,
+      "defense": 5,
+      "reward": 55,
+      "agility": 11,
+      "qi": 50,
+      "maxQi": 50,
+      "realm": 1,
+      "type": "精英妖兽",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {
+        "turtle_shell": 1
+      },
+      "species": "beast",
+      "strength": 18
+    },
+    "rock_scorpion": {
+      "name": "岩蝎",
+      "location": "ridge",
+      "hp": 60,
+      "defense": 6,
+      "reward": 40,
+      "agility": 9,
+      "qi": 30,
+      "maxQi": 30,
+      "realm": 0,
+      "type": "普通妖兽",
+      "skills": [
+        "strike"
+      ],
+      "drops": {
+        "ember_shard": 1
+      },
+      "species": "beast",
+      "strength": 15
+    },
+    "ruin_puppet": {
+      "name": "傀儡侍卫",
+      "location": "ruins",
+      "hp": 95,
+      "defense": 7,
+      "reward": 60,
+      "agility": 10,
+      "qi": 60,
+      "maxQi": 60,
+      "realm": 1,
+      "type": "精英妖兽",
+      "skills": [
+        "strike",
+        "guard"
+      ],
+      "drops": {
+        "gale_feather": 1,
+        "core": 1
+      },
+      "species": "mechanism",
+      "strength": 20
+    },
+    "tide_maiden": {
+      "name": "潮汐侍女",
+      "location": "secret",
+      "hp": 110,
+      "defense": 6,
+      "reward": 80,
+      "agility": 15,
+      "qi": 80,
+      "maxQi": 80,
+      "realm": 1,
+      "type": "精英妖兽",
+      "skills": [
+        "strike",
+        "heal",
+        "poison"
+      ],
+      "drops": {
+        "tide_dew": 2,
+        "cold_jade": 1
+      },
+      "species": "beast",
+      "strength": 22
+    },
+    "ember_hound": {
+      "name": "炎犬",
+      "location": "ridge",
+      "hp": 55,
+      "defense": 3,
+      "reward": 42,
+      "agility": 14,
+      "qi": 35,
+      "maxQi": 35,
+      "realm": 1,
+      "type": "普通妖兽",
+      "skills": [
+        "strike"
+      ],
+      "drops": {
+        "ember_shard": 1,
+        "herb": 1
+      },
+      "species": "beast",
+      "strength": 16
+    },
+    "heart_guardian": {
+      "name": "岛心守卫",
+      "location": "heart_island",
+      "hp": 260,
+      "defense": 10,
+      "reward": 200,
+      "agility": 16,
+      "qi": 120,
+      "maxQi": 120,
+      "realm": 2,
+      "type": "Boss",
+      "skills": [
+        "strike",
+        "guard",
+        "poison"
+      ],
+      "drops": {
+        "core": 3,
+        "soul_pill": 1,
+        "thunderstone": 2
+      },
+      "species": "mechanism",
+      "strength": 30
+    }
+  },
+  "protected_enemies": [
+    "protected_deer"
+  ],
+  "formations": {
+    "ward": {
+      "name": "护阵",
+      "effect": "shield",
+      "value": 18,
+      "duration": 3,
+      "materials": {
+        "array_flag": 1
+      }
+    },
+    "snare": {
+      "name": "困阵",
+      "effect": "slow",
+      "value": 8,
+      "duration": 1,
+      "materials": {
+        "array_flag": 1
+      }
+    },
+    "gather": {
+      "name": "聚灵阵",
+      "effect": "qi_regen",
+      "value": 3,
+      "duration": 12,
+      "materials": {
+        "array_flag": 1
+      }
+    },
+    "kill": {
+      "name": "杀阵",
+      "effect": "firstDamage",
+      "value": 8,
+      "duration": 1,
+      "materials": {
+        "array_flag": 1
+      }
+    }
+  },
+  "materials": {
+    "array_bolt": {
+      "array_flag": 1
+    },
+    "mechanical_bolt": {
+      "mechanism_part": 1
+    },
+    "talisman_shield": {
+      "paper_talisman": 1
+    }
+  }
+}

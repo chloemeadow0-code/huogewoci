@@ -1,0 +1,318 @@
+{
+  "locations": {
+    "qingxiao": {
+      "id": "qingxiao",
+      "name": "青霄剑宗",
+      "area": "sect",
+      "x": 0.31,
+      "y": 0.22,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "bamboo",
+        "tiangong"
+      ],
+      "description": "断云山上，剑声穿过清晨的薄雾。"
+    },
+    "xuanheng": {
+      "id": "xuanheng",
+      "name": "玄衡阵门",
+      "area": "sect",
+      "x": 0.72,
+      "y": 0.25,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "ruins"
+      ],
+      "description": "古阵节点在浅青石阶间安静流转。"
+    },
+    "danxia": {
+      "id": "danxia",
+      "name": "丹霞谷",
+      "area": "sect",
+      "x": 0.24,
+      "y": 0.61,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "mist"
+      ],
+      "description": "药香随山风散入花谷，丹炉旁有温热的灯。"
+    },
+    "fuyao": {
+      "id": "fuyao",
+      "name": "伏妖门",
+      "area": "sect",
+      "x": 0.77,
+      "y": 0.64,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "ridge"
+      ],
+      "description": "荒岭山门外，灵兽留下深浅不一的脚印。"
+    },
+    "market": {
+      "id": "market",
+      "name": "灵汐坊市",
+      "area": "town",
+      "x": 0.51,
+      "y": 0.49,
+      "requiredRealm": 0,
+      "exits": [
+        "qingxiao",
+        "xuanheng",
+        "danxia",
+        "fuyao",
+        "blackmarket",
+        "bamboo",
+        "lake",
+        "hehuan",
+        "taixu",
+        "youming",
+        "wanxiang",
+        "tiangong",
+        "canglang",
+        "fentian",
+        "xingluo",
+        "starfall"
+      ],
+      "description": "山与海相遇的集市，四宗修士和散修在此交换见闻。"
+    },
+    "blackmarket": {
+      "id": "blackmarket",
+      "name": "黑市巷",
+      "area": "town",
+      "x": 0.59,
+      "y": 0.61,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "ruins",
+        "wanxiang"
+      ],
+      "description": "窄巷挂着一盏淡红纸灯，残卷与消息都有代价。"
+    },
+    "bamboo": {
+      "id": "bamboo",
+      "name": "青竹林",
+      "area": "wild",
+      "x": 0.31,
+      "y": 0.4,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "qingxiao",
+        "mist"
+      ],
+      "description": "竹叶轻轻相碰，林中可采灵药，也藏着巡山妖兽。"
+    },
+    "mist": {
+      "id": "mist",
+      "name": "雾隐山谷",
+      "area": "wild",
+      "x": 0.15,
+      "y": 0.48,
+      "requiredRealm": 0,
+      "exits": [
+        "bamboo",
+        "danxia",
+        "lake"
+      ],
+      "description": "云雾浮在山溪上，岔路深处有尚未辨认的灵植。"
+    },
+    "ridge": {
+      "id": "ridge",
+      "name": "荒岭深处",
+      "area": "wild",
+      "x": 0.85,
+      "y": 0.79,
+      "requiredRealm": 1,
+      "exits": [
+        "fuyao",
+        "lake",
+        "xingluo",
+        "starfall"
+      ],
+      "description": "越过边境石标，追踪与避险比莽撞更有用。"
+    },
+    "lake": {
+      "id": "lake",
+      "name": "月汐湖",
+      "area": "wild",
+      "x": 0.51,
+      "y": 0.78,
+      "requiredRealm": 1,
+      "exits": [
+        "market",
+        "mist",
+        "ridge",
+        "secret",
+        "hehuan",
+        "canglang",
+        "heart_island"
+      ],
+      "description": "月色被湖水收下，潮汐时灵脉会缓慢回应。"
+    },
+    "ruins": {
+      "id": "ruins",
+      "name": "旧宗遗址",
+      "area": "wild",
+      "x": 0.79,
+      "y": 0.41,
+      "requiredRealm": 1,
+      "exits": [
+        "blackmarket",
+        "xuanheng",
+        "secret",
+        "youming"
+      ],
+      "description": "倾倒的旧山门仍有禁制，残缺石刻记着另一种选择。"
+    },
+    "secret": {
+      "id": "secret",
+      "name": "潮生秘境",
+      "area": "realm",
+      "x": 0.72,
+      "y": 0.91,
+      "requiredRealm": 1,
+      "exits": [
+        "lake",
+        "ruins",
+        "fentian",
+        "heart_island"
+      ],
+      "description": "潮生潮落之间，古阵只在一周的前两日打开。"
+    },
+    "hehuan": {
+      "id": "hehuan",
+      "name": "合欢宗·花舫殿",
+      "area": "sect",
+      "x": 0.34,
+      "y": 0.74,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "lake"
+      ],
+      "description": "月汐湖畔的花舫连成一片，丝竹声里藏着三百年魔道的规矩与体面。"
+    },
+    "taixu": {
+      "id": "taixu",
+      "name": "太虚观",
+      "area": "sect",
+      "x": 0.16,
+      "y": 0.3,
+      "requiredRealm": 0,
+      "exits": [
+        "market"
+      ],
+      "description": "观星台直入云霄，雷池在殿后日夜奔鸣，符纸的墨香混着臭氧。"
+    },
+    "youming": {
+      "id": "youming",
+      "name": "幽冥殿",
+      "area": "sect",
+      "x": 0.9,
+      "y": 0.4,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "ruins"
+      ],
+      "description": "灰雾常年不散，殿门口挂的不是灯笼，是一串串风干的名字。"
+    },
+    "wanxiang": {
+      "id": "wanxiang",
+      "name": "万象楼",
+      "area": "sect",
+      "x": 0.6,
+      "y": 0.85,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "blackmarket"
+      ],
+      "description": "楼高九层，一层卖货九层卖消息，顶层挂着一块从不落地的匾。"
+    },
+    "tiangong": {
+      "id": "tiangong",
+      "name": "天工阁",
+      "area": "sect",
+      "x": 0.1,
+      "y": 0.45,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "qingxiao"
+      ],
+      "description": "锻炉的火光昼夜映着半边山壁，锤声比鸡叫更准。"
+    },
+    "canglang": {
+      "id": "canglang",
+      "name": "沧浪水榭",
+      "area": "sect",
+      "x": 0.45,
+      "y": 0.9,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "lake"
+      ],
+      "description": "半座水榭浸在湖里，潮声日夜不息，据说能听见岛的心跳。"
+    },
+    "fentian": {
+      "id": "fentian",
+      "name": "焚天谷",
+      "area": "sect",
+      "x": 0.88,
+      "y": 0.15,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "secret"
+      ],
+      "description": "山是黑的，云是红的，空气里有淡淡的硫磺味和不服输的火气。"
+    },
+    "xingluo": {
+      "id": "xingluo",
+      "name": "星罗卫",
+      "area": "sect",
+      "x": 0.72,
+      "y": 0.88,
+      "requiredRealm": 0,
+      "exits": [
+        "market",
+        "ridge"
+      ],
+      "description": "黑瓦白墙的卫所立在东南角，门前石碑刻着全岛现行的赏格。"
+    },
+    "heart_island": {
+      "id": "heart_island",
+      "name": "岛心禁地",
+      "area": "realm",
+      "x": 0.5,
+      "y": 0.68,
+      "requiredRealm": 2,
+      "exits": [
+        "lake",
+        "secret"
+      ],
+      "description": "岛脉的心脏。灵气浓得凝成雾，脚下大地有缓慢的搏动——守在这里的东西，比整座岛更老。"
+    },
+    "starfall": {
+      "id": "starfall",
+      "name": "星坠滩",
+      "area": "wild",
+      "x": 0.8,
+      "y": 0.35,
+      "requiredRealm": 1,
+      "exits": [
+        "market",
+        "ridge"
+      ],
+      "description": "传说是星辰坠落砸出的滩涂，沙砾在夜里发着微光，偶遇拾荒的散修。"
+    }
+  }
+}

@@ -1,0 +1,594 @@
+{
+  "npcs": {
+    "qingxiao_leader": {
+      "name": "闻照川",
+      "identity": "掌门",
+      "duty": "调停与传承",
+      "background": "守过七日山道，把幸存者的名字记在旧剑鞘上。",
+      "personality": "沉稳克制",
+      "positive": "守信",
+      "negative": "不善表达",
+      "location": "qingxiao",
+      "functions": [
+        "talk",
+        "story"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_qingxiao_leader",
+      "specialEvent": "旧事重访",
+      "technique": "qingxiao_sword"
+    },
+    "qingxiao_mentor": {
+      "name": "林青枝",
+      "identity": "核心导师",
+      "duty": "功法指导",
+      "background": "从外门一路成长，愿意陪弟子复盘每次失误。",
+      "personality": "爽朗耐心",
+      "positive": "善于教学",
+      "negative": "好胜",
+      "location": "qingxiao",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_qingxiao_mentor",
+      "specialEvent": "旧事重访",
+      "technique": "qingxiao_sword"
+    },
+    "qingxiao_steward": {
+      "name": "许听风",
+      "identity": "事务负责人",
+      "duty": "任务与资源",
+      "background": "护送山下药队多年，熟悉每条返程山道。",
+      "personality": "严谨可靠",
+      "positive": "记性很好",
+      "negative": "过分担忧",
+      "location": "qingxiao",
+      "functions": [
+        "talk",
+        "quest",
+        "shop"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_qingxiao_steward",
+      "specialEvent": "旧事重访",
+      "technique": "qingxiao_sword"
+    },
+    "xuanheng_leader": {
+      "name": "顾衡",
+      "identity": "掌门",
+      "duty": "调停与传承",
+      "background": "维护过一次险些崩塌的护山阵，不再轻视小误差。",
+      "personality": "安静理性",
+      "positive": "公平",
+      "negative": "固执",
+      "location": "xuanheng",
+      "functions": [
+        "talk",
+        "story"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_xuanheng_leader",
+      "specialEvent": "旧事重访",
+      "technique": "xuanheng_array"
+    },
+    "xuanheng_mentor": {
+      "name": "沈知序",
+      "identity": "核心导师",
+      "duty": "功法指导",
+      "background": "研究古阵，喜欢把难懂的禁制画成简图。",
+      "personality": "好奇细致",
+      "positive": "善于拆解",
+      "negative": "容易忘时",
+      "location": "xuanheng",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_xuanheng_mentor",
+      "specialEvent": "旧事重访",
+      "technique": "xuanheng_array"
+    },
+    "xuanheng_steward": {
+      "name": "柳未央",
+      "identity": "事务负责人",
+      "duty": "任务与资源",
+      "background": "管理阵材仓，曾被伪造账册欺骗。",
+      "personality": "谨慎认真",
+      "positive": "负责",
+      "negative": "不轻信人",
+      "location": "xuanheng",
+      "functions": [
+        "talk",
+        "quest",
+        "shop"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_xuanheng_steward",
+      "specialEvent": "旧事重访",
+      "technique": "xuanheng_array"
+    },
+    "danxia_leader": {
+      "name": "苏映霞",
+      "identity": "掌门",
+      "duty": "调停与传承",
+      "background": "大疫时走遍岛上村落，仍保存着行医旧册。",
+      "personality": "温和坚定",
+      "positive": "仁心",
+      "negative": "不肯休息",
+      "location": "danxia",
+      "functions": [
+        "talk",
+        "story"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_danxia_leader",
+      "specialEvent": "旧事重访",
+      "technique": "danxia_herbal"
+    },
+    "danxia_mentor": {
+      "name": "温芷",
+      "identity": "核心导师",
+      "duty": "功法指导",
+      "background": "研究毒理，是为了认出那些隐藏的副作用。",
+      "personality": "细腻坦率",
+      "positive": "诚实",
+      "negative": "说话直接",
+      "location": "danxia",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_danxia_mentor",
+      "specialEvent": "旧事重访",
+      "technique": "danxia_herbal"
+    },
+    "danxia_steward": {
+      "name": "叶小满",
+      "identity": "事务负责人",
+      "duty": "任务与资源",
+      "background": "负责药材调配，常为稀有药材的来源发愁。",
+      "personality": "开朗忙碌",
+      "positive": "慷慨",
+      "negative": "急性子",
+      "location": "danxia",
+      "functions": [
+        "talk",
+        "quest",
+        "shop"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_danxia_steward",
+      "specialEvent": "旧事重访",
+      "technique": "danxia_herbal"
+    },
+    "fuyao_leader": {
+      "name": "陆山眠",
+      "identity": "掌门",
+      "duty": "调停与传承",
+      "background": "出身猎妖队，后来收养了一只失去族群的灵兽。",
+      "personality": "宽厚寡言",
+      "positive": "保护弱者",
+      "negative": "犹豫",
+      "location": "fuyao",
+      "functions": [
+        "talk",
+        "story"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_fuyao_leader",
+      "specialEvent": "旧事重访",
+      "technique": "fuyao_body"
+    },
+    "fuyao_mentor": {
+      "name": "白若岚",
+      "identity": "核心导师",
+      "duty": "功法指导",
+      "background": "坚持契约双方都有退路，常被猎杀派质疑。",
+      "personality": "清醒耐心",
+      "positive": "尊重灵兽",
+      "negative": "理想化",
+      "location": "fuyao",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_fuyao_mentor",
+      "specialEvent": "旧事重访",
+      "technique": "fuyao_body"
+    },
+    "fuyao_steward": {
+      "name": "石望",
+      "identity": "事务负责人",
+      "duty": "任务与资源",
+      "background": "负责兽苑，曾因一次错误追踪失去同伴。",
+      "personality": "认真警惕",
+      "positive": "勇敢",
+      "negative": "多疑",
+      "location": "fuyao",
+      "functions": [
+        "talk",
+        "quest",
+        "shop"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_fuyao_steward",
+      "specialEvent": "旧事重访",
+      "technique": "fuyao_body"
+    },
+    "merchant": {
+      "name": "岑小舟",
+      "identity": "坊市商人",
+      "duty": "辨认法器真伪",
+      "background": "曾吃过假器的亏，如今每件货都写明来历。",
+      "personality": "健谈",
+      "positive": "诚实",
+      "negative": "爱讨价",
+      "location": "market",
+      "functions": [
+        "talk",
+        "shop"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_merchant",
+      "specialEvent": "旧事重访",
+      "technique": "verdant"
+    },
+    "innkeeper": {
+      "name": "桑晚",
+      "identity": "客栈老板",
+      "duty": "疗伤与落脚",
+      "background": "收留过迷路的修士，欠房费也会记账。",
+      "personality": "温和",
+      "positive": "照顾人",
+      "negative": "心软",
+      "location": "market",
+      "functions": [
+        "talk",
+        "heal"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_innkeeper",
+      "specialEvent": "旧事重访",
+      "technique": "verdant"
+    },
+    "alliance": {
+      "name": "赵行远",
+      "identity": "散修盟管事",
+      "duty": "私人传承与委托",
+      "background": "走过四宗都未入门，后来搭起散修互助网。",
+      "personality": "务实",
+      "positive": "公正",
+      "negative": "谨慎",
+      "location": "market",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_alliance",
+      "specialEvent": "旧事重访",
+      "technique": "beast_lore"
+    },
+    "intel": {
+      "name": "云栖",
+      "identity": "情报贩子",
+      "duty": "辨别危险线索",
+      "background": "曾为一条假消息失去朋友，只卖能够验证的线索。",
+      "personality": "敏锐",
+      "positive": "守约",
+      "negative": "多疑",
+      "location": "blackmarket",
+      "functions": [
+        "talk",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_intel",
+      "specialEvent": "旧事重访",
+      "technique": "verdant"
+    },
+    "blackmerchant": {
+      "name": "阿朔",
+      "identity": "黑市商人",
+      "duty": "特殊货物与拍卖",
+      "background": "愿意收残卷，也害怕幕后东家的旧债。",
+      "personality": "机灵",
+      "positive": "识货",
+      "negative": "隐瞒过去",
+      "location": "blackmarket",
+      "functions": [
+        "talk",
+        "shop",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_blackmerchant",
+      "specialEvent": "旧事重访",
+      "technique": "verdant"
+    },
+    "guide": {
+      "name": "程见山",
+      "identity": "遗迹向导",
+      "duty": "探路与禁制指引",
+      "background": "父亲被旧宗禁制所困，反复寻找更安全的路。",
+      "personality": "耐心",
+      "positive": "细心",
+      "negative": "执拗",
+      "location": "ruins",
+      "functions": [
+        "talk",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_guide",
+      "specialEvent": "旧事重访",
+      "technique": "verdant"
+    },
+    "hehuan_mentor": {
+      "name": "洛璃",
+      "identity": "合欢圣女",
+      "duty": "功法指导",
+      "background": "宗内都说她修的是最正统的欢喜禅功，正道都说她最不安分。两种说法她都认。",
+      "personality": "慵懒锋利",
+      "positive": "重诺",
+      "negative": "睚眦必报",
+      "location": "hehuan",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_hehuan_mentor",
+      "specialEvent": "旧账重提",
+      "technique": "hehuan_zen"
+    },
+    "taixu_mentor": {
+      "name": "玄雷子",
+      "identity": "太虚观主",
+      "duty": "功法指导",
+      "background": "五十年前以一道雷符劈碎妖潮先锋，从此观星台的灯没再灭过。",
+      "personality": "古板持重",
+      "positive": "嫉恶如仇",
+      "negative": "不通人情",
+      "location": "taixu",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_taixu_mentor",
+      "specialEvent": "雷池异动",
+      "technique": "taixu_thunder"
+    },
+    "youming_mentor": {
+      "name": "殿主·墨十三",
+      "identity": "幽冥殿主",
+      "duty": "功法指导",
+      "background": "从鬼门关自己走回来过一次，回来之后就不太在乎别人怎么看了。",
+      "personality": "寡言深邃",
+      "positive": "言出必行",
+      "negative": "过于超然",
+      "location": "youming",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_youming_mentor",
+      "specialEvent": "煞眼共鸣",
+      "technique": "youming_sha"
+    },
+    "wanxiang_mentor": {
+      "name": "楼主·白算盘",
+      "identity": "万象楼主",
+      "duty": "功法指导",
+      "background": "三岁能算账，三十岁买下了这座楼。常说拳头是最不划算的武器。",
+      "personality": "精明圆滑",
+      "positive": "契约精神",
+      "negative": "锱铢必较",
+      "location": "wanxiang",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_wanxiang_mentor",
+      "specialEvent": "断账之夜",
+      "technique": "wanxiang_ledger"
+    },
+    "tiangong_mentor": {
+      "name": "阁老·欧冶残",
+      "identity": "天工阁老",
+      "duty": "功法指导",
+      "background": "左手三根手指留在了某件失败的法器里，之后锻出的东西再没失败过。",
+      "personality": "沉默较真",
+      "positive": "一丝不苟",
+      "negative": "不通变通",
+      "location": "tiangong",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_tiangong_mentor",
+      "specialEvent": "残器现世",
+      "technique": "tiangong_formula"
+    },
+    "canglang_mentor": {
+      "name": "榭主·温枕流",
+      "identity": "沧浪榭主",
+      "duty": "功法指导",
+      "background": "医过正道也医过魔道，只问伤势不问出身，为此两边都欠她人情。",
+      "personality": "温和通透",
+      "positive": "医者仁心",
+      "negative": "不愿杀人",
+      "location": "canglang",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_canglang_mentor",
+      "specialEvent": "活水眼涨潮",
+      "technique": "canglang_tide"
+    },
+    "fentian_mentor": {
+      "name": "谷主·祝无霜",
+      "identity": "焚天谷主",
+      "duty": "功法指导",
+      "background": "把谷训抄了一百遍之后把谷训烧了，说记在心里就够了。",
+      "personality": "暴烈率真",
+      "positive": "说到做到",
+      "negative": "一点就着",
+      "location": "fentian",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_fentian_mentor",
+      "specialEvent": "余脉走水",
+      "technique": "fentian_flame"
+    },
+    "xingluo_mentor": {
+      "name": "指挥使·铁无援",
+      "identity": "星罗卫指挥使",
+      "duty": "功法指导",
+      "background": "上任指挥使是他亲手拿的，罪名是私放悬赏要犯。公事公办到这个地步，也算一种境界。",
+      "personality": "铁面肃正",
+      "positive": "公正不阿",
+      "negative": "刻板",
+      "location": "xingluo",
+      "functions": [
+        "talk",
+        "teach",
+        "quest"
+      ],
+      "initialRelationship": {
+        "friendliness": 0,
+        "trust": 0,
+        "hostility": 0
+      },
+      "personalQuest": "personal_xingluo_mentor",
+      "specialEvent": "赏格更新",
+      "technique": "xingluo_warrant"
+    }
+  }
+}

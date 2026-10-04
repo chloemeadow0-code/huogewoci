@@ -1,0 +1,187 @@
+{
+  "locations": {
+    "sect": {
+      "name": "宗门驻地",
+      "exits": [
+        "town",
+        "wild"
+      ],
+      "nodes": [
+        "山门",
+        "弟子居",
+        "任务堂",
+        "藏经阁",
+        "演武场",
+        "剑冢",
+        "宗门商店",
+        "炼丹房",
+        "炼器房",
+        "阵图阁",
+        "机关坊",
+        "灵脉节点",
+        "灵植园",
+        "诊疗堂",
+        "毒经阁",
+        "兽苑",
+        "狩猎堂",
+        "荒野图阁",
+        "体修场",
+        "契约登记处"
+      ]
+    },
+    "town": {
+      "name": "山下青石镇",
+      "exits": [
+        "sect",
+        "wild"
+      ],
+      "nodes": [
+        "客栈",
+        "坊市",
+        "药铺",
+        "铁匠铺",
+        "酒楼",
+        "散修集市",
+        "黑市",
+        "散修盟",
+        "修炼客舍"
+      ]
+    },
+    "wild": {
+      "name": "落霞山野",
+      "exits": [
+        "sect",
+        "town",
+        "realm"
+      ],
+      "nodes": [
+        "山林",
+        "河谷",
+        "药田",
+        "妖兽领地",
+        "废弃洞府"
+      ]
+    },
+    "realm": {
+      "name": "灵溪秘境",
+      "exits": [
+        "wild"
+      ],
+      "nodes": [
+        "入口",
+        "灵药园",
+        "古殿",
+        "封印核心"
+      ]
+    }
+  },
+  "status_types": [
+    "poison",
+    "bleed",
+    "burn",
+    "freeze",
+    "stun",
+    "root",
+    "weakness",
+    "shield",
+    "haste",
+    "slow",
+    "qi_regen",
+    "heal_block",
+    "injury"
+  ],
+  "exploration": [
+    "herb",
+    "enemy",
+    "npc",
+    "chest",
+    "trap",
+    "cave",
+    "empty"
+  ],
+  "events": [
+    {
+      "id": "rain",
+      "name": "暴雨",
+      "cultivationBonus": 0,
+      "exploreDamage": 2
+    },
+    {
+      "id": "herbs",
+      "name": "灵药成熟",
+      "cultivationBonus": 0,
+      "extraHerb": 1
+    },
+    {
+      "id": "caravan",
+      "name": "商队到达",
+      "cultivationBonus": 0
+    },
+    {
+      "id": "tournament",
+      "name": "宗门比试",
+      "cultivationBonus": 1
+    },
+    {
+      "id": "beasts",
+      "name": "妖兽潮",
+      "cultivationBonus": 0,
+      "exploreDamage": 4
+    },
+    {
+      "id": "auction",
+      "name": "拍卖会",
+      "cultivationBonus": 0
+    },
+    {
+      "id": "fire",
+      "name": "山火",
+      "exploreDamage": 5
+    },
+    {
+      "id": "missing",
+      "name": "NPC失踪",
+      "absent": "ranger"
+    },
+    {
+      "id": "collapse",
+      "name": "山洞坍塌",
+      "blocked": "wild"
+    },
+    {
+      "id": "thunderstorm",
+      "name": "雷潮过境",
+      "description": "雷云压顶，天地灵气亢奋——修炼事半功倍。",
+      "cultivationBonus": 6
+    },
+    {
+      "id": "blossom",
+      "name": "灵植花汛",
+      "description": "一夜花汛，灵草竞相抽芽，药香漫山。",
+      "extraHerb": 2
+    }
+  ],
+  "birth": {
+    "elements": [
+      "金",
+      "木",
+      "水",
+      "火",
+      "土"
+    ],
+    "countWeights": [
+      10,
+      25,
+      35,
+      20,
+      10
+    ],
+    "aptitudeWeights": [
+      10,
+      25,
+      35,
+      20,
+      10
+    ]
+  }
+}

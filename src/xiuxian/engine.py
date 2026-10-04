@@ -6,6 +6,7 @@ import logging
 import threading
 from pathlib import Path
 from lorekit.db import init_schema, get_db
+from .data import load_pack
 from .rules import require, bounded_int, RuleError, new_rng_key, rng_value
 from datetime import datetime, timezone
 from .models import Player, StatusEffect
@@ -15,11 +16,7 @@ from .birth import generate_root, generate_aptitude
 logger = logging.getLogger(__name__)
 
 LOCK = threading.RLock()
-CONTENT = json.loads(
-    (Path(__file__).resolve().parents[2] / "systems/xiuxian/content.json").read_text(
-        encoding="utf-8"
-    )
-)
+CONTENT = load_pack("content")
 
 TOOLS = (
     "get_self",

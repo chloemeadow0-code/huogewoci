@@ -1,0 +1,599 @@
+{
+  "techniques": {
+    "basic_meditation": {
+      "name": "青云吐纳诀",
+      "type": "心法",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "木",
+        "火"
+      ],
+      "cultivationBonus": 0,
+      "qiBonus": 0,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "school": "general",
+      "route": null,
+      "tuition": 25
+    },
+    "verdant": {
+      "name": "长春功",
+      "type": "心法",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "木"
+      ],
+      "cultivationBonus": 3,
+      "qiBonus": 10,
+      "passiveEffects": {
+        "regeneration": 1
+      },
+      "maxLevel": 10,
+      "school": "medicine",
+      "route": null,
+      "tuition": 25
+    },
+    "sword_art": {
+      "name": "青云剑经",
+      "type": "剑诀",
+      "requiredRealm": 1,
+      "compatibleRoots": [
+        "金",
+        "火"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 5,
+      "passiveEffects": {
+        "strength": 3
+      },
+      "maxLevel": 10,
+      "school": "sword",
+      "route": null,
+      "tuition": 25
+    },
+    "qingxiao_sword": {
+      "name": "断云剑心诀",
+      "type": "剑诀",
+      "school": "sword",
+      "route": "qingxiao",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "木",
+        "火"
+      ],
+      "cultivationBonus": 1,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "xuanheng_array": {
+      "name": "玄衡阵解",
+      "type": "阵诀",
+      "school": "formation",
+      "route": "xuanheng",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "木",
+        "火"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "danxia_herbal": {
+      "name": "丹霞药经",
+      "type": "丹道",
+      "school": "alchemy",
+      "route": "danxia",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "木",
+        "火"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "fuyao_body": {
+      "name": "伏妖锻体经",
+      "type": "体修",
+      "school": "body",
+      "route": "fuyao",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "木",
+        "火"
+      ],
+      "cultivationBonus": 1,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "beast_lore": {
+      "name": "驭兽残卷",
+      "type": "御兽",
+      "school": "beast",
+      "route": "fuyao",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "木",
+        "火"
+      ],
+      "cultivationBonus": 0,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 30
+    },
+    "forbidden_sword": {
+      "name": "禁录·噬魂剑",
+      "type": "剑诀",
+      "school": "sword",
+      "route": "qingxiao",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "火"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 0,
+      "passiveEffects": {
+        "strength": 2
+      },
+      "maxLevel": 5,
+      "tuition": 0
+    },
+    "talisman_manual": {
+      "name": "听雨符经",
+      "type": "符道",
+      "school": "formation",
+      "route": null,
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "水",
+        "木"
+      ],
+      "cultivationBonus": 1,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 25
+    },
+    "forge_manual": {
+      "name": "温炉器录",
+      "type": "器道",
+      "school": "craft",
+      "route": null,
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "火",
+        "金"
+      ],
+      "cultivationBonus": 1,
+      "qiBonus": 5,
+      "passiveEffects": {
+        "defense": 1
+      },
+      "maxLevel": 10,
+      "tuition": 25
+    },
+    "hehuan_zen": {
+      "name": "欢喜禅功",
+      "type": "魅道",
+      "school": "charm",
+      "route": "hehuan",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "水",
+        "火"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 8,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "taixu_thunder": {
+      "name": "太虚雷诀",
+      "type": "雷法",
+      "school": "lightning",
+      "route": "taixu",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "金",
+        "火"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 6,
+      "passiveEffects": {
+        "strength": 2
+      },
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "youming_sha": {
+      "name": "幽冥煞功",
+      "type": "煞道",
+      "school": "nether",
+      "route": "youming",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "水",
+        "土"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "wanxiang_ledger": {
+      "name": "万象心经",
+      "type": "商道",
+      "school": "merchant",
+      "route": "wanxiang",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "金",
+        "土"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "tiangong_formula": {
+      "name": "天工开物诀",
+      "type": "锻造",
+      "school": "artificer",
+      "route": "tiangong",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "金",
+        "土"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 4,
+      "passiveEffects": {
+        "defense": 2
+      },
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "canglang_tide": {
+      "name": "沧浪潮息诀",
+      "type": "水道",
+      "school": "tide",
+      "route": "canglang",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "水",
+        "木"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 8,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "fentian_flame": {
+      "name": "焚天炎诀",
+      "type": "炎道",
+      "school": "ember",
+      "route": "fentian",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "火"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 4,
+      "passiveEffects": {
+        "strength": 2
+      },
+      "maxLevel": 10,
+      "tuition": 20
+    },
+    "xingluo_warrant": {
+      "name": "星罗缉要",
+      "type": "缉道",
+      "school": "constable",
+      "route": "xingluo",
+      "requiredRealm": 0,
+      "compatibleRoots": [
+        "金",
+        "木"
+      ],
+      "cultivationBonus": 2,
+      "qiBonus": 5,
+      "passiveEffects": {},
+      "maxLevel": 10,
+      "tuition": 20
+    }
+  },
+  "npcs": {
+    "elder": {
+      "name": "陆长老",
+      "location": "sect",
+      "identity": "宗门长老",
+      "realm": "筑基",
+      "personality": "谨慎守信",
+      "schedule": {
+        "start": 0,
+        "end": 24
+      },
+      "quests": [
+        "herbs"
+      ],
+      "dialogueState": {}
+    },
+    "merchant": {
+      "name": "沈掌柜",
+      "location": "town",
+      "identity": "散修",
+      "realm": "筑基",
+      "personality": "谨慎守信",
+      "schedule": {
+        "start": 0,
+        "end": 24
+      },
+      "quests": [],
+      "dialogueState": {}
+    },
+    "ranger": {
+      "name": "林师姐",
+      "location": "wild",
+      "identity": "散修",
+      "realm": "筑基",
+      "personality": "谨慎守信",
+      "schedule": {
+        "start": 0,
+        "end": 24
+      },
+      "quests": [],
+      "dialogueState": {}
+    },
+    "hermit": {
+      "name": "溪云子",
+      "location": "realm",
+      "identity": "秘境守望者",
+      "realm": "金丹",
+      "personality": "寡言",
+      "schedule": {
+        "start": 0,
+        "end": 24
+      },
+      "quests": [],
+      "dialogueState": {}
+    }
+  },
+  "quests": {
+    "herbs": {
+      "name": "采药委托",
+      "location": "sect",
+      "item": "herb",
+      "quantity": 3,
+      "reward": 25,
+      "reputation": 10,
+      "description": "采药委托",
+      "type": "收集",
+      "requirements": {},
+      "penalties": {}
+    },
+    "guardian": {
+      "name": "秘境试炼",
+      "location": "sect",
+      "kill": "guardian",
+      "reward": 50,
+      "reputation": 10,
+      "description": "秘境试炼",
+      "type": "战斗",
+      "requirements": {},
+      "penalties": {}
+    },
+    "scout": {
+      "name": "寻访洞府",
+      "location": "town",
+      "explores": 3,
+      "reward": 20,
+      "reputation": 3,
+      "description": "寻访洞府",
+      "type": "探索",
+      "requirements": {},
+      "penalties": {}
+    },
+    "serpent": {
+      "name": "清除蛇患",
+      "location": "town",
+      "kill": "serpent",
+      "reward": 30,
+      "reputation": 5,
+      "description": "清除蛇患",
+      "type": "战斗",
+      "requirements": {},
+      "penalties": {}
+    },
+    "escort": {
+      "name": "山道护送",
+      "location": "sect",
+      "route": "qingxiao",
+      "description": "山道护送",
+      "type": "战斗",
+      "reward": 35,
+      "reputation": 10,
+      "requirements": {},
+      "penalties": {},
+      "kill": "bandit"
+    },
+    "slay": {
+      "name": "讨伐赤鳞蛇",
+      "location": "sect",
+      "route": "qingxiao",
+      "description": "讨伐赤鳞蛇",
+      "type": "战斗",
+      "reward": 35,
+      "reputation": 10,
+      "requirements": {},
+      "penalties": {},
+      "kill": "serpent"
+    },
+    "disarm": {
+      "name": "古阵禁制研究",
+      "location": "sect",
+      "route": "xuanheng",
+      "description": "古阵禁制研究",
+      "type": "探索",
+      "reward": 30,
+      "reputation": 8,
+      "requirements": {},
+      "penalties": {},
+      "counter": "disarms",
+      "quantity": 1
+    },
+    "mechanism_supply": {
+      "name": "机关材料调拨",
+      "location": "sect",
+      "route": "xuanheng",
+      "description": "机关材料调拨",
+      "type": "收集",
+      "reward": 25,
+      "reputation": 5,
+      "requirements": {},
+      "penalties": {},
+      "item": "mechanism_part",
+      "quantity": 2
+    },
+    "clinic": {
+      "name": "山下诊疗",
+      "location": "sect",
+      "route": "danxia",
+      "description": "山下诊疗",
+      "type": "收集",
+      "reward": 35,
+      "reputation": 8,
+      "requirements": {},
+      "penalties": {},
+      "item": "potion",
+      "quantity": 2
+    },
+    "hunt": {
+      "name": "荒岭猎妖",
+      "location": "sect",
+      "route": "fuyao",
+      "description": "荒岭猎妖",
+      "type": "战斗",
+      "reward": 30,
+      "reputation": 8,
+      "requirements": {},
+      "penalties": {},
+      "kill": "wolf"
+    },
+    "protected_rescue": {
+      "name": "救护契约兽",
+      "location": "sect",
+      "route": "fuyao",
+      "description": "救护契约兽",
+      "type": "探索",
+      "reward": 20,
+      "reputation": 8,
+      "requirements": {},
+      "penalties": {},
+      "counter": "beastCare",
+      "quantity": 1
+    },
+    "relic": {
+      "name": "坊市残片委托",
+      "location": "town",
+      "route": "rogue",
+      "description": "坊市残片委托",
+      "type": "收集",
+      "reward": 35,
+      "reputation": 5,
+      "requirements": {},
+      "penalties": {},
+      "item": "relic_fragment",
+      "quantity": 1
+    },
+    "delivery": {
+      "name": "散修补给委托",
+      "location": "town",
+      "route": "rogue",
+      "description": "散修补给委托",
+      "type": "收集",
+      "reward": 22,
+      "reputation": 5,
+      "requirements": {},
+      "penalties": {},
+      "item": "herb",
+      "quantity": 3
+    }
+  },
+  "beasts": {
+    "cloud_fox": {
+      "name": "云狐",
+      "personality": "谨慎",
+      "strength": 8,
+      "agility": 14,
+      "defense": 2,
+      "maxHp": 45,
+      "skills": [
+        "strike",
+        "guard"
+      ]
+    },
+    "stone_ape": {
+      "name": "岩猿",
+      "personality": "勇猛",
+      "strength": 12,
+      "agility": 7,
+      "defense": 4,
+      "maxHp": 60,
+      "skills": [
+        "strike",
+        "guard"
+      ]
+    }
+  },
+  "realms": [
+    {
+      "name": "炼气",
+      "cost": 20,
+      "pill": null,
+      "chance": 95,
+      "reputation": 0
+    },
+    {
+      "name": "筑基",
+      "cost": 40,
+      "pill": "foundation_pill",
+      "chance": 90,
+      "reputation": 5
+    },
+    {
+      "name": "金丹",
+      "cost": 60,
+      "pill": "golden_pill",
+      "chance": 85,
+      "reputation": 10
+    },
+    {
+      "name": "元婴",
+      "cost": 80,
+      "pill": "soul_pill",
+      "chance": 80,
+      "reputation": 15
+    }
+  ],
+  "blackmarket_stock": [
+    "forbidden_sword",
+    "forbidden_pill",
+    "relic_fragment",
+    "core",
+    "core_array_chart"
+  ]
+}

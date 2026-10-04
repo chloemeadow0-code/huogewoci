@@ -24,7 +24,7 @@ def island(tmp_path, monkeypatch):
 
 def test_content_scope():
     assert (
-        len(ISLAND["locations"]) == 20
+        len(ISLAND["locations"]) == 22
         and len(ISLAND["npcs"]) == 26
         and len(ISLAND["villains"]) == 6
     )

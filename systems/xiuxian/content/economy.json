@@ -1,0 +1,674 @@
+{
+  "items": {
+    "herb": {
+      "name": "灵草",
+      "type": "灵药",
+      "rarity": "普通",
+      "value": 4,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "potion": {
+      "name": "回气丹",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 12,
+      "stackable": true,
+      "effects": {
+        "hp": 40,
+        "qi": 20
+      },
+      "requirements": {}
+    },
+    "foundation_pill": {
+      "name": "筑基丹",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 80,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "golden_pill": {
+      "name": "结金丹",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 150,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "soul_pill": {
+      "name": "凝婴丹",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 250,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "iron": {
+      "name": "玄铁",
+      "type": "材料",
+      "rarity": "普通",
+      "value": 8,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "core": {
+      "name": "灵核",
+      "type": "材料",
+      "rarity": "普通",
+      "value": 30,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "fang": {
+      "name": "狼牙",
+      "type": "材料",
+      "rarity": "普通",
+      "value": 6,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "sword": {
+      "name": "青云剑",
+      "type": "法器",
+      "rarity": "普通",
+      "value": 40,
+      "stackable": false,
+      "effects": {
+        "strength": 8
+      },
+      "requirements": {},
+      "slot": "weapon"
+    },
+    "armor": {
+      "name": "玄铁甲",
+      "type": "法器",
+      "rarity": "普通",
+      "value": 35,
+      "stackable": false,
+      "effects": {
+        "defense": 5
+      },
+      "requirements": {},
+      "slot": "armor"
+    },
+    "charm": {
+      "name": "清心佩",
+      "type": "法器",
+      "rarity": "普通",
+      "value": 25,
+      "stackable": false,
+      "effects": {
+        "spirit": 4
+      },
+      "requirements": {},
+      "slot": "accessory"
+    },
+    "talisman": {
+      "name": "护身法宝",
+      "type": "法器",
+      "rarity": "普通",
+      "value": 40,
+      "stackable": false,
+      "effects": {
+        "defense": 3
+      },
+      "requirements": {},
+      "slot": "artifact"
+    },
+    "manual": {
+      "name": "长春功卷",
+      "type": "功法",
+      "rarity": "普通",
+      "value": 25,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "sword_manual": {
+      "name": "青云剑经",
+      "type": "功法",
+      "rarity": "普通",
+      "value": 0,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "array_flag": {
+      "name": "阵旗",
+      "type": "材料",
+      "rarity": "普通",
+      "value": 4,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "paper_talisman": {
+      "name": "基础符箓",
+      "type": "材料",
+      "rarity": "普通",
+      "value": 3,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "mechanism_part": {
+      "name": "机关零件",
+      "type": "材料",
+      "rarity": "普通",
+      "value": 4,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "scrap": {
+      "name": "废丹",
+      "type": "杂物",
+      "rarity": "普通",
+      "value": 1,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "relic_fragment": {
+      "name": "遗迹残片",
+      "type": "材料",
+      "rarity": "普通",
+      "value": 20,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "forbidden_sword": {
+      "name": "禁录邪剑残卷",
+      "type": "功法",
+      "rarity": "普通",
+      "value": 80,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "forbidden_pill": {
+      "name": "禁丹",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 60,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "protected_core": {
+      "name": "保护种群兽核",
+      "type": "材料",
+      "rarity": "普通",
+      "value": 60,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "potion_fine": {
+      "name": "回气丹·良品",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 12,
+      "stackable": true,
+      "effects": {
+        "hp": 40,
+        "qi": 20
+      },
+      "requirements": {},
+      "baseItem": "potion",
+      "quality": "fine"
+    },
+    "potion_superior": {
+      "name": "回气丹·上品",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 12,
+      "stackable": true,
+      "effects": {
+        "hp": 40,
+        "qi": 20
+      },
+      "requirements": {},
+      "baseItem": "potion",
+      "quality": "superior"
+    },
+    "foundation_pill_fine": {
+      "name": "筑基丹·良品",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 80,
+      "stackable": true,
+      "effects": {},
+      "requirements": {},
+      "baseItem": "foundation_pill",
+      "quality": "fine"
+    },
+    "foundation_pill_superior": {
+      "name": "筑基丹·上品",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 80,
+      "stackable": true,
+      "effects": {},
+      "requirements": {},
+      "baseItem": "foundation_pill",
+      "quality": "superior"
+    },
+    "golden_pill_fine": {
+      "name": "结金丹·良品",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 150,
+      "stackable": true,
+      "effects": {},
+      "requirements": {},
+      "baseItem": "golden_pill",
+      "quality": "fine"
+    },
+    "golden_pill_superior": {
+      "name": "结金丹·上品",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 150,
+      "stackable": true,
+      "effects": {},
+      "requirements": {},
+      "baseItem": "golden_pill",
+      "quality": "superior"
+    },
+    "soul_pill_fine": {
+      "name": "凝婴丹·良品",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 250,
+      "stackable": true,
+      "effects": {},
+      "requirements": {},
+      "baseItem": "soul_pill",
+      "quality": "fine"
+    },
+    "soul_pill_superior": {
+      "name": "凝婴丹·上品",
+      "type": "丹药",
+      "rarity": "普通",
+      "value": 250,
+      "stackable": true,
+      "effects": {},
+      "requirements": {},
+      "baseItem": "soul_pill",
+      "quality": "superior"
+    },
+    "core_array_chart": {
+      "name": "玄衡核心阵图",
+      "type": "功法",
+      "rarity": "稀有",
+      "value": 80,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "evolution_crystal": {
+      "name": "进化晶核",
+      "type": "材料",
+      "rarity": "稀有",
+      "value": 60,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "tide_dew": {
+      "name": "潮露",
+      "type": "材料",
+      "rarity": "稀有",
+      "value": 25,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "nether_iron": {
+      "name": "幽冥铁",
+      "type": "材料",
+      "rarity": "稀有",
+      "value": 30,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "thunderstone": {
+      "name": "雷纹石",
+      "type": "材料",
+      "rarity": "稀有",
+      "value": 55,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "ember_shard": {
+      "name": "赤焰晶",
+      "type": "材料",
+      "rarity": "普通",
+      "value": 18,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "cold_jade": {
+      "name": "寒玉",
+      "type": "材料",
+      "rarity": "稀有",
+      "value": 28,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "gale_feather": {
+      "name": "罡风羽",
+      "type": "材料",
+      "rarity": "普通",
+      "value": 20,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "turtle_shell": {
+      "name": "玄龟甲",
+      "type": "材料",
+      "rarity": "稀有",
+      "value": 32,
+      "stackable": true,
+      "effects": {},
+      "requirements": {}
+    },
+    "heavy_sword": {
+      "name": "玄铁重剑",
+      "type": "法器",
+      "rarity": "稀有",
+      "value": 120,
+      "stackable": false,
+      "effects": {
+        "strength": 14
+      },
+      "requirements": {},
+      "slot": "weapon"
+    },
+    "cold_jade_pendant": {
+      "name": "寒玉佩",
+      "type": "法器",
+      "rarity": "稀有",
+      "value": 95,
+      "stackable": false,
+      "effects": {
+        "spirit": 7
+      },
+      "requirements": {},
+      "slot": "accessory"
+    },
+    "turtle_aegis": {
+      "name": "玄龟盾",
+      "type": "法器",
+      "rarity": "稀有",
+      "value": 110,
+      "stackable": false,
+      "effects": {
+        "defense": 8
+      },
+      "requirements": {},
+      "slot": "artifact"
+    },
+    "ember_bracer": {
+      "name": "赤焰护腕",
+      "type": "法器",
+      "rarity": "普通",
+      "value": 70,
+      "stackable": false,
+      "effects": {
+        "strength": 6
+      },
+      "requirements": {},
+      "slot": "accessory"
+    },
+    "gale_boots": {
+      "name": "罡风靴",
+      "type": "法器",
+      "rarity": "普通",
+      "value": 75,
+      "stackable": false,
+      "effects": {
+        "agility": 8
+      },
+      "requirements": {},
+      "slot": "armor"
+    },
+    "nether_ward_charm": {
+      "name": "幽冥护符",
+      "type": "法器",
+      "rarity": "稀有",
+      "value": 90,
+      "stackable": false,
+      "effects": {
+        "defense": 4,
+        "spirit": 3
+      },
+      "requirements": {},
+      "slot": "artifact"
+    },
+    "soul_return_pill": {
+      "name": "九转还魂丹",
+      "type": "丹药",
+      "rarity": "绝品",
+      "value": 400,
+      "stackable": true,
+      "effects": {
+        "hp": 400,
+        "qi": 200
+      },
+      "requirements": {},
+      "baseItem": "potion",
+      "quality": "superior"
+    }
+  },
+  "prices": {
+    "herb": 4,
+    "potion": 12,
+    "foundation_pill": 80,
+    "iron": 8,
+    "sword": 40,
+    "manual": 25,
+    "fang": 6,
+    "core": 30,
+    "golden_pill": 150,
+    "soul_pill": 250,
+    "armor": 35,
+    "charm": 25,
+    "talisman": 40,
+    "array_flag": 4,
+    "paper_talisman": 3,
+    "mechanism_part": 4,
+    "scrap": 1,
+    "relic_fragment": 20,
+    "forbidden_sword": 80,
+    "forbidden_pill": 60,
+    "protected_core": 60,
+    "potion_fine": 16,
+    "potion_superior": 24,
+    "foundation_pill_fine": 112,
+    "foundation_pill_superior": 160,
+    "golden_pill_fine": 210,
+    "golden_pill_superior": 300,
+    "soul_pill_fine": 350,
+    "soul_pill_superior": 500,
+    "core_array_chart": 80,
+    "evolution_crystal": 60,
+    "tide_dew": 25,
+    "nether_iron": 30,
+    "thunderstone": 55,
+    "ember_shard": 18,
+    "cold_jade": 28,
+    "gale_feather": 20,
+    "turtle_shell": 32,
+    "heavy_sword": 120,
+    "cold_jade_pendant": 95,
+    "turtle_aegis": 110,
+    "ember_bracer": 70,
+    "gale_boots": 75,
+    "nether_ward_charm": 90,
+    "soul_return_pill": 400
+  },
+  "recipes": {
+    "potion": {
+      "herb": 2
+    },
+    "foundation_pill": {
+      "herb": 5,
+      "core": 1
+    },
+    "sword": {
+      "iron": 3
+    },
+    "golden_pill": {
+      "herb": 8,
+      "core": 2
+    },
+    "soul_pill": {
+      "herb": 12,
+      "core": 3
+    },
+    "armor": {
+      "iron": 3
+    },
+    "array_flag": {
+      "iron": 1
+    },
+    "paper_talisman": {
+      "herb": 1
+    },
+    "mechanism_part": {
+      "iron": 1
+    },
+    "tide_pill": {
+      "herb": 4,
+      "tide_dew": 1
+    },
+    "soul_return_pill": {
+      "herb": 12,
+      "soul_pill": 1
+    },
+    "heavy_sword": {
+      "iron": 6,
+      "core": 1
+    },
+    "cold_jade_pendant": {
+      "cold_jade": 2
+    },
+    "turtle_aegis": {
+      "turtle_shell": 2,
+      "iron": 2
+    },
+    "ember_bracer": {
+      "ember_shard": 3
+    },
+    "gale_boots": {
+      "gale_feather": 3
+    },
+    "nether_ward_charm": {
+      "paper_talisman": 2,
+      "nether_iron": 1
+    }
+  },
+  "recipe_rules": {
+    "potion": {
+      "school": "alchemy",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    },
+    "foundation_pill": {
+      "school": "alchemy",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    },
+    "sword": {
+      "school": "craft",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    },
+    "golden_pill": {
+      "school": "alchemy",
+      "requiredRealm": 1,
+      "requiredXp": 3000
+    },
+    "soul_pill": {
+      "school": "alchemy",
+      "requiredRealm": 2,
+      "requiredXp": 6000
+    },
+    "armor": {
+      "school": "craft",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    },
+    "array_flag": {
+      "school": "formation",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    },
+    "paper_talisman": {
+      "school": "formation",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    },
+    "mechanism_part": {
+      "school": "craft",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    },
+    "tide_pill": {
+      "school": "alchemy",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    },
+    "soul_return_pill": {
+      "school": "alchemy",
+      "requiredRealm": 2,
+      "requiredXp": 8000
+    },
+    "heavy_sword": {
+      "school": "forging",
+      "requiredRealm": 0,
+      "requiredXp": 2000
+    },
+    "cold_jade_pendant": {
+      "school": "forging",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    },
+    "turtle_aegis": {
+      "school": "forging",
+      "requiredRealm": 1,
+      "requiredXp": 3000
+    },
+    "ember_bracer": {
+      "school": "forging",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    },
+    "gale_boots": {
+      "school": "forging",
+      "requiredRealm": 1,
+      "requiredXp": 1000
+    },
+    "nether_ward_charm": {
+      "school": "formation",
+      "requiredRealm": 0,
+      "requiredXp": 0
+    }
+  }
+}
