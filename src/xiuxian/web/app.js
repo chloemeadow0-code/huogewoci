@@ -1,7 +1,20 @@
 import {state,update,subscribe,saveKey} from "./store.js";import {api} from "./api.js";import {el,toast} from "./ui/dom.js";import {hud} from "./hud.js";import {map} from "./map.js";import {scene} from "./scenes/place.js";
 import {mountGate,gateShow,gateHide} from "./scenes/gate.js";
 async function refresh(){update(await api.state())}
-async function act(tool,command){if(state.busy)return;state.busy=true;el("game").setAttribute("aria-busy","true");try{const result=await api.action(tool,command);toast(result.result?.message||"行动已记入仙途。");await refresh()}catch(error){toast(error.message)}finally{state.busy=false;el("game").setAttribute("aria-busy","false")}}
+function flash(tool,r){
+const box=el("action-flash");if(!box)return;
+const texts={cultivate:"闭关修炼 "+(r.duration||4)+" 时辰，修为 +"+(r.gained??0),retreat:"闭关休养，伤势渐复。",fight:"与 "+(r.enemy?.name||r.target||"对手")+" 展开斗法。",use_skill:()=>{const turn=r;const own=(turn.log||[]).find(x=>x.actor==="player")||{};return "施展"+(turn.round?"，第 "+turn.round+" 回合":"")+(own.damage!==undefined?own.hit===false?" · 未命中":" · 造成 "+own.damage+" 点伤害":own.escaped?" · 成功脱身":own.item?" · 服下丹药":"")+(turn.outcome==="victory"?" · 胜！":turn.outcome==="defeat"?" · 败下阵来":"")},use_item:()=>r.message||"丹药入喉。",travel:()=>"行至 "+(r.islandLocation??"")+"。",breakthrough:()=>r.success===false?"突破失败：修为受损，需闭关一日。":r.breakthrough?("渡劫功成，晋升"+r.breakthrough.realm+"！"):(r.phase==="lightning"?"心魔已斩，雷云压顶——再次突破，以身引雷。":"突破功成！"),craft:()=>"炼制完成。",trade:()=>"交易完成。",quest_step:()=>"任务推进。",quest_list:()=>"",accept_quest:()=>"接下委托。",submit_quest:()=>r.stones!=null?"交付完成，得灵石 "+r.stones+"。":"交付完成。",talk:()=>"交谈过后，人情记在心里。",choose_route:()=>"修行之路已定。",market_bid:()=>"出价已托管。",redeem:()=>"兑换完成。",sect_hall:()=>"",beast_train:()=>"灵兽训练完毕。",manage_beast:()=>"灵兽安好。",beast_evolve:()=>"灵兽进化了！",prepare_formation:()=>"阵法已布下。",incident_resolve:()=>"处置完毕。"};
+let text="";
+const f=texts[tool];
+if(typeof f==="function")text=f()||"";
+else if(f)text=f;
+else if(r.message)text=r.message;
+else text="";
+if(!text){box.hidden=true;return}
+box.textContent=text;box.hidden=false;
+clearTimeout(flash.timer);flash.timer=setTimeout(()=>{box.hidden=true},6000);
+}
+async function act(tool,command){if(state.busy)return;state.busy=true;el("game").setAttribute("aria-busy","true");try{const result=await api.action(tool,command);flash(tool,result.result||{});toast(result.result?.message||"行动已记入仙途。");await refresh()}catch(error){toast(error.message)}finally{state.busy=false;el("game").setAttribute("aria-busy","false")}}
 const ACTION_LABEL={rename:"改名",choose_route:"择道",travel:"行路",cultivate:"修炼",explore:"探索",talk:"交谈",fight:"斗法",use_skill:"招式",use_item:"丹药",breakthrough:"突破",craft:"炼制",trade:"交易",quest_step:"任务推进",incident_resolve:"处置事件",submit_quest:"交付",accept_quest:"接取",learn_technique:"学艺",retreat:"闭关",market_bid:"竞拍",sect_hall:"贡献殿",redeem:"兑换",beast_train:"驯兽",beast_evolve:"灵兽进化"};
 function renderChronicle(data){const log=el("log");log.replaceChildren();const entries=[...data.history.result].reverse();
 for(const entry of entries){const item=document.createElement("div");item.className="chronicle-item";

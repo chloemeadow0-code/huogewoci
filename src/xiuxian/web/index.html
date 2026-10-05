@@ -2,7 +2,7 @@
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>灵汐岛 · 山海画卷</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;900&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/style.css"><link rel="stylesheet" href="/static/gate.css"><script src="/static/app.js" type="module"></script></head>
 <body><canvas id="mist-canvas" aria-hidden="true"></canvas>
 <div class="page-wrap">
-<header><div class="header-brand"><div class="seal-box">问道</div><h1 class="brand-title">灵汐岛</h1><span class="brand-caption">Lingxi Scroll · Dual Mind</span></div>
+<header><div class="header-brand"><div class="seal-box">问道</div><h1 class="brand-title">灵汐岛</h1><span class="brand-caption">山海画卷 · 人机共修</span></div>
 <div class="header-status"><span class="time-badge" id="clock"></span><nav><button id="open-ai" class="link-quiet">AI 修士接入</button><button id="rename-player" class="link-quiet" hidden>修改道号</button><button id="copy-key" class="link-quiet" hidden>保存凭证</button><button id="logout" class="link-quiet" hidden>退出</button></nav></div></header>
 <main>
 <div id="gate" aria-label="灵汐岛入场">
@@ -28,11 +28,11 @@
     </div>
     <div class="gate-fade-up d1" style="display:flex;align-items:center;gap:16px">
       <div class="seal-box">问道</div>
-      <div><div class="brand-title" style="margin:0">灵汐岛</div><span class="brand-caption">Lingxi Scroll · Dual Mind</span></div>
+      <div><div class="brand-title" style="margin:0">灵汐岛</div><span class="brand-caption">山海画卷 · 人机共修</span></div>
     </div>
     <h2 class="gate-hero-title" id="gate-hero-title" aria-label="霁色入山海，心安即仙途。"></h2>
     <hr class="gate-hero-rule">
-    <p class="gate-scene-desc gate-fade-up d2">十二宗并立，或独行江湖。<br>修炼、访友、炼丹、寻秘境——这一世的路，由你自己走。</p>
+    <p class="gate-scene-desc gate-fade-up d2">十二宗并立，或独行江湖。<br>修炼、访友、炼丹、寻秘境——这一世的路，由你自己走。<br>亦可邀你的 AI 同入此岛：同一凭证，两端共修一个修士。</p>
     <button id="gate-enter" class="gate-enter-btn">入世修仙<span class="seal-mini">启</span></button>
     <div class="gate-hint gate-fade-up d3">落 笔 之 处 · 皆 生 波 纹</div>
     <button id="gate-to-key" class="gate-key-link gate-fade-up d3">已有凭证 · 直接登入</button>
@@ -90,10 +90,13 @@
   </section>
 </div>
 <section id="game" hidden><p id="watch-note" class="fine" hidden>正在观看 AI 修士 · 每 5 秒刷新 · 行动由 AI 自主决定</p>
+<div id="action-flash" class="action-flash" hidden role="status"></div>
 <main class="gallery-stage">
 <section class="scenic-realm">
 <div><p class="eyebrow" id="clock-region"></p><h2 class="location-hero" id="location-name"></h2></div>
 <p class="location-poetry" id="description"></p>
+<div id="battle-panel" class="battle-panel" hidden></div>
+<div id="goal-card" class="goal-card"></div>
 <div id="actions" class="poetic-actions"></div>
 <div class="map-scroll-viewport"><p class="sub-title">山海地脉 · 点击查看，沿相邻道路前行 · <span id="map-current"></span></p><div id="island-map" class="brush-map"></div></div>
 <div class="encounter-group"><p class="sub-title">山川行路</p><div id="exits" class="poetic-actions"></div></div>
