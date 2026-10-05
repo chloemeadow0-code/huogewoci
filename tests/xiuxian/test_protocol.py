@@ -7,6 +7,18 @@ from xiuxian.mcp_dispatch import MCP_TOOLS
 from xiuxian.island import IslandGame
 
 
+def scrub_demon_names(value):
+    if isinstance(value, dict):
+        for k, v in value.items():
+            if k == "name" and isinstance(v, str) and v.endswith("的心魔"):
+                value[k] = "心魔"
+            else:
+                scrub_demon_names(v)
+    elif isinstance(value, list):
+        for v in value:
+            scrub_demon_names(v)
+
+
 def params(db):
     return StdioServerParameters(
         command=sys.executable,
@@ -151,6 +163,9 @@ async def test_full_campaign_over_stdio(tmp_path):
                     for response in (actual, expected):
                         for key in ("id", "name", "createdAt"):
                             response["result"].pop(key, None)
+                # 心魔以本尊道号为名，重放局道号不同属预期差异。
+                scrub_demon_names(actual)
+                scrub_demon_names(expected)
                 assert actual == expected, (
                     step["tool"],
                     step["command"],

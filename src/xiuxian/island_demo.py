@@ -126,8 +126,17 @@ def campaign(db, record=None):
         for _ in range(4):
             for retry in range(30):
                 ensure_breakthrough_ready()
+                realm_before = g.player["realm"]
                 r = act("realm_ops", "breakthrough")
-                if r["success"]:
+                for _ in range(60):
+                    if not g.player["battle"]:
+                        break
+                    act("battle_ops", "skill strike")
+                if (
+                    r.get("success")
+                    or r.get("breakthrough", {}).get("success")
+                    or g.player["realm"] != realm_before
+                ):
                     break
             else:
                 context = json.dumps(

@@ -329,7 +329,13 @@ def test_rogue_breakthrough_surcharge(make_game, monkeypatch):
     p.update(stage=3, cultivation=500, reputation=20, stones=20)
     p["inventory"]["foundation_pill"] = 1
     g._store()
-    assert g.call("breakthrough")["result"]["success"]
+    assert g.call("breakthrough")["ok"]
+    assert g.player["stones"] == 8
+    for _ in range(80):
+        if not g.player["battle"]:
+            break
+        assert g.call("use_skill", skill="strike")["ok"]
+    assert g.player["realm"] == "筑基"
     assert g.player["stones"] == 8
 
 

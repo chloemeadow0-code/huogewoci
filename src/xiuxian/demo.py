@@ -130,8 +130,15 @@ def campaign(db, record=None):
         for _ in range(4):
             for attempt in range(30):
                 prepare_breakthrough()
+                realm_before = g.player["realm"]
                 r = act("breakthrough")
-                if r["success"]:
+                if g.player["battle"]:
+                    finish_battle()
+                if (
+                    r.get("success")
+                    or r.get("breakthrough", {}).get("success")
+                    or g.player["realm"] != realm_before
+                ):
                     break
             else:
                 context = json.dumps(

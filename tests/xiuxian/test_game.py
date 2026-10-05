@@ -208,6 +208,14 @@ def test_http_identity(tmp_path, monkeypatch):
         ] in range(10, 23, 2)
 
 
+def _fight_battle(game, skill="strike", rounds=80):
+    for _ in range(rounds):
+        if not game.player["battle"]:
+            return
+        assert game.call("use_skill", skill=skill)["ok"]
+    assert game.player["battle"] is None, "battle did not conclude"
+
+
 @pytest.mark.parametrize("roll,success", [(1, True), (100, False)])
 def test_breakthrough_success_failure(game, monkeypatch, roll, success):
     p = game.player
@@ -219,15 +227,25 @@ def test_breakthrough_success_failure(game, monkeypatch, roll, success):
     p["reputation"] = 20
     p["inventory"]["golden_pill"] = 1
     game._store()
-    monkeypatch.setattr(game, "_roll", lambda purpose: roll)
+    if success:
+        monkeypatch.setattr(game, "_roll", lambda purpose: roll)
+    else:
+        # 打不中心魔时择机脱身，同样算劫败：损失修为、冷却一天、留下伤势。
+        monkeypatch.setattr(
+            game, "_roll", lambda purpose: 100 if purpose == "hit" else 1
+        )
     r = game.call("breakthrough")
     assert r["ok"]
-    assert r["result"]["success"] == success
     assert game.player["inventory"]["golden_pill"] == 0
     if success:
+        _fight_battle(game)
         assert game.player["realm"] == "金丹"
+        assert game.player["tribulation"] is None
     else:
-        assert game.player["hp"] > 0
+        while game.player["battle"]:
+            assert game.call("retreat")["ok"]
+        assert game.player["realm"] == "筑基"
+        assert game.player["cultivation"] == 500 - 160 // 3
         assert game.player["statusEffects"]
         assert game.player["cooldownUntil"] > game.state["minutes"]
         assert not game.call("breakthrough")["ok"]
@@ -243,7 +261,15 @@ def test_all_realms(game, monkeypatch):
         for item in ("foundation_pill", "golden_pill", "soul_pill"):
             p["inventory"][item] = 1
         game._store()
-        assert game.call("breakthrough")["result"]["realm"] == expected
+        game.call("breakthrough")
+        _fight_battle(game)
+        if expected == "元婴":
+            # 金丹圆满还需引雷三重，熬过方成元婴。
+            assert game.call("breakthrough")["ok"]
+            for wave in range(3):
+                assert game.player["battle"]["kind"] == "tribulation"
+                assert game.call("use_skill", skill="trib_ward")["ok"]
+        assert game.player["realm"] == expected
 
 
 def test_realm_entry_and_cycle(game):

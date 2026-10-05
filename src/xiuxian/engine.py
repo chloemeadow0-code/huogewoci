@@ -120,6 +120,7 @@ class Game(RouteRules):
             quests={},
             kills={},
             battle=None,
+            tribulation=None,
             history=[],
         )
 
@@ -758,7 +759,12 @@ class Game(RouteRules):
             )
             return result
         if s["type"] in ("attack", "debuff", "control"):
-            if self._roll("hit") > hit_chance(
+            heaven = (
+                actor is not self.player
+                and self.player["battle"]
+                and self.player["battle"].get("kind") == "tribulation"
+            )
+            if not heaven and self._roll("hit") > hit_chance(
                 accuracy, stats["agility"], other["agility"]
             ):
                 result["hit"] = False
@@ -766,6 +772,13 @@ class Game(RouteRules):
             result["hit"] = True
         if s["type"] == "attack":
             hit = damage(power, stats["strength"], other["defense"], rank - target_rank)
+            if (
+                actor is not self.player
+                and self.player["battle"]
+                and self.player["battle"].get("kind") == "tribulation"
+                and self.player["battle"].get("temperNow")
+            ):
+                hit = int(hit * 1.5)
             hit = self._combat_damage(actor, skill, hit, route_info)
             result.update(route_info)
             shields = [e for e in target["statusEffects"] if e["type"] == "shield"]
@@ -819,11 +832,19 @@ class Game(RouteRules):
         p = self.player
         b = p["battle"]
         require(b is not None, "没有正在进行的战斗")
-        require(skill in p["skills"] and skill in SKILLS, "未学会招式")
+        if b.get("kind") == "tribulation":
+            require(
+                skill in ("trib_ward", "trib_endure", "trib_temper"),
+                "雷劫当前，只能以御劫之法应对",
+            )
+        else:
+            require(not skill.startswith("trib_"), "此法只能用于引雷渡劫")
+            require(skill in p["skills"] and skill in SKILLS, "未学会招式")
         s = SKILLS[skill]
         require(p["qi"] >= s["cost"], "灵力不足")
         require(b["round"] + 1 >= b["cooldowns"].get(skill, 0), "招式冷却中")
-        require(self._realm_index() >= s["requirements"]["realm"], "境界不足")
+        if not skill.startswith("trib_"):
+            require(self._realm_index() >= s["requirements"]["realm"], "境界不足")
         return self._turn(skill)
 
     def _pays_victory_reward(self, target, first_kill):
@@ -865,35 +886,56 @@ class Game(RouteRules):
                         self._restore(item)
                         log.append({"actor": "player", "item": item})
                 elif escape:
-                    escape_odds = escape_chance(
-                        self._stats(p)["agility"], self._stats(e)["agility"]
-                    ) + self._bonus("escapeBonus")
-                    escaped = not controlled and self._roll("retreat") <= min(
-                        95, max(10, escape_odds)
-                    )
-                    log.append({"actor": "player", "escaped": escaped})
-                    if escaped:
-                        p["battle"] = None
-                        p["location"] = self._recovery_location()
-                        if (
-                            p["route"] == "qingxiao"
-                            and p["quests"].get("escort") == "active"
-                        ):
-                            self._violate("护送任务中擅自脱队")
-                        return self._finish_route_turn(
-                            skill,
-                            log,
-                            {"outcome": "escaped", "log": log, "hp": p["hp"]},
-                            b,
+                    if b.get("kind") == "tribulation":
+                        log.append({"actor": "player", "skipped": "sealed"})
+                    else:
+                        escape_odds = escape_chance(
+                            self._stats(p)["agility"], self._stats(e)["agility"]
+                        ) + self._bonus("escapeBonus")
+                        escaped = not controlled and self._roll("retreat") <= min(
+                            95, max(10, escape_odds)
                         )
+                        log.append({"actor": "player", "escaped": escaped})
+                        if escaped:
+                            p["battle"] = None
+                            p["location"] = self._recovery_location()
+                            if b.get("kind") == "demon":
+                                self._effect(p, "injury", 1, 1, "tribulation")
+                                result = self._tribulation_failure(
+                                    {"outcome": "escaped", "log": log, "hp": p["hp"]}
+                                )
+                                return self._finish_route_turn(
+                                    skill, log, result, b
+                                )
+                            if (
+                                p["route"] == "qingxiao"
+                                and p["quests"].get("escort") == "active"
+                            ):
+                                self._violate("护送任务中擅自脱队")
+                            return self._finish_route_turn(
+                                skill,
+                                log,
+                                {"outcome": "escaped", "log": log, "hp": p["hp"]},
+                                b,
+                            )
                 else:
                     outcome = self._apply_skill(
                         p, e, skill, rank, e["realm"], b["cooldowns"], b["round"]
                     )
                     log.append({"actor": "player", **outcome})
+                    if b.get("kind") == "tribulation" and skill == "trib_temper":
+                        b["temper"] = b.get("temper", 0) + 1
+                        b["temperNow"] = True
+                        log.append({"actor": "player", "temper": b["temper"]})
                     if outcome.get("escaped"):
                         p["battle"] = None
                         p["location"] = self._recovery_location()
+                        if b.get("kind") == "demon":
+                            self._effect(p, "injury", 1, 1, "tribulation")
+                            result = self._tribulation_failure(
+                                {"outcome": "escaped", "log": log, "hp": p["hp"]}
+                            )
+                            return self._finish_route_turn(skill, log, result, b)
                         if (
                             p["route"] == "qingxiao"
                             and p["quests"].get("escort") == "active"
@@ -906,8 +948,14 @@ class Game(RouteRules):
                             b,
                         )
         self._pet_turn(e, log)
+        if b.get("kind") == "demon" and p["hp"] > 0 and e["hp"] > 0:
+            # 心魔为心念所化，灵力不竭，反噬本主。
+            stolen = min(5, max(0, p["qi"]))
+            p["qi"] -= stolen
+            e["qi"] = min(e["maxQi"], e["qi"] + stolen)
         self._end_effects(p)
         self._end_effects(e)
+        b.pop("temperNow", None)
         result = {
             "round": b["round"],
             "log": log,
@@ -938,7 +986,33 @@ class Game(RouteRules):
                     else "宗门救回，重伤需闭关疗养"
                 ),
             )
+            if b.get("kind") in ("demon", "tribulation"):
+                self._tribulation_failure(result)
         elif e["hp"] <= 0:
+            if b.get("kind") == "demon":
+                p["battle"] = None
+                idx = self._realm_index()
+                if idx == 2:
+                    p["tribulation"]["phase"] = "lightning"
+                    p["tribulation"]["expires"] = self.state["minutes"] + 1440
+                    p["hp"] = p["max_hp"]
+                    p["qi"] = p["maxQi"]
+                    p["statusEffects"] = []
+                    result.update(
+                        outcome="victory",
+                        phase="lightning",
+                        message="心魔已斩，雷云压顶——趁识海清明，再次突破，以身引雷。",
+                    )
+                else:
+                    trib = p["tribulation"]
+                    result["breakthrough"] = self._complete_breakthrough(
+                        idx, trib["cost"]
+                    )
+                    result.update(
+                        outcome="victory",
+                        message="心魔溃散，道心通明，突破功成。",
+                    )
+                return self._finish_route_turn(skill, log, result, b)
             target = b["target"]
             first_kill = p["kills"].get(target, 0) == 0
             p["kills"][target] = p["kills"].get(target, 0) + 1
@@ -970,6 +1044,17 @@ class Game(RouteRules):
             )
             if not paid:
                 result["message"] = "此敌曾被击败,这次没有再得到战利品"
+        if (
+            b.get("kind") == "tribulation"
+            and p["hp"] > 0
+            and b["round"] >= b["waves"]
+        ):
+            idx = self._realm_index()
+            result["breakthrough"] = self._complete_breakthrough(
+                idx, p["tribulation"]["cost"], temper=b.get("temper", 0)
+            )
+            result["outcome"] = "victory"
+            result["message"] = "三重神雷散尽，雷力淬体，元婴功成。"
         return self._finish_route_turn(skill, log, result, b)
 
     def use_item(self, item: str):
@@ -1059,18 +1144,13 @@ class Game(RouteRules):
         require(self.state["minutes"] >= p["cooldownUntil"], "突破失败后需等待一天")
         cost = r["cost"] * (p["stage"] + 1)
         require(p["cultivation"] >= cost, "修为不足")
-        qualityBonus = 0
         if p["stage"] == 3:
-            require(idx < 3, "已达元婴圆满")
-            next_realm = CONTENT["realms"][idx + 1]
-            require(p["reputation"] >= next_realm["reputation"], "声望不足")
-            qualityBonus = self._breakthrough_resource(next_realm["pill"])
+            return self._tribulation_gate(idx, cost)
         chance = min(
             100,
             r["chance"]
             + p["aptitude"] * 2
-            + self._stats(p)["spirit"] // 5
-            + qualityBonus,
+            + self._stats(p)["spirit"] // 5,
         )
         if self._roll("breakthrough") > chance:
             p["cultivation"] -= cost // 3
@@ -1084,11 +1164,7 @@ class Game(RouteRules):
                 cooldownUntil=p["cooldownUntil"],
             )
         p["cultivation"] -= cost
-        if p["stage"] == 3:
-            p["realm"] = CONTENT["realms"][idx + 1]["name"]
-            p["stage"] = 0
-        else:
-            p["stage"] += 1
+        p["stage"] += 1
         p["level"] += 1
         p["strength"] += 3
         p["defense"] += 1
@@ -1098,8 +1174,147 @@ class Game(RouteRules):
         p["qi"] = p["maxQi"]
         return dict(success=True, chance=chance, realm=p["realm"], stage=p["stage"])
 
+    def _tribulation_gate(self, idx, cost):
+        p = self.player
+        require(p["battle"] is None, "斗法中无法突破")
+        require(idx < 3, "已达元婴圆满")
+        next_realm = CONTENT["realms"][idx + 1]
+        require(p["reputation"] >= next_realm["reputation"], "声望不足")
+        trib = p.get("tribulation")
+        if trib and (
+            trib.get("to") != next_realm["name"]
+            or self.state["minutes"] > trib["expires"]
+        ):
+            p["tribulation"] = None
+            trib = None
+        if trib and trib.get("phase") == "lightning":
+            require(
+                self.state["minutes"] <= trib["expires"],
+                "雷机已逝，需重新斩心魔方能引雷",
+            )
+            return self._open_tribulation_battle(idx)
+        if trib is None:
+            self._breakthrough_resource(next_realm["pill"])
+            p["tribulation"] = {
+                "to": next_realm["name"],
+                "phase": "demon",
+                "cost": cost,
+                "expires": self.state["minutes"] + 2 * 1440,
+            }
+        return self._open_demon_battle(idx)
+
+    def _open_demon_battle(self, idx):
+        p = self.player
+        stats = self._stats(p)
+        skills = [
+            s for s in ("strike", "poison", "heal", "guard") if s in p["skills"]
+        ] or ["strike"]
+        demon = {
+            "name": p["name"] + "的心魔",
+            "type": "心魔",
+            "hp": int(p["max_hp"] * 1.15) + 5,
+            "max_hp": int(p["max_hp"] * 1.15) + 5,
+            "defense": max(0, int(stats["defense"] * 0.75)),
+            "reward": 0,
+            "agility": stats["agility"],
+            "qi": p["maxQi"],
+            "maxQi": p["maxQi"],
+            "strength": max(1, int(stats["strength"] * 0.75)),
+            "spirit": 8,
+            "realm": idx,
+            "skills": skills,
+            "drops": {},
+            "statusEffects": [],
+            "cooldowns": {},
+        }
+        p["battle"] = {
+            "target": "inner_demon",
+            "kind": "demon",
+            "enemy": demon,
+            "round": 0,
+            "cooldowns": {},
+        }
+        self._begin_route_battle(False)
+        result = copy.deepcopy(p["battle"])
+        result["message"] = "心念翻涌，一道与你一般无二的影子自识海走出——斩开心魔，方证大道。"
+        return result
+
+    def _open_tribulation_battle(self, idx):
+        p = self.player
+        p["tribulation"]["phase"] = "lightning"
+        p["tribulation"]["expires"] = self.state["minutes"] + 1440
+        lightning = {
+            "name": "九霄神雷",
+            "type": "天劫",
+            "hp": 9999,
+            "max_hp": 9999,
+            "defense": 0,
+            "reward": 0,
+            "agility": 0,
+            "qi": 9999,
+            "maxQi": 9999,
+            "strength": 25 + idx * 5,
+            "spirit": 0,
+            "realm": idx + 1,
+            "skills": ["trib_bolt"],
+            "drops": {},
+            "statusEffects": [],
+            "cooldowns": {},
+        }
+        p["battle"] = {
+            "target": "tribulation",
+            "kind": "tribulation",
+            "waves": 3,
+            "temper": p["tribulation"].get("temper", 0),
+            "enemy": lightning,
+            "round": 0,
+            "cooldowns": {},
+        }
+        self._begin_route_battle(False)
+        result = copy.deepcopy(p["battle"])
+        result["message"] = (
+            "雷云压顶，三重天雷将落。凝罡御雷护身、不动如山硬抗，"
+            "或引雷淬体搏一分造化——熬过三重，方成元婴。"
+        )
+        return result
+
+    def _complete_breakthrough(self, idx, cost, temper=0):
+        p = self.player
+        p["cultivation"] -= cost
+        p["realm"] = CONTENT["realms"][idx + 1]["name"]
+        p["stage"] = 0
+        p["level"] += 1
+        p["strength"] += 3 + 2 * temper
+        p["defense"] += 1
+        p["max_hp"] += 20
+        p["hp"] = p["max_hp"]
+        p["maxQi"] += 10 + 5 * temper
+        p["qi"] = p["maxQi"]
+        p["tribulation"] = None
+        p["battle"] = None
+        return dict(
+            success=True,
+            realm=p["realm"],
+            stage=p["stage"],
+            temper=temper,
+        )
+
+    def _tribulation_failure(self, result):
+        p = self.player
+        trib = p.get("tribulation") or {}
+        p["cultivation"] = max(0, p["cultivation"] - trib.get("cost", 0) // 3)
+        p["cooldownUntil"] = self.state["minutes"] + 1440
+        p["tribulation"] = None
+        result["cultivationLost"] = trib.get("cost", 0) // 3
+        result["message"] = result.get("message", "") + "劫数未过，道基震荡，突破失败。"
+        return result
+
     def retreat(self, duration: int = 1):
         duration = bounded_int(duration, 1, 72)
         if self.player["battle"]:
+            require(
+                self.player["battle"].get("kind") != "tribulation",
+                "雷劫困身，退无可退",
+            )
             return self._turn(escape=True)
         return self._retreat_route(duration)

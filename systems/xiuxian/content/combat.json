@@ -485,6 +485,66 @@
         "realm": 0
       },
       "school": "constable"
+    },
+    "trib_bolt": {
+      "name": "九霄神雷",
+      "type": "attack",
+      "cost": 0,
+      "power": 200,
+      "cooldown": 0,
+      "accuracy": 100,
+      "target": "enemy",
+      "effectChance": 0,
+      "duration": 0,
+      "requirements": {
+        "realm": 3
+      },
+      "school": "heaven"
+    },
+    "trib_ward": {
+      "name": "凝罡御雷",
+      "type": "defense",
+      "cost": 8,
+      "power": 30,
+      "cooldown": 0,
+      "accuracy": 100,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 2,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
+    },
+    "trib_endure": {
+      "name": "不动如山",
+      "type": "defense",
+      "cost": 0,
+      "power": 8,
+      "cooldown": 0,
+      "accuracy": 100,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
+    },
+    "trib_temper": {
+      "name": "引雷淬体",
+      "type": "defense",
+      "cost": 5,
+      "power": 0,
+      "cooldown": 0,
+      "accuracy": 100,
+      "target": "self",
+      "effectChance": 100,
+      "duration": 1,
+      "requirements": {
+        "realm": 0
+      },
+      "school": "general"
     }
   },
   "enemies": {

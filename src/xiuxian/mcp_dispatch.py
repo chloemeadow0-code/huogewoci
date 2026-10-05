@@ -26,7 +26,7 @@ HELP = {
     "npc_ops": "附近人物与关系。空=list。list；talk 林青枝；talk 林青枝 teach；gift 林青枝 灵草；beast contract cloud_fox；beast feed；beast train；beast evolve 进化灵兽；track wolf。人类与AI共用关系和灵兽。",
     "quest_ops": "阶段任务。空=list。list；accept trial_qingxiao；step trial_qingxiao；step trial_qingxiao report；submit trial_qingxiao。阶段必须由实际行动达成；终幕report/protect二选一。",
     "market_ops": "灵石交易与竞价。空=list。list；buy 回气丹 1；sell 灵草 2；auction；bid auction:0 50。竞价托管，到期交付，被超价退还。黑市须亲自前往。",
-    "realm_ops": "境界与潮生秘境。空=status。status；breakthrough；enter；leave。突破检查修为、状态、功法及材料，失败有记录和处置。",
+    "realm_ops": "境界与潮生秘境。空=status。status；breakthrough；enter；leave。小境界突破掷点判定；跨大境界先斩心魔（属性镜像自身的幻影），金丹渡元婴还需引雷三重：凝罡御雷/不动如山/引雷淬体（淬体加深雷伤但渡劫后力与灵上限额外增长）。",
     "world_ops": "世界变化和灾档闭环。空=status。status；log 20；incidents；resolve 1 materials。未处理坏事会持续限制相应行动；处置cost和success见灾档。",
 }
 MCP_TOOLS = ("relay_manual", *HELP)
@@ -77,7 +77,7 @@ def manual():
         "birth": CONTENT["birth"],
         "incidents": "world_ops incidents 查看2至3个处置选项，world_ops resolve 编号 care|materials|self。",
         "request_id": "修改操作可附request_id，重试原请求编号与参数会返回同一结果；编号不可用于其他命令。",
-        "realm": "炼气/筑基/金丹/元婴，各初期、中期、后期、圆满。筑基材料为筑基丹；秘境一周前两日开放。",
+        "realm": "炼气/筑基/金丹/元婴，各初期、中期、后期、圆满。筑基材料为筑基丹；秘境一周前两日开放。跨大境界突破须先斩心魔：它会用你的招式、反噬你的灵力，斩之心魔方证大道；金丹渡元婴另有三重雷劫，凝罡御雷可挡、不动如山硬抗、引雷淬体搏造化，渡劫失败修为重创并留伤。",
     }
 
 
