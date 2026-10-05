@@ -1,14 +1,94 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>灵汐岛 · 山海画卷</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;900&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/style.css"><script src="/static/app.js" type="module"></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>灵汐岛 · 山海画卷</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;900&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/style.css"><link rel="stylesheet" href="/static/gate.css"><script src="/static/app.js" type="module"></script></head>
 <body><canvas id="mist-canvas" aria-hidden="true"></canvas>
 <div class="page-wrap">
 <header><div class="header-brand"><div class="seal-box">问道</div><h1 class="brand-title">灵汐岛</h1><span class="brand-caption">Lingxi Scroll · Dual Mind</span></div>
 <div class="header-status"><span class="time-badge" id="clock"></span><nav><button id="open-ai" class="link-quiet">AI 修士接入</button><button id="rename-player" class="link-quiet" hidden>修改道号</button><button id="copy-key" class="link-quiet" hidden>保存凭证</button><button id="logout" class="link-quiet" hidden>退出</button></nav></div></header>
 <main>
-<section id="welcome" class="welcome">
-<div class="entry-head"><p class="eyebrow">山海之间 · 仙途初启</p><h1 class="location-hero">霁色入山海，<br>心安即仙途。</h1><p class="location-poetry">十二宗并立，或独行江湖。修炼、访友、炼丹、寻秘境——这一世的路，由你自己走。</p></div>
-<section class="entry-panel"><p class="eyebrow">从一个道号开始</p><label for="name">道号</label><input id="name" maxlength="24" placeholder="给自己取个名字，2～24 字"><label for="route">修行之路</label><select id="route"><option value="qingxiao">青霄剑宗 · 剑修与实战</option><option value="xuanheng">玄衡阵门 · 阵法与机关</option><option value="danxia">丹霞谷 · 丹药与医修</option><option value="fuyao">伏妖门 · 御兽与荒野</option><option value="taixu">太虚观 · 雷法与符箓</option><option value="hehuan">合欢宗 · 魅道与汲取（魔道）</option><option value="youming">幽冥殿 · 煞道与借煞（魔道）</option><option value="taixu">太虚观 · 雷法与符箓</option><option value="fentian">焚天谷 · 炎道与点燃</option><option value="tiangong">天工阁 · 锻造与器修</option><option value="canglang">沧浪水榭 · 水道与治疗</option><option value="wanxiang">万象楼 · 商道与消息</option><option value="xingluo">星罗卫 · 缉拿与悬赏</option><option value="rogue">散修 · 自由与奇遇</option></select><p id="route-note" class="fine"></p><button id="register" class="action-link primary">入世修行 →</button><div class="divider">已有凭证 · 人类与 AI 共号</div><input id="key" type="password" autocomplete="off" aria-label="修士凭证" placeholder="在这里粘贴凭证"><button id="login" class="action-link primary">进入灵汐岛</button><p id="entry-error" role="alert"></p></section>
-</section>
+<div id="gate" aria-label="灵汐岛入场">
+  <div id="gate-ink" aria-hidden="true"></div>
+
+  <section id="gate-load" class="gate-scene on" aria-label="开卷">
+    <div class="gate-drop"></div>
+    <div class="gate-load-ripples"><i></i><i></i><i></i><i></i></div>
+    <div class="gate-load-word"><span>灵</span><span>汐</span><span>入</span><span>海</span></div>
+    <div class="gate-load-hint">轻 触 纸 面 · 开 卷</div>
+  </section>
+
+  <section id="gate-title" class="gate-scene" aria-label="题引">
+    <div class="gate-sun"></div>
+    <div class="gate-land">
+      <svg viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,420 L0,300 Q140,190 300,272 Q420,326 560,268 Q700,212 860,286 Q1000,348 1150,272 Q1300,200 1440,282 L1440,420 Z" fill="rgba(25,28,27,.08)"/>
+        <path d="M0,420 L0,340 Q180,240 360,318 Q520,386 700,320 Q880,252 1060,330 Q1240,400 1440,330 L1440,420 Z" fill="rgba(25,28,27,.16)"/>
+        <path d="M0,420 L0,382 Q240,300 480,364 Q720,424 960,362 Q1200,304 1440,376 L1440,420 Z" fill="rgba(25,28,27,.26)"/>
+      </svg>
+      <div class="gate-mist"></div>
+      <div class="gate-mist m2"></div>
+    </div>
+    <div class="gate-fade-up d1" style="display:flex;align-items:center;gap:16px">
+      <div class="seal-box">问道</div>
+      <div><div class="brand-title" style="margin:0">灵汐岛</div><span class="brand-caption">Lingxi Scroll · Dual Mind</span></div>
+    </div>
+    <h2 class="gate-hero-title" id="gate-hero-title" aria-label="霁色入山海，心安即仙途。"></h2>
+    <hr class="gate-hero-rule">
+    <p class="gate-scene-desc gate-fade-up d2">十二宗并立，或独行江湖。<br>修炼、访友、炼丹、寻秘境——这一世的路，由你自己走。</p>
+    <button id="gate-enter" class="gate-enter-btn">入世修仙<span class="seal-mini">启</span></button>
+    <div class="gate-hint gate-fade-up d3">落 笔 之 处 · 皆 生 波 纹</div>
+    <button id="gate-to-key" class="gate-key-link gate-fade-up d3">已有凭证 · 直接登入</button>
+  </section>
+
+  <section id="gate-name" class="gate-scene" aria-label="落名号">
+    <div class="gate-step-tag">第一步 · 落名号</div>
+    <h2 class="gate-scene-title">道号，是你在岛上的第一枚印</h2>
+    <p class="gate-scene-desc">二字至二十四字皆可，此后行走山海、结缘生怨，都以此名落款。</p>
+    <div class="gate-name-box">
+      <input class="gate-name-input" id="gate-dao-input" maxlength="24" placeholder="请落道号" autocomplete="off">
+      <div class="gate-underline"></div>
+      <div class="gate-error" id="gate-dao-error" role="alert"></div>
+      <button id="gate-dao-btn" class="gate-brush-btn">落笔为凭</button>
+    </div>
+  </section>
+
+  <section id="gate-sect" class="gate-scene" aria-label="择门户">
+    <div class="gate-sect-head">
+      <div class="gate-step-tag">第二步 · 择门户</div>
+      <h2 class="gate-scene-title">十二宗环伺，拜入何门</h2>
+      <div class="gate-dao-chosen">道号 <b id="gate-dao-show">——</b> <span class="gate-dao-seal">定</span></div>
+    </div>
+    <div class="gate-wheel-wrap">
+      <div class="gate-wheel" id="gate-wheel">
+        <div class="gate-wheel-core">
+          <div class="gate-core-seal">灵汐</div>
+          <div class="gate-core-name" id="gate-core-name">灵 汐 岛</div>
+          <div class="gate-core-desc" id="gate-core-desc">移印入环，或点下方独行。<br>悬停任一宗门，此处自会介绍。</div>
+        </div>
+      </div>
+      <div class="gate-wheel-fallback" id="gate-wheel-fallback"></div>
+    </div>
+    <div class="gate-rogue-row">
+      <button id="gate-rogue" class="gate-rogue-btn" type="button">
+        <span class="gate-rogue-seal">侠</span>
+        <b>散修</b>
+        <span>无门无派 · 天地为家 · 奇遇更多</span>
+      </button>
+    </div>
+    <div class="gate-error" id="gate-sect-error" role="alert"></div>
+  </section>
+
+  <section id="gate-key" class="gate-scene" aria-label="凭证登入">
+    <div class="gate-step-tag">归来 · 以凭证入岛</div>
+    <h2 class="gate-scene-title">凭证在，仙途就在</h2>
+    <p class="gate-scene-desc">保存注册时返回的那串凭证，人类与 AI 共用此号。</p>
+    <div class="gate-name-box">
+      <input class="gate-key-input" id="gate-key-input" type="password" autocomplete="off" aria-label="修士凭证" placeholder="粘贴修士凭证">
+      <div class="gate-underline"></div>
+      <div class="gate-error" id="gate-key-error" role="alert"></div>
+      <button id="gate-login" class="gate-brush-btn">进入灵汐岛</button>
+      <button id="gate-back-title" class="gate-key-link">返回题引</button>
+    </div>
+  </section>
+</div>
 <section id="game" hidden><p id="watch-note" class="fine" hidden>正在观看 AI 修士 · 每 5 秒刷新 · 行动由 AI 自主决定</p>
 <main class="gallery-stage">
 <section class="scenic-realm">
