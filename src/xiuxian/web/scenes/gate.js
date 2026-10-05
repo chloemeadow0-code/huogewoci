@@ -15,42 +15,99 @@ const SECTS = [
   { id: "xingluo", name: "星罗卫", glyph: "星", fac: "正道", desc: "缉拿与悬赏。天网星罗，疏而不漏。" },
 ];
 
-function tone(f0, f1, dur, type, gain, when = 0) {
+/* ---- 古琴拨弦：Karplus-Strong 弦振动合成 ----
+   噪声激励 + 延迟反馈环 + 环内低通，泛音随时间自然消退，
+   音色接近真实弹拨弦（古筝/古琴），而非振荡器的电子味。 */
+let AC = null;
+function ac() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  if (AC.state === "suspended") AC.resume();
+  return AC;
+}
+function noiseBurst(c, t, dur) {
+  const n = Math.max(8, Math.floor(c.sampleRate * dur));
+  const buf = c.createBuffer(1, n, c.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  const src = c.createBufferSource(); src.buffer = buf;
+  return src;
+}
+function pluck(freq, when = 0, gain = 0.16, slide = 0) {
   try {
-    if (!tone.ctx) tone.ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const c = tone.ctx;
-    if (c.state === "suspended") c.resume();
-    const t = c.currentTime + when;
+    const c = ac(), t = c.currentTime + when;
+    const out = c.createGain();
+    out.gain.setValueAtTime(gain, t);
+    out.gain.exponentialRampToValueAtTime(0.0001, t + 2.4);
+    out.connect(c.destination);
+    // 两根微失谐的"弦"叠加，产生自然的空间感
+    for (const detune of [0, 0.0022]) {
+      const f = freq * (1 + detune);
+      const src = noiseBurst(c, t, 0.016);
+      const delay = c.createDelay(0.06);
+      delay.delayTime.setValueAtTime(1 / f, t);
+      if (slide) {
+        // 古筝上滑音：弦长在起音后缓缓收短，音高滑向目标
+        delay.delayTime.linearRampToValueAtTime(1 / f, t + 0.12);
+        delay.delayTime.linearRampToValueAtTime(1 / (f * (1 + slide)), t + 0.34);
+      }
+      const fb = c.createGain();
+      fb.gain.setValueAtTime(0.978, t);
+      fb.gain.setValueAtTime(0.978, t + 1.5);
+      fb.gain.linearRampToValueAtTime(0.0001, t + 2.3);
+      const lp = c.createBiquadFilter();
+      lp.type = "lowpass";
+      lp.frequency.setValueAtTime(Math.min(9000, freq * 10), t);
+      lp.frequency.exponentialRampToValueAtTime(Math.max(600, freq * 2.2), t + 1.8);
+      src.connect(delay);
+      delay.connect(fb); fb.connect(lp); lp.connect(delay);
+      delay.connect(out);
+      src.start(t);
+      src.stop(t + 0.05);
+    }
+  } catch (e) { /* 无声环境静默降级 */ }
+}
+function thump(f0, f1, dur, gain, when = 0) {
+  try {
+    const c = ac(), t = c.currentTime + when;
     const o = c.createOscillator(), g = c.createGain();
-    o.type = type;
+    o.type = "sine";
     o.frequency.setValueAtTime(f0, t);
-    if (f1) o.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur);
+    o.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur);
     g.gain.setValueAtTime(gain, t);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     o.connect(g).connect(c.destination);
     o.start(t); o.stop(t + dur + 0.05);
-  } catch (e) { /* 无声环境静默降级 */ }
+  } catch (e) {}
 }
-function splashNoise(dur, gain, when = 0) {
+function softNoise(dur, gain, freq, when = 0) {
   try {
-    if (!tone.ctx) return;
-    const c = tone.ctx, t = c.currentTime + when;
-    const n = Math.floor(c.sampleRate * dur);
-    const buf = c.createBuffer(1, n, c.sampleRate);
-    const d = buf.getChannelData(0);
-    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
-    const src = c.createBufferSource(); src.buffer = buf;
-    const bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 2600; bp.Q.value = .8;
-    const g = c.createGain(); g.gain.value = gain;
-    src.connect(bp).connect(g).connect(c.destination);
+    const c = ac(), t = c.currentTime + when;
+    const src = noiseBurst(c, t, dur);
+    const lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = freq;
+    const g = c.createGain();
+    g.gain.setValueAtTime(gain, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(lp).connect(g).connect(c.destination);
     src.start(t);
   } catch (e) {}
 }
+/* 水滴入湖：噗（高频起音）——咚（腔体共鸣），带一点余波 */
+const sndSplash = (when = 0) => {
+  thump(920, 170, 0.3, 0.13, when);
+  pluck(1318, when + 0.02, 0.05);
+  softNoise(0.1, 0.035, 3200, when);
+};
+/* 五声音阶拨弦：宫商角徵羽，走马上一句旋律 */
 const PENTA = [261.6, 293.7, 329.6, 392, 440, 523.3, 587.3, 659.3];
-const sndSplash = (when = 0) => { tone(760, 150, 0.32, "sine", 0.12, when); tone(1520, 620, 0.14, "sine", 0.04, when); splashNoise(0.14, 0.04, when); };
-const sndPluck = (i, when = 0) => { const f = PENTA[((i % PENTA.length) + PENTA.length) % PENTA.length]; tone(f, f * 0.995, 0.55, "triangle", 0.045, when); tone(f * 2, 0, 0.18, "sine", 0.018, when); };
-const sndStamp = (when = 0) => { tone(150, 52, 0.26, "sine", 0.2, when); splashNoise(0.07, 0.05, when); };
-const sndTap = () => tone(1180, 640, 0.09, "sine", 0.025);
+const sndPluck = (i, when = 0) => {
+  const f = PENTA[((i % PENTA.length) + PENTA.length) % PENTA.length];
+  // 每逢乐句第三音加一个小滑音，古筝的"揉"味
+  pluck(f, when, 0.12, i % 3 === 2 ? 0.12 : 0);
+};
+/* 盖章：木质闷响，落印有力而不炸 */
+const sndStamp = (when = 0) => { thump(140, 48, 0.24, 0.2, when); softNoise(0.06, 0.04, 500, when); };
+/* 轻点：极轻的一声弦 */
+const sndTap = () => pluck(1174.7, 0, 0.025);
 
 const HERO = "霁色入山海，心安即仙途。";
 const CORE_DEFAULT =
