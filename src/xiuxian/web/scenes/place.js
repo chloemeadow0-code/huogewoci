@@ -3,16 +3,15 @@ const categories={attack:"攻击",defense:"防御",heal:"回复",buff:"增益",d
 const REALMS=["炼气","筑基","金丹","元婴"];
 const ITEM_GLYPH={"灵药":"药","丹药":"丹","材料":"材","法器":"器","功法":"功","杂物":"杂"};
 function wcard(container,{glyph,tone,title,note,tags,badge,buttons}){
- const card=document.createElement("div");card.className="wcard";
- const seal=document.createElement("div");seal.className="wcard-seal"+(tone?" "+tone:"");seal.textContent=glyph;
+ const card=document.createElement("div");card.className="wcard"+(tone?" tone-"+tone:" tone-ink");
  const body=document.createElement("div");body.className="wcard-body";
  const t=document.createElement("h4");t.className="wcard-title";t.textContent=title;
+ if(badge){const bc=document.createElement("span");bc.className="badge-corner";bc.textContent=badge;t.append(bc)}
  const n=document.createElement("p");n.className="wcard-note";n.textContent=note;
  body.append(t,n);
  if(tags&&tags.length){const wrap=document.createElement("div");wrap.className="wcard-tags";for(const[tag,tone2]of tags){const s=document.createElement("span");s.className="wcard-tag"+(tone2?" "+tone2:"");s.textContent=tag;wrap.append(s)}body.append(wrap)}
  const side=document.createElement("div");side.className="wcard-actions";for(const btn of buttons)side.append(btn);
- card.append(seal,body,side);
- if(badge){const bcorner=document.createElement("span");bcorner.className="badge-corner";bcorner.textContent=badge;card.append(bcorner)}
+ card.append(body,side);
  container.append(card);return card;
 }
 function emptyNote(container,text){const p=document.createElement("p");p.className="empty-note";p.textContent=text;container.append(p)}
@@ -93,10 +92,9 @@ export function scene(data,act){
  for(const id of["actions","exits","npcs","quests","enemies","skills","inventory","shop","incidents","world-events","crafting","relations"])el(id).replaceChildren();
  el("location-name").textContent=w.location.name;el("description").textContent=w.location.description;
  battlePanel(data,act,b);goalCard(data,act,b);
- const glyphs={cultivate:"修",explore:"探",retreat:"闭",breakthrough:"突"};
- if(!p.route)for(const[id,name]of Object.entries({qingxiao:"青霄剑宗",xuanheng:"玄衡阵门",danxia:"丹霞谷",fuyao:"伏妖门",taixu:"太虚观",hehuan:"合欢宗",youming:"幽冥殿",fentian:"焚天谷",tiangong:"天工阁",canglang:"沧浪水榭",wanxiang:"万象楼",xingluo:"星罗卫",rogue:"散修"})){const btn=b(name,"sect_ops","join "+id);btn.setAttribute("data-glyph","入");el("actions").append(btn)}
+ if(!p.route)for(const[id,name]of Object.entries({qingxiao:"青霄剑宗",xuanheng:"玄衡阵门",danxia:"丹霞谷",fuyao:"伏妖门",taixu:"太虚观",hehuan:"合欢宗",youming:"幽冥殿",fentian:"焚天谷",tiangong:"天工阁",canglang:"沧浪水榭",wanxiang:"万象楼",xingluo:"星罗卫",rogue:"散修"})){el("actions").append(b(name,"sect_ops","join "+id))}
  const avail=w.nearbyActions||[];
- for(const[action,label,tool,command]of[["cultivate","修炼","cultivate_ops","meditate 4"],["explore","探索周围","travel_ops","explore"],["retreat","闭关休养","cultivate_ops","retreat 8"],["breakthrough","尝试突破","realm_ops","breakthrough"]])if(avail.includes(action)){const btn=b(label,tool,command);btn.setAttribute("data-glyph",glyphs[action]);el("actions").append(btn)}
+ for(const[action,label,tool,command]of[["cultivate","修炼","cultivate_ops","meditate 4"],["explore","探索周围","travel_ops","explore"],["retreat","闭关休养","cultivate_ops","retreat 8"],["breakthrough","尝试突破","realm_ops","breakthrough"]])if(avail.includes(action))el("actions").append(b(label,tool,command))
  for(const destination of w.location.exits)el("exits").append(b(w.map[destination].name,"travel_ops","go "+destination,!!p.battle));
  const npcs=Object.entries(w.npcs);
  if(!npcs.length)emptyNote(el("npcs"),"此地并无旁人，山风与你作伴。");
@@ -128,10 +126,10 @@ export function scene(data,act){
  for(const[id,s]of Object.entries(w.skills)){
   const trib=id.startsWith("trib_"),inTrib=p.battle?.kind==="tribulation";if(trib!==inTrib)continue;
   const short=p.qi<s.cost;
-  wcard(el("skills"),{glyph:s.name[0],tone:short?"":"cinnabar",title:s.name,note:"灵力 "+s.cost+" · "+categories[s.type]+" · 冷却 "+s.cooldown+(short?" · 灵力不足":""),tags:[[s.name.length>3?"招式":"技法"]],buttons:[b("施展","battle_ops","skill "+id,!p.battle||short)]});
+  wcard(el("skills"),{glyph:s.name[0],tone:short?"":"cinnabar",title:s.name,note:"灵力 "+s.cost+" · "+categories[s.type]+" · 冷却 "+s.cooldown+(short?" · 灵力不足":""),tags:[],buttons:[b("施展","battle_ops","skill "+id,!p.battle||short)]});
  }
  const rank=REALMS.indexOf(p.realm);
- for(const id of p.techniques){const t=techniques[id];if(t)wcard(el("skills"),{glyph:t.name[0],tone:"gold",title:t.name,note:"长期功法 · "+t.type+" · "+(p.techniqueLevels[id]||1)+" 级",tags:[["修炼可精进"]],buttons:[b("修炼四时","cultivate_ops","method "+id+" 4",!avail.includes("cultivate"))]});}
+ for(const id of p.techniques){const t=techniques[id];if(t)wcard(el("skills"),{glyph:t.name[0],tone:"gold",title:t.name,note:"长期功法 · "+t.type+" · "+(p.techniqueLevels[id]||1)+" 级",tags:[],buttons:[b("修炼四时","cultivate_ops","method "+id+" 4",!avail.includes("cultivate"))]});}
  if(avail.includes("learn_technique"))for(const[id,t]of Object.entries(techniques))if(!p.techniques.includes(id)&&id!=="forbidden_sword"&&rank>=t.requiredRealm)wcard(el("skills"),{glyph:"学",tone:"gold",title:t.name,note:t.type+" · 学费由传承规则核算",tags:[["可学"]],buttons:[b("学习","cultivate_ops","learn "+id)]});
  for(const[id,n]of Object.entries(p.inventory)){
   const it=items[id];
@@ -141,11 +139,7 @@ export function scene(data,act){
  for(const[id,price]of Object.entries(w.shop||{}))wcard(el("shop"),{glyph:items[id]?ITEM_GLYPH[items[id].type]||"购":"购",title:items[id]?.name||id,note:(items[id]?.type||"货物")+" · "+price+" 灵石",buttons:[b("购买","market_ops","buy "+id+" 1")]});
  if(w.sectHall){wcard(el("shop"),{glyph:"殿",tone:"cinnabar",title:"宗门贡献殿",note:"我的贡献 "+w.sectHall.contribution,badge:"回本宗可兑换",buttons:[b("查看目录","sect_ops","hall")]});}
  for(const[id,cost]of Object.entries(w.sectHall?.catalog||{}))if(avail.includes("redeem"))wcard(el("shop"),{glyph:items[id]?ITEM_GLYPH[items[id].type]||"兑":"兑",tone:"gold",title:items[id]?.name||id,note:cost+" 贡献可兑",buttons:[b("兑换","sect_ops","redeem "+id)]});
- for(const listing of w.auctions||[]){
-  const input=document.createElement("input");input.type="number";input.value=listing.price+1;input.min=listing.price+1;input.setAttribute("aria-label","拍卖出价");input.className="bid-input";
-  wcard(el("shop"),{glyph:"拍",tone:"gold",title:"拍卖 · "+(items[listing.item]?.name||listing.item),note:"现价 "+listing.price+" 灵石 · 到期托管结算",buttons:[input,button("出价",()=>act("market_ops","bid "+listing.id+" "+input.value))]});
- }
- if(avail.includes("craft"))for(const[id,material]of Object.entries(recipes))wcard(el("crafting"),{glyph:"炼",tone:"gold",title:items[id]?.name||id,note:"需 "+Object.entries(material).map(([k,n])=>(items[k]?.name||k)+"×"+n).join(" · "),tags:[["丹炉器台"]],buttons:[b("炼制","refine_ops","craft "+id+" 1")]});
+ if(avail.includes("craft"))for(const[id,material]of Object.entries(recipes))wcard(el("crafting"),{glyph:"炼",tone:"gold",title:items[id]?.name||id,note:"需 "+Object.entries(material).map(([k,n])=>(items[k]?.name||k)+"×"+n).join(" · "),tags:[],buttons:[b("炼制","refine_ops","craft "+id+" 1")]});
  if(avail.includes("craft")&&!Object.keys(recipes).length)emptyNote(el("crafting"),"此地没有炼制台。丹霞谷与各宗驻地设有丹炉器台。");
  for(const listing of w.auctions||[]){
   const input=document.createElement("input");input.type="number";input.value=listing.price+1;input.min=listing.price+1;input.setAttribute("aria-label","拍卖出价");input.className="bid-input";

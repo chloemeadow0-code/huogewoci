@@ -5,7 +5,7 @@ el("player-name").textContent=p.name;
 el("player-sect").textContent=(p.sect||"散修")+" · "+p.realm+" · "+p.realm_stage;
 el("char-seal-glyph").textContent=p.name?p.name[0]:"修";
 el("clock").textContent="灵汐历第 "+w.time.day+" 日 · "+w.time.hour+" 时";
-el("clock-region").textContent=w.location&&w.location.name!==el("location-name").textContent?"此地 · "+w.location.name:"";
+el("clock-region").textContent="";
 const meters=[["气血",p.hp,p.max_hp,""],["灵力",p.qi,p.max_qi,""],["修为",p.cultivation,p.cultivation_required,"cinnabar"],["灵石",p.money,null,""]];
 const wrap=el("metrics");wrap.replaceChildren();
 for(const[label,value,max,cls]of meters){
